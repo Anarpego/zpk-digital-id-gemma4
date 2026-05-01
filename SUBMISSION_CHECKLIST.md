@@ -55,6 +55,7 @@
   - `submission/final-video-captions.srt`
   - `submission/demo-runbook.md`
   - `submission/media-gallery-cover.svg`
+  - `submission/media-gallery-cover.png`
   - `submission/prize-claims.md`
   - `submission/publish-runbook.md`
 - Raw video footage exists:
@@ -146,6 +147,7 @@ Prompt-to-artifact checklist:
 | Fine-tuning/RL/Unsloth | `unsloth/` scaffold and failed Gemma 4 E2B OOM attempt on 6 GB RTX 4050 | Attempted, no adapter |
 | Public repository | `README.md`, `AGENTS.md`, `.env.example`, `LICENSE`, clean git tree | Ready to push after auth |
 | Video demo | `submission/kan-final-demo-video.mp4`, under 3 minutes | Ready locally |
+| Media gallery cover | `submission/media-gallery-cover.png`, 1600x900 PNG rendered from SVG | Ready locally |
 | Writeup | `submission/final-kaggle-writeup.md`, 695 words | Ready locally |
 | Live demo/download | `submission/dist/kan-demo-package-final.zip` | Ready locally, not uploaded |
 | No secrets | `.env` ignored; verifier checks ZIP excludes `.env` | Verified |

@@ -52,5 +52,5 @@ Kan is a Flutter Android app with four reasoner modes: deterministic local mode 
 - [ ] Demo ZIP URL is reachable without login.
 - [ ] Video URL is reachable without login and plays under 3 minutes.
 - [ ] Kaggle writeup is pasted from `submission/final-kaggle-writeup.md`.
-- [ ] Media gallery includes `submission/media-gallery-cover.svg` or a rendered version of it.
+- [ ] Media gallery includes `submission/media-gallery-cover.png`.
 - [ ] No `.env` or API key is uploaded.

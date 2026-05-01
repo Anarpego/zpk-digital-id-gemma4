@@ -54,6 +54,8 @@ for required in \
   'submission/YOUTUBE_DESCRIPTION.md' \
   'submission/kaggle-dataset-metadata.template.json' \
   'submission/kan-final-demo-video.mp4' \
+  'submission/media-gallery-cover.png' \
+  'submission/media-gallery-cover.svg' \
   'submission/live-demo/kan-debug.apk' \
   'submission/final-kaggle-writeup.md' \
   'unsloth/outputs/training_attempt_2026-05-01.md'; do

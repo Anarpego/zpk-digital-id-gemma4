@@ -25,6 +25,7 @@ done
 
 cd "$ROOT"
 shasum -a 256 "$LIVE/kan-debug.apk" > "$LIVE/kan-debug.apk.sha256"
+rm -f "$ZIP"
 
 zip -r "$ZIP" \
   README.md \
@@ -48,6 +49,7 @@ zip -r "$ZIP" \
   submission/kaggle-dataset-metadata.template.json \
   submission/kaggle-writeup-draft.md \
   submission/media-gallery-cover.svg \
+  submission/media-gallery-cover.png \
   submission/prize-claims.md \
   submission/publish-runbook.md \
   submission/final-video-captions.srt \

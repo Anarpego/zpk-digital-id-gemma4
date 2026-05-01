@@ -4,7 +4,7 @@ This release contains the public judging artifacts for Kan, a local-first Androi
 
 ## Assets
 
-- `kan-demo-package-final.zip`: APK, static demo page, final video, writeup, evidence, screenshots, and Unsloth scaffold.
+- `kan-demo-package-final.zip`: APK, static demo page, final video, media cover, writeup, evidence, screenshots, and Unsloth scaffold.
 - `kan-final-demo-video.mp4`: narrated demo video under 3 minutes.
 
 ## Verify

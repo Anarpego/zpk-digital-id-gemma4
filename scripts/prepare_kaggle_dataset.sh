@@ -22,6 +22,7 @@ mkdir -p "$OUT"
 
 cp "$ZIP" "$OUT/$(basename "$ZIP")"
 cp "$VIDEO" "$OUT/kan-final-demo-video.mp4"
+cp submission/media-gallery-cover.png "$OUT/media-gallery-cover.png"
 cp submission/ARTIFACT_MANIFEST.md "$OUT/ARTIFACT_MANIFEST.md"
 cp submission/final-kaggle-writeup.md "$OUT/final-kaggle-writeup.md"
 cp submission/KAGGLE_FORM.md "$OUT/KAGGLE_FORM.md"

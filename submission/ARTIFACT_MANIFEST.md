@@ -10,6 +10,7 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 |---|---|---|---|
 | Android APK | `submission/live-demo/kan-debug.apk` | Installable local-mode demo APK | `97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138` |
 | Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34` |
+| Media cover | `submission/media-gallery-cover.png` | 1600x900 Kaggle media-gallery image | `3c1039c1843ee8763439b1be6fb27151056770e33f4f0e7e7a5d04f9ada16db3` |
 | Demo package | `submission/dist/kan-demo-package-final.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | Generate with `shasum -a 256 submission/dist/kan-demo-package-final.zip` |
 
 ## Kaggle Form Inputs
@@ -22,6 +23,7 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 - GitHub release notes: `submission/GITHUB_RELEASE_NOTES.md`.
 - Kaggle Dataset metadata template: `submission/kaggle-dataset-metadata.template.json`.
 - Kaggle Dataset README: `submission/KAGGLE_DATASET_README.md`.
+- Media gallery cover: `submission/media-gallery-cover.png`.
 - Impact Track: Digital Equity & Inclusivity.
 - Special prizes: claim Cactus cautiously; claim only ML Kit/AICore integration/fallback unless a supported device verifies local generation; do not claim Unsloth unless a larger-GPU adapter and before/after benchmark are added.
 
@@ -30,7 +32,7 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 ```bash
 git status --short
 git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv"
-shasum -a 256 submission/live-demo/kan-debug.apk submission/kan-final-demo-video.mp4
+shasum -a 256 submission/live-demo/kan-debug.apk submission/kan-final-demo-video.mp4 submission/media-gallery-cover.png
 unzip -l submission/dist/kan-demo-package-final.zip | rg "\\.env|kan-final-demo-video|training_attempt|kan-debug.apk"
 ./scripts/verify_submission.sh
 ./scripts/publish_submission.sh --check

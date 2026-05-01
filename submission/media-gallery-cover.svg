@@ -13,8 +13,9 @@
     <text x="24" y="36" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#0b7a63">Gemma 4</text>
   </g>
 
-  <text x="96" y="238" font-family="Inter, Arial, sans-serif" font-size="70" font-weight="800" fill="#111814">Local-first breach defense</text>
-  <text x="96" y="310" font-family="Inter, Arial, sans-serif" font-size="34" fill="#303934">Detecta, explica y prepara una denuncia sin enviar el CUI.</text>
+  <text x="96" y="220" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#111814">Local-first breach</text>
+  <text x="96" y="285" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="800" fill="#111814">defense</text>
+  <text x="96" y="344" font-family="Inter, Arial, sans-serif" font-size="31" fill="#303934">Detecta, explica y prepara una denuncia local.</text>
 
   <g transform="translate(96 390)">
     <rect x="0" y="0" width="575" height="315" rx="8" fill="#eaf4ef"/>
