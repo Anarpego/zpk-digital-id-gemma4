@@ -49,6 +49,7 @@ Upload the latest local package:
 
 ```text
 submission/dist/kan-demo-package-final.zip
+submission/dist/kan-demo-package-final.zip.sha256
 ```
 
 Use a no-login public location. Kaggle writeup can link to either:
@@ -82,3 +83,13 @@ submission/kan-final-demo-video.mp4
 ```
 
 It is under 3 minutes and uses the narration in `submission/final-video-narration.txt`.
+
+## Media Gallery Cover
+
+Upload the rendered cover image to Kaggle media gallery:
+
+```text
+submission/media-gallery-cover.png
+```
+
+It is a 1600x900 PNG rendered from `submission/media-gallery-cover.svg`.

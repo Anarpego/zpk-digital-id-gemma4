@@ -4,7 +4,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REPO_NAME="${REPO_NAME:-kan-gemma4-good}"
 ZIP="$ROOT/submission/dist/kan-demo-package-final.zip"
+ZIP_SHA="$ZIP.sha256"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
+COVER="$ROOT/submission/media-gallery-cover.png"
 
 cd "$ROOT"
 
@@ -26,7 +28,9 @@ fi
 ./scripts/verify_submission.sh
 
 [[ -f "$ZIP" ]] || fail "missing ZIP: $ZIP"
+[[ -f "$ZIP_SHA" ]] || fail "missing ZIP checksum: $ZIP_SHA"
 [[ -f "$VIDEO" ]] || fail "missing video: $VIDEO"
+[[ -f "$COVER" ]] || fail "missing media cover: $COVER"
 [[ -z "$(git status --short)" ]] || fail "working tree is not clean"
 
 gh auth status >/dev/null || fail "GitHub CLI is not authenticated. Run: gh auth login"
@@ -41,11 +45,13 @@ tag="submission-2026-05-01"
 if ! gh release view "$tag" >/dev/null 2>&1; then
   gh release create "$tag" \
     "$ZIP" \
+    "$ZIP_SHA" \
     "$VIDEO" \
+    "$COVER" \
     --title "Kan Gemma 4 Good submission package" \
     --notes-file submission/GITHUB_RELEASE_NOTES.md
 else
-  gh release upload "$tag" "$ZIP" "$VIDEO" --clobber
+  gh release upload "$tag" "$ZIP" "$ZIP_SHA" "$VIDEO" "$COVER" --clobber
 fi
 
 echo "Published repository and release assets."
