@@ -6,6 +6,7 @@ APP="$ROOT/kan-app"
 LIVE="$ROOT/submission/live-demo"
 DIST="$ROOT/submission/dist"
 ZIP="$DIST/kan-demo-package-final.zip"
+ZIP_SHA="$ZIP.sha256"
 
 mkdir -p "$LIVE" "$DIST"
 
@@ -25,7 +26,7 @@ done
 
 cd "$ROOT"
 shasum -a 256 "$LIVE/kan-debug.apk" > "$LIVE/kan-debug.apk.sha256"
-rm -f "$ZIP"
+rm -f "$ZIP" "$ZIP_SHA"
 
 zip -r "$ZIP" \
   README.md \
@@ -60,5 +61,7 @@ zip -r "$ZIP" \
   submission/video-script-draft.md \
   unsloth \
   -x '*.DS_Store' 'unsloth/.venv/*' '*/__pycache__/*' '*.pyc'
+
+shasum -a 256 "$ZIP" > "$ZIP_SHA"
 
 echo "$ZIP"

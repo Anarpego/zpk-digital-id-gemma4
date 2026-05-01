@@ -4,6 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT="$ROOT/submission/kaggle-dataset-upload"
 ZIP="$ROOT/submission/dist/kan-demo-package-final.zip"
+ZIP_SHA="$ZIP.sha256"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
 USERNAME="${KAGGLE_USERNAME:-}"
 
@@ -21,6 +22,7 @@ rm -rf "$OUT"
 mkdir -p "$OUT"
 
 cp "$ZIP" "$OUT/$(basename "$ZIP")"
+cp "$ZIP_SHA" "$OUT/$(basename "$ZIP_SHA")"
 cp "$VIDEO" "$OUT/kan-final-demo-video.mp4"
 cp submission/media-gallery-cover.png "$OUT/media-gallery-cover.png"
 cp submission/ARTIFACT_MANIFEST.md "$OUT/ARTIFACT_MANIFEST.md"

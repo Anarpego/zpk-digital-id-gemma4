@@ -78,6 +78,7 @@
   - `scripts/verify_submission.sh`
 - Local downloadable demo package exists:
   - `submission/dist/kan-demo-package-final.zip`
+  - `submission/dist/kan-demo-package-final.zip.sha256`
   - `submission/live-demo/kan-debug.apk`
   - `submission/live-demo/kan-debug.apk.sha256`
   - `submission/live-demo/index.html`
@@ -149,7 +150,7 @@ Prompt-to-artifact checklist:
 | Video demo | `submission/kan-final-demo-video.mp4`, under 3 minutes | Ready locally |
 | Media gallery cover | `submission/media-gallery-cover.png`, 1600x900 PNG rendered from SVG | Ready locally |
 | Writeup | `submission/final-kaggle-writeup.md`, 695 words | Ready locally |
-| Live demo/download | `submission/dist/kan-demo-package-final.zip` | Ready locally, not uploaded |
+| Live demo/download | `submission/dist/kan-demo-package-final.zip` plus `.sha256` | Ready locally, not uploaded |
 | No secrets | `.env` ignored; verifier checks ZIP excludes `.env` | Verified |
 
 Current blocker: upload/publish actions require user-owned accounts (`gh auth login`, Kaggle submission, YouTube or Dataset upload). The local repository and artifacts are ready, but the competition submission is not complete until those URLs are created and pasted into Kaggle.

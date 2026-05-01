@@ -3,12 +3,15 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ZIP="$ROOT/submission/dist/kan-demo-package-final.zip"
+ZIP_SHA="$ZIP.sha256"
 APK="$ROOT/submission/live-demo/kan-debug.apk"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
+COVER="$ROOT/submission/media-gallery-cover.png"
 WRITEUP="$ROOT/submission/final-kaggle-writeup.md"
 
 EXPECTED_APK_SHA="97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138"
 EXPECTED_VIDEO_SHA="42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34"
+EXPECTED_COVER_SHA="3c1039c1843ee8763439b1be6fb27151056770e33f4f0e7e7a5d04f9ada16db3"
 
 fail() {
   echo "FAIL: $1" >&2
@@ -24,12 +27,16 @@ sha_only() {
 }
 
 need_file "$ZIP"
+need_file "$ZIP_SHA"
 need_file "$APK"
 need_file "$VIDEO"
+need_file "$COVER"
 need_file "$WRITEUP"
 
+shasum -a 256 -c "$ZIP_SHA" >/dev/null || fail "ZIP checksum mismatch"
 [[ "$(sha_only "$APK")" == "$EXPECTED_APK_SHA" ]] || fail "APK checksum mismatch"
 [[ "$(sha_only "$VIDEO")" == "$EXPECTED_VIDEO_SHA" ]] || fail "video checksum mismatch"
+[[ "$(sha_only "$COVER")" == "$EXPECTED_COVER_SHA" ]] || fail "cover checksum mismatch"
 
 writeup_words="$(wc -w < "$WRITEUP" | tr -d ' ')"
 [[ "$writeup_words" -le 1500 ]] || fail "writeup is over 1500 words: $writeup_words"
@@ -66,6 +73,8 @@ jq . "$ROOT/submission/kaggle-dataset-metadata.template.json" >/dev/null || fail
 
 echo "PASS: submission artifacts verified"
 echo "ZIP: $ZIP"
+echo "ZIP SHA-256: $(sha_only "$ZIP")"
 echo "APK SHA-256: $EXPECTED_APK_SHA"
 echo "Video SHA-256: $EXPECTED_VIDEO_SHA"
+echo "Cover SHA-256: $EXPECTED_COVER_SHA"
 echo "Writeup words: $writeup_words"

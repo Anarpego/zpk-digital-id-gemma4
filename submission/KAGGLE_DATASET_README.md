@@ -5,6 +5,7 @@ This upload folder is for a public Kaggle Dataset that can serve as the no-login
 Contents:
 
 - `kan-demo-package-final.zip`: APK, static demo page, final video, evidence docs, screenshots, final writeup, and Unsloth scaffold.
+- `kan-demo-package-final.zip.sha256`: checksum for the demo package.
 - `kan-final-demo-video.mp4`: narrated video under 3 minutes.
 - `media-gallery-cover.png`: 1600x900 cover image for the Kaggle media gallery.
 - `ARTIFACT_MANIFEST.md`: checksums and submission checklist.
