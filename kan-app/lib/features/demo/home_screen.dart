@@ -9,6 +9,7 @@ import '../../services/legal_template_service.dart';
 import '../../services/local_breach_catalog.dart';
 import '../../services/mock_reasoner.dart';
 import '../../services/recovery_packet_service.dart';
+import '../../services/revocation_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -34,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _agent = const IdentityProtectionAgent();
   late final DigitalIdentityFabric _trustFabric;
   late final RecoveryPacketService _packetService;
+  late final RevocationService _revocationService;
   late final AuditArchiveService _auditArchive;
   late final Future<LocalBreachCatalog> _catalog;
 
@@ -42,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ReasonedGuidance? _guidance;
   IdentityTrustReport? _trustReport;
   RecoveryPacket? _recoveryPacket;
+  LocalRevocationReceipt? _revocationReceipt;
   AuditArchiveReceipt? _auditReceipt;
   AuditArchiveClearReceipt? _auditClearReceipt;
   String? _complaint;
@@ -53,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _trustFabric = widget.identityFabric ?? const DigitalIdentityFabric();
     _packetService = RecoveryPacketService(identityFabric: _trustFabric);
+    _revocationService = RevocationService(identityFabric: _trustFabric);
     _auditArchive = AuditArchiveService(
       archive: widget.auditArchive ?? MemoryAuditArchive(),
     );
@@ -111,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _guidance = guidance;
       _trustReport = trustReport;
       _recoveryPacket = recoveryPacket;
+      _revocationReceipt = null;
       _auditReceipt = auditReceipt;
       _auditClearReceipt = null;
       _complaint = complaint;
@@ -130,6 +135,21 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (error) {
       setState(() => _auditError = error.toString());
     }
+  }
+
+  Future<void> _revokeLocalCredential() async {
+    final result = _result;
+    final trustReport = _trustReport;
+    if (result == null || trustReport == null) {
+      return;
+    }
+    final receipt = await _revocationService.revokeLocalCredential(
+      result: result,
+      scenario: _scenario,
+      trustReport: trustReport,
+      reason: 'citizen_requested_local_revocation',
+    );
+    setState(() => _revocationReceipt = receipt);
   }
 
   @override
@@ -210,6 +230,11 @@ class _HomeScreenState extends State<HomeScreen> {
               _GuidancePanel(guidance: _guidance!),
               const SizedBox(height: 12),
               _TrustFabricPanel(report: _trustReport!),
+              const SizedBox(height: 12),
+              _RevocationPanel(
+                receipt: _revocationReceipt,
+                onRevoke: _revokeLocalCredential,
+              ),
               const SizedBox(height: 12),
               if (_recoveryPacket != null) ...[
                 _RecoveryPacketPanel(packet: _recoveryPacket!),
@@ -467,6 +492,69 @@ class _RouteBadge extends StatelessWidget {
           visualDensity: VisualDensity.compact,
         ),
       ],
+    );
+  }
+}
+
+class _RevocationPanel extends StatelessWidget {
+  const _RevocationPanel({required this.receipt, required this.onRevoke});
+
+  final LocalRevocationReceipt? receipt;
+  final VoidCallback onRevoke;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Revocacion local',
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.block_outlined),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (receipt == null) ...[
+              Text(
+                'La credencial puede revocarse en este dispositivo sin enviar CUI.',
+                style: text.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: onRevoke,
+                icon: const Icon(Icons.block_outlined),
+                label: const Text('Revocar credencial local'),
+              ),
+            ] else ...[
+              Text('ID: ${receipt!.revocationId}', style: text.bodySmall),
+              Text(
+                'Hash: ${receipt!.receiptHash.substring(0, 16)}',
+                style: text.bodySmall,
+              ),
+              Text(
+                'Firma: ${receipt!.signature.substring(0, 16)} (${receipt!.keyStore})',
+                style: text.bodySmall,
+              ),
+              const Divider(height: 24),
+              for (final trace in receipt!.trace)
+                Text(trace, style: text.bodySmall),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }

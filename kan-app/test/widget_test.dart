@@ -38,6 +38,14 @@ void main() {
     );
     expect(find.text('Registro ZPK local'), findsOneWidget);
     await tester.scrollUntilVisible(
+      find.text('Revocar credencial local'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Revocar credencial local'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('revocation.sign'), findsOneWidget);
+    await tester.scrollUntilVisible(
       find.text('Paquete redactado firmado'),
       500,
       scrollable: find.byType(Scrollable).first,
@@ -54,7 +62,16 @@ void main() {
       find.textContaining('audit_archive.raw_cui -> omitted'),
       findsOneWidget,
     );
-    await tester.tap(find.text('Borrar archivo local'));
+    await tester.scrollUntilVisible(
+      find.text('Borrar archivo local'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.drag(find.byType(ListView), const Offset(0, -180));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.widgetWithText(OutlinedButton, 'Borrar archivo local'),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Archivo local borrado'), findsOneWidget);
     expect(
