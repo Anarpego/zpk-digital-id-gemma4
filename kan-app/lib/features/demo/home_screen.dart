@@ -403,6 +403,10 @@ class _AuthenticationProofPanel extends StatelessWidget {
                 'Expira: ${proof!.expiresInMinutes} min',
                 style: text.bodySmall,
               ),
+              Text(
+                'Valida hasta: ${proof!.expiresAt.toLocal()}',
+                style: text.bodySmall,
+              ),
               const Divider(height: 24),
               for (final trace in proof!.trace)
                 Text(trace, style: text.bodySmall),

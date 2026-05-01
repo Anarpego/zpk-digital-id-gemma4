@@ -8,7 +8,7 @@ This repository is optimized for a public hackathon submission and reproducible 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, signed local authentication proof, signed redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, and 15-minute consent proof.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, expiring signed local authentication proof, signed redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, and 15-minute consent proof.
 - Local privacy controls: raw CUI prompt guard, encrypted app-internal audit archive, citizen archive deletion, `FLAG_SECURE`, disabled Android backup, and cleartext traffic disabled.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
@@ -76,7 +76,7 @@ This mode uses Android ML Kit Prompt API. It needs a supported AICore device for
 
 ## Offline Agentic Flow
 
-The default APK runs without a backend. The local agent performs CUI format validation, embedded catalog lookup, identity-risk classification, privacy routing, DID-style credential issuance, signed authentication proof generation, signed recovery packet generation, signed revocation that blocks later auth proofs, encrypted local audit storage, and Spanish recovery guidance. Gemma 4 is used only through redacted hosted prompts unless a supported on-device AICore runtime is available.
+The default APK runs without a backend. The local agent performs CUI format validation, embedded catalog lookup, identity-risk classification, privacy routing, DID-style credential issuance, expiring signed authentication proof generation, signed recovery packet generation, signed revocation that blocks later auth proofs, encrypted local audit storage, and Spanish recovery guidance. Gemma 4 is used only through redacted hosted prompts unless a supported on-device AICore runtime is available.
 
 ## Verified Evidence
 
@@ -93,7 +93,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 33 tests
+- `flutter test` passes 34 tests
 - `flutter build apk --debug`
 
 ## Evidence Package
@@ -115,7 +115,7 @@ Current verified package:
 
 Final copy/paste and upload files live in `submission/`:
 
-- `submission/final-kaggle-writeup.md`: Kaggle writeup, about 860 words.
+- `submission/final-kaggle-writeup.md`: Kaggle writeup, about 870 words.
 - `submission/KAGGLE_FORM.md`: final form fields and prize-claim guidance.
 - `submission/YOUTUBE_DESCRIPTION.md`: video upload title, description, and tags.
 - `submission/ARTIFACT_MANIFEST.md`: upload checklist and checksums.

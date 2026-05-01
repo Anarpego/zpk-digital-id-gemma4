@@ -71,6 +71,7 @@ done
 
 for trace in \
   'auth.verify(local) -> ok' \
+  'auth.valid_until(local) ->' \
   'auth.blocked(revocation) -> credential_revoked' \
   'audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed' \
   'privacy_guard.raw_cui -> absent' \
@@ -123,6 +124,9 @@ done
 unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
   | grep -Fq 'auth.verify(local) -> ok' \
   || fail "ZIP local authentication evidence missing verification trace"
+unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
+  | grep -Fq 'auth.valid_until(local) ->' \
+  || fail "ZIP local authentication evidence missing expiry trace"
 unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
   | grep -Fq 'auth.blocked(revocation) -> credential_revoked' \
   || fail "ZIP local authentication evidence missing revocation block trace"

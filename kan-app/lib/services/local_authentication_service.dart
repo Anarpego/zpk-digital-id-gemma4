@@ -12,6 +12,8 @@ class LocalAuthenticationProof {
     required this.challenge,
     required this.pseudonymousId,
     required this.requestedClaims,
+    required this.issuedAt,
+    required this.expiresAt,
     required this.expiresInMinutes,
     required this.payloadHash,
     required this.signature,
@@ -24,6 +26,8 @@ class LocalAuthenticationProof {
   final String challenge;
   final String pseudonymousId;
   final List<String> requestedClaims;
+  final DateTime issuedAt;
+  final DateTime expiresAt;
   final int expiresInMinutes;
   final String payloadHash;
   final String signature;
@@ -35,9 +39,11 @@ class LocalAuthenticationProof {
 class LocalAuthenticationService {
   const LocalAuthenticationService({
     this.identityFabric = const DigitalIdentityFabric(),
+    this.fixedNow,
   });
 
   final DigitalIdentityFabric identityFabric;
+  final DateTime? fixedNow;
 
   Future<LocalAuthenticationProof> buildProof({
     required VerificationResult result,
@@ -52,10 +58,13 @@ class LocalAuthenticationService {
       );
     }
 
+    final issuedAt = _now();
+    final expiresAt = issuedAt.add(const Duration(minutes: 5));
     final challenge = _challengeFor(
       relyingParty: relyingParty,
       result: result,
       scenario: scenario,
+      issuedAt: issuedAt,
     );
     final requestedClaims = [
       'citizen=${trustReport.credential.pseudonymousId}',
@@ -70,6 +79,8 @@ class LocalAuthenticationService {
       'citizenPseudonym': trustReport.credential.pseudonymousId,
       'did': trustReport.didDocument['id']!,
       'requestedClaims': requestedClaims,
+      'issuedAt': issuedAt.toIso8601String(),
+      'expiresAt': expiresAt.toIso8601String(),
       'expiresInMinutes': 5,
     };
     final canonicalPayload = _canonicalJson(sharePacket);
@@ -98,6 +109,8 @@ class LocalAuthenticationService {
       challenge: challenge,
       pseudonymousId: trustReport.credential.pseudonymousId,
       requestedClaims: requestedClaims,
+      issuedAt: issuedAt,
+      expiresAt: expiresAt,
       expiresInMinutes: 5,
       payloadHash: payloadHash,
       signature: signature.proofValue,
@@ -109,6 +122,7 @@ class LocalAuthenticationService {
         'auth.raw_cui -> omitted',
         'auth.sign(${signature.keyStore}) -> ${signature.proofValue.substring(0, 16)}',
         'auth.verify(local) -> ${verification ? 'ok' : 'failed'}',
+        'auth.valid_until(local) -> ${expiresAt.toIso8601String()}',
         'auth.expires(local) -> 5m',
       ],
     );
@@ -123,6 +137,12 @@ class LocalAuthenticationService {
 
     final unsignedPacket = Map<String, Object>.from(sharePacket)
       ..remove('proof');
+    final expiresAt = DateTime.tryParse(
+      unsignedPacket['expiresAt']?.toString() ?? '',
+    );
+    if (expiresAt == null || _now().isAfter(expiresAt)) {
+      return false;
+    }
     final expected = await identityFabric.signCanonicalPayload(
       _canonicalJson(unsignedPacket),
     );
@@ -133,15 +153,19 @@ class LocalAuthenticationService {
     required String relyingParty,
     required VerificationResult result,
     required CaseScenario scenario,
+    required DateTime issuedAt,
   }) {
     final seed = _canonicalJson({
       'checkedAt': result.checkedAt.toUtc().toIso8601String(),
+      'issuedAt': issuedAt.toIso8601String(),
       'matches': result.matches.length,
       'relyingParty': relyingParty,
       'scenario': scenario.shortCode,
     });
     return 'zpk-auth-${sha256.convert(utf8.encode(seed)).toString().substring(0, 24)}';
   }
+
+  DateTime _now() => (fixedNow ?? DateTime.now()).toUtc();
 
   String _canonicalJson(Object? value) {
     if (value is Map) {
