@@ -55,7 +55,7 @@ Do not claim Unsloth prize readiness until there is:
 - Before/after benchmark.
 - Reproducible training environment evidence.
 
-Current status is seed data plus scaffold only.
+Current status is seed data, scaffold, verified CUDA/Unsloth imports, and a failed one-step Gemma 4 E2B attempt. The attempt downloaded the model, loaded weights, and tokenized the dataset, then failed with CUDA OOM on the 6 GB RTX 4050 before step 1.
 
 ### On-Device Gemma 4
 
