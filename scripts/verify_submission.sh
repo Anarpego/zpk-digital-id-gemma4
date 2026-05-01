@@ -26,6 +26,14 @@ sha_only() {
   shasum -a 256 "$1" | awk '{print $1}'
 }
 
+video_duration_seconds() {
+  afinfo "$1" | awk '/estimated duration:/ {print int($3 + 0)}'
+}
+
+image_dimension() {
+  sips -g "$2" "$1" 2>/dev/null | awk -v key="$2" '$1 == key ":" {print $2}'
+}
+
 need_file "$ZIP"
 need_file "$ZIP_SHA"
 need_file "$APK"
@@ -40,6 +48,14 @@ shasum -a 256 -c "$ZIP_SHA" >/dev/null || fail "ZIP checksum mismatch"
 
 writeup_words="$(wc -w < "$WRITEUP" | tr -d ' ')"
 [[ "$writeup_words" -le 1500 ]] || fail "writeup is over 1500 words: $writeup_words"
+
+video_seconds="$(video_duration_seconds "$VIDEO")"
+[[ -n "$video_seconds" ]] || fail "could not read video duration"
+[[ "$video_seconds" -lt 180 ]] || fail "video is 180 seconds or longer: ${video_seconds}s"
+
+cover_width="$(image_dimension "$COVER" pixelWidth)"
+cover_height="$(image_dimension "$COVER" pixelHeight)"
+[[ "$cover_width" == "1600" && "$cover_height" == "900" ]] || fail "cover dimensions must be 1600x900, got ${cover_width:-?}x${cover_height:-?}"
 
 zip_listing="$(mktemp)"
 trap 'rm -f "$zip_listing"' EXIT
@@ -77,4 +93,6 @@ echo "ZIP SHA-256: $(sha_only "$ZIP")"
 echo "APK SHA-256: $EXPECTED_APK_SHA"
 echo "Video SHA-256: $EXPECTED_VIDEO_SHA"
 echo "Cover SHA-256: $EXPECTED_COVER_SHA"
+echo "Video seconds: $video_seconds"
+echo "Cover dimensions: ${cover_width}x${cover_height}"
 echo "Writeup words: $writeup_words"

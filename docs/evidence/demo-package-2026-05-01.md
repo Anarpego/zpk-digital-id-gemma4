@@ -28,6 +28,8 @@ Verification:
 - `./scripts/verify_submission.sh` passes against the generated artifacts.
 - The archive includes `.env.example` but does not include `.env`.
 - The APK is the default local-mode debug build; it does not embed `KAN_GEMINI_API_KEY`.
+- The video duration is under 180 seconds.
+- The media cover PNG is 1600x900.
 
 Use:
 

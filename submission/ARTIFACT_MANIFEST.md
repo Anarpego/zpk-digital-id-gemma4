@@ -46,3 +46,5 @@ Expected:
 - Git working tree is clean.
 - `.env`, generated ZIPs, APKs, and `.venv` are ignored.
 - The archive contains `.env.example` but not `.env`.
+- The video is under 180 seconds.
+- The media cover is 1600x900.
