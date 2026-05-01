@@ -49,7 +49,7 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 ## 4. Hashes To Confirm Uploads
 
 - ZIP: see `submission/dist/kan-demo-package-final.zip.sha256`
-- APK: `7b164de2b62af2130f21dcae29d3ba85c7dcb71446242d81bf8755494c164f3b`
+- APK: see `submission/live-demo/kan-debug.apk.sha256`
 - Video: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
 - Cover PNG: `15ba1a8f5037973ce6b0c76defdfd05bee438d2f8ddf15393cc75070e4a6f2b6`
 

@@ -33,6 +33,13 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Registro ZPK local'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Paquete redactado firmado'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Paquete redactado firmado'), findsOneWidget);
+    expect(find.textContaining('recovery_packet.sign'), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());
   });
 

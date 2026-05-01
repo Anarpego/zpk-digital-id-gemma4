@@ -7,6 +7,7 @@ import '../../services/kan_reasoner.dart';
 import '../../services/legal_template_service.dart';
 import '../../services/local_breach_catalog.dart';
 import '../../services/mock_reasoner.dart';
+import '../../services/recovery_packet_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -29,12 +30,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final _templates = const LegalTemplateService();
   final _agent = const IdentityProtectionAgent();
   late final DigitalIdentityFabric _trustFabric;
+  late final RecoveryPacketService _packetService;
   late final Future<LocalBreachCatalog> _catalog;
 
   CaseScenario _scenario = CaseScenario.discoveredVictim;
   VerificationResult? _result;
   ReasonedGuidance? _guidance;
   IdentityTrustReport? _trustReport;
+  RecoveryPacket? _recoveryPacket;
   String? _complaint;
   bool _isVerifying = false;
 
@@ -42,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _trustFabric = widget.identityFabric ?? const DigitalIdentityFabric();
+    _packetService = RecoveryPacketService(identityFabric: _trustFabric);
     _catalog = LocalBreachCatalog.loadEmbeddedOrFallback();
   }
 
@@ -68,11 +72,20 @@ class _HomeScreenState extends State<HomeScreen> {
     final complaint = result.isValidCui
         ? _templates.buildComplaint(result: result, scenario: _scenario)
         : null;
+    final recoveryPacket = complaint == null
+        ? null
+        : await _packetService.build(
+            result: result,
+            scenario: _scenario,
+            trustReport: trustReport,
+            privateLocalComplaint: complaint,
+          );
 
     setState(() {
       _result = result;
       _guidance = guidance;
       _trustReport = trustReport;
+      _recoveryPacket = recoveryPacket;
       _complaint = complaint;
       _isVerifying = false;
     });
@@ -157,6 +170,10 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               _TrustFabricPanel(report: _trustReport!),
               const SizedBox(height: 12),
+              if (_recoveryPacket != null) ...[
+                _RecoveryPacketPanel(packet: _recoveryPacket!),
+                const SizedBox(height: 12),
+              ],
               if (_complaint != null) _TemplatePreview(text: _complaint!),
             ],
           ],
@@ -396,6 +413,74 @@ class _RouteBadge extends StatelessWidget {
           visualDensity: VisualDensity.compact,
         ),
       ],
+    );
+  }
+}
+
+class _RecoveryPacketPanel extends StatelessWidget {
+  const _RecoveryPacketPanel({required this.packet});
+
+  final RecoveryPacket packet;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+    final claims =
+        packet.redactedSharePacket['selectiveDisclosureClaims'] as List<Object>;
+    final institutionFacts =
+        packet.redactedSharePacket['institutionFacts'] as List<Object>;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Paquete redactado firmado',
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.ios_share_outlined),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Hash: ${packet.redactedPacketHash.substring(0, 16)}',
+              style: text.bodySmall,
+            ),
+            Text(
+              'Firma: ${packet.signature.substring(0, 16)} (${packet.keyStore})',
+              style: text.bodySmall,
+            ),
+            const SizedBox(height: 8),
+            Text('Datos compartibles', style: text.labelLarge),
+            const SizedBox(height: 4),
+            Text(
+              'Pseudonimo: ${packet.redactedSharePacket['citizenPseudonym']}',
+              style: text.bodySmall,
+            ),
+            Text(
+              'Coincidencias: ${packet.redactedSharePacket['localMatches']}',
+              style: text.bodySmall,
+            ),
+            Text('Claims: ${claims.join(', ')}', style: text.bodySmall),
+            Text(
+              'Fuentes redactadas: ${institutionFacts.length}',
+              style: text.bodySmall,
+            ),
+            const Divider(height: 24),
+            for (final trace in packet.trace)
+              Text(trace, style: text.bodySmall),
+          ],
+        ),
+      ),
     );
   }
 }

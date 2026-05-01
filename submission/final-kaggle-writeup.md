@@ -4,7 +4,7 @@
 
 ZPK Digital ID addresses a national-scale problem: people need digital identity and safe authentication, but vulnerable countries cannot assume every registry, aid program, employer portal, or public service will protect personal data perfectly. In Guatemala, a leaked DPI/CUI can expose a citizen to fraud, fake aid programs, SIM abuse, and bureaucratic confusion. ZPK turns that risk into a local wallet workflow: register, protect, and recover.
 
-The demo uses only synthetic data. A citizen enters a test CUI, the app registers a pseudonymous ZPK identity on device, checks an embedded risk catalog, explains the result in Spanish, and prepares a complaint/recovery packet without sending the raw CUI to a server.
+The demo uses only synthetic data. A citizen enters a test CUI, the app registers a pseudonymous ZPK identity on device, checks an embedded risk catalog, explains the result in Spanish, and prepares a private local complaint plus a signed redacted recovery packet without sending the raw CUI to a server.
 
 ## How ZPK Uses Gemma 4
 
@@ -34,7 +34,7 @@ The important change is that Gemma is no longer just a response generator. ZPK b
 - `agent_ledger.hash_chain(sha256) -> ...`
 - `agent_ledger.sign(android-keystore) -> ...`
 
-This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential, signed agent execution ledger, selective disclosure claims, short-lived consent proof, revocation/recovery status, and a redacted institutional packet. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
+This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential, signed agent execution ledger, signed redacted recovery packet, selective disclosure claims, short-lived consent proof, revocation/recovery status, and a redacted institutional packet. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
 
 ## Local-First Architecture
 
@@ -54,4 +54,4 @@ ZPK targets Digital Equity & Inclusivity because it turns identity safety into a
 
 ## Reproducibility
 
-The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 21 tests, and `flutter build apk --debug`.
+The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 22 tests, and `flutter build apk --debug`.

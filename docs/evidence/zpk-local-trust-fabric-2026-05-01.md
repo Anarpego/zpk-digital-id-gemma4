@@ -10,6 +10,7 @@ This app now demonstrates ZPK Digital ID as a local-first identity wallet, not o
 - DID-style document: `did:zpk:gt:zpk-gt-...`
 - Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential: `ZpkIdentityRecoveryCredential`
 - Signed SHA-256 agent execution ledger: local tool calls, credential issue, consent, and reasoner route
+- Signed redacted recovery packet: private complaint remains local, institutional packet excludes raw CUI
 - Selective disclosure claims: risk, match count, scenario, pseudonymous citizen ID
 - Short-lived signed consent proof: 15 minutes
 - Redacted institutional packet: no raw CUI
