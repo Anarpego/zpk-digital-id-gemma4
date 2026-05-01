@@ -2,7 +2,7 @@
 
 Date: 2026-05-01
 
-Purpose: verify real Gemma 4 access for the Kan hackathon submission without deploying infrastructure.
+Purpose: verify real Gemma 4 access for the ZPK Digital ID hackathon submission without deploying infrastructure.
 
 ## Verified Endpoint
 

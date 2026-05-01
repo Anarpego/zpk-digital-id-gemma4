@@ -38,7 +38,7 @@ flutter run -d emulator-5554 \
 ```
 
 Telemetry is disabled in `ReasonerFactory` before building any reasoner.
-If the model is unavailable or initialization exceeds the timeout, Kan falls back to the deterministic local reasoner and records the failure type in the tool trace.
+If the model is unavailable or initialization exceeds the timeout, ZPK falls back to the deterministic local reasoner and records the failure type in the tool trace.
 
 Hosted Gemma 4 mode is also compile-time selected. Use it only for local demos; do not commit API keys or publish an APK with an embedded key.
 
@@ -68,12 +68,12 @@ Use synthetic CUI values:
 
 ## Recording Path
 
-1. Start on the home screen showing `Modo local`.
+1. Start on the home screen showing `Wallet local`.
 2. Enter `1234567890101`.
-3. Tap `Verificar y generar guia`.
+3. Tap `Registrar ZPK y generar guia`.
 4. Pause on `Coincidencia encontrada`.
 5. Scroll to `Guia de accion`.
-6. Pause on `Trazas de herramientas`, especially `load_breach_catalog(asset:assets/breach_catalog.json) -> ok`.
+6. Pause on `Registro ZPK local`, especially `trust_fabric.did_document(local)`, `trust_fabric.vc_selective_disclosure(local)`, and `trust_fabric.issue_consent(local, 15m)`.
 7. Scroll to `Denuncia lista`.
 
 ## Evidence To Capture Before Final Submission

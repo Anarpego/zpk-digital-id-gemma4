@@ -2,7 +2,7 @@
 
 Date: 2026-05-01
 
-Kan now loads synthetic breach fixtures from `kan-app/assets/breach_catalog.json` instead of relying only on hard-coded Dart maps. The file is bundled through `pubspec.yaml`, loaded by `LocalBreachCatalog.loadEmbeddedOrFallback()`, and cached for the app session.
+ZPK Digital ID loads synthetic CUI risk fixtures from `kan-app/assets/breach_catalog.json` instead of relying only on hard-coded Dart maps. The file is bundled through `pubspec.yaml`, loaded by `LocalBreachCatalog.loadEmbeddedOrFallback()`, and cached for the app session.
 
 Privacy claim:
 

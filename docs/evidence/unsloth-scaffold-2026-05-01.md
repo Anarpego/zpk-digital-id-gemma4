@@ -2,7 +2,7 @@
 
 Date: 2026-05-01
 
-Purpose: prepare, but not yet claim, an Unsloth fine-tuning path for Kan.
+Purpose: prepare, but not yet claim, an Unsloth fine-tuning path for ZPK Digital ID.
 
 ## Local Artifacts
 

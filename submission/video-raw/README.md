@@ -12,7 +12,7 @@ adb pull /sdcard/kan-demo-flow.mp4 submission/video-raw/kan-demo-flow.mp4
 Purpose:
 
 - Raw footage for the final 3-minute Kaggle video.
-- Shows the default local-mode Kan flow: open app, verify synthetic CUI, view match, scroll through guidance, tool traces, and complaint draft.
+- Superseded by `zpk-demo-flow.mp4`; retained only as older raw evidence.
 
 Verification:
 

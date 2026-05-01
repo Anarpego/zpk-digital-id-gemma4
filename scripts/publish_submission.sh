@@ -48,7 +48,7 @@ if ! gh release view "$tag" >/dev/null 2>&1; then
     "$ZIP_SHA" \
     "$VIDEO" \
     "$COVER" \
-    --title "Kan Gemma 4 Good submission package" \
+    --title "ZPK Digital ID Gemma 4 Good submission package" \
     --notes-file submission/GITHUB_RELEASE_NOTES.md
 else
   gh release upload "$tag" "$ZIP" "$ZIP_SHA" "$VIDEO" "$COVER" --clobber

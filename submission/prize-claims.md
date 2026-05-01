@@ -8,15 +8,16 @@ Use only claims backed by current evidence unless more work is completed.
 
 ### Main Track
 
-Claim Kan as a working social-impact prototype with:
+Claim ZPK Digital ID as a working social-impact prototype with:
 
 - Android app.
-- Offline synthetic CUI verification for the sensitive-data path.
-- Spanish guidance and complaint draft.
+- Offline ZPK identity registration and synthetic CUI risk verification.
+- DID-style document, verifiable-credential-style recovery credential, selective disclosure claims, and 15-minute consent proof.
+- Spanish guidance, redacted institutional packet, and complaint draft.
 - Hosted Gemma 4 app mode verified with `gemma-4-31b-it`.
 - ML Kit/AICore Android mode integrated and verified to fail closed on the Mac emulator.
 - Visible privacy/routing/tool traces.
-- A complete breach-response workflow: detect, explain, act.
+- A complete identity safety workflow: register, protect, recover.
 
 ### Digital Equity & Inclusivity
 
@@ -26,9 +27,9 @@ Evidence:
 
 - Spanish-first workflow.
 - Low-friction Android demo.
-- Local-first breach response for citizens who may not understand legal or cybersecurity language.
-- Complaint document generation instead of generic chatbot advice.
-- Significant use case: helping a citizen move from suspected DPI/CUI exposure to a concrete next action.
+- Local-first identity protection for citizens who may not understand legal, cybersecurity, or credential systems.
+- Complaint/recovery packet generation instead of generic chatbot advice.
+- Significant use case: helping a citizen register safely, limit disclosure, and recover after suspected DPI/CUI exposure.
 
 ### Cactus Prize
 
@@ -67,6 +68,10 @@ Do not claim successful on-device Gemma 4 generation. The Android ML Kit/AICore 
 ### Offline Gemma 4
 
 Do not claim offline Gemma 4. The offline result is the sensitive-data workflow: embedded synthetic catalog lookup, routing trace, Spanish guidance, and local complaint draft. Gemma 4 is verified separately through hosted `gemma-4-31b-it`; the ML Kit/AICore path still needs a supported device for successful local generation.
+
+### Production Government Or Crypto Claims
+
+Do not claim production government integration, production-grade cryptography, or standards compliance. Say "DID-style" and "verifiable-credential-style" local demo artifacts unless a real standards conformance suite is added.
 
 ### Production Legal Correctness
 

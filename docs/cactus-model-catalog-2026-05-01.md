@@ -22,4 +22,4 @@ Source checked:
 
 Use `functiongemma-270m-pro` as the default Cactus benchmark slug because it is current for Cactus 1.3.0, small enough for emulator/device testing, and supports tool calling.
 
-Do not claim this as Gemma 4 evidence. The catalog check did not show a Gemma 4 slug. For the Gemma 4 Good submission, Kan still needs separate verified Gemma 4 use, likely through Google AI Studio first, or through a local runtime only after a real Gemma 4-compatible mobile model is available and benchmarked.
+Do not claim this as Gemma 4 evidence. The catalog check did not show a Gemma 4 slug. For the Gemma 4 Good submission, ZPK still uses separate verified Gemma 4 evidence through the hosted `gemma-4-31b-it` path, or through a local runtime only after a real Gemma 4-compatible mobile model is available and benchmarked.

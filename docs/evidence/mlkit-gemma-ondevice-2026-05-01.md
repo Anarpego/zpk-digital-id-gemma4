@@ -36,7 +36,7 @@ Results:
 
 - `dart format --set-exit-if-changed lib test`: pass.
 - `flutter analyze`: pass, no issues found.
-- `flutter test`: pass, 17 tests.
+- `flutter test`: pass, 19 tests.
 - `flutter build apk --debug ...`: pass, generated `build/app/outputs/flutter-apk/app-debug.apk`.
 
 ## Emulator Runtime Result
@@ -66,6 +66,6 @@ c552728f2b24c0bfb7fc587bcd4031f7b7449f5cefdee3911b28171669485123
 
 ## Submission Guidance
 
-Claim: Kan now has a compiled Android ML Kit/AICore on-device reasoner path with graceful fallback and visible trace evidence.
+Claim: ZPK Digital ID now has a compiled Android ML Kit/AICore on-device reasoner path with graceful fallback and visible trace evidence.
 
 Do not claim: verified offline Gemma 4 generation. The available emulator reported `UNAVAILABLE`; a supported AICore device or developer-preview device is still required for a successful `mlkit_gemma.generateContent(...) -> ok` trace.

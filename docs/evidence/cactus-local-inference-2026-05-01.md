@@ -31,6 +31,6 @@ Important limitation:
 
 Submission guidance:
 
-- Claim: Kan can route to Cactus local inference on Android and records local model metrics.
+- Claim: ZPK Digital ID can route to Cactus local inference on Android and records local model metrics.
 - Do not claim: Cactus tool-calling is working in the app.
 - Do not claim: This is Gemma 4 evidence. The verified Cactus catalog entry is FunctionGemma/Gemma 3 family, while Gemma 4 evidence is separately through the hosted `gemma-4-31b-it` path.
