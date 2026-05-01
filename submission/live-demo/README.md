@@ -1,0 +1,30 @@
+# Kan Demo Package
+
+This package is intended for Kaggle live-demo/download evidence. It contains a debug Android APK built in default local mode, selected screenshots, and documentation links.
+
+## Install
+
+Use an Android emulator or connected Android device:
+
+```bash
+adb install -r kan-debug.apk
+adb shell monkey -p gt.kan.kan_app 1
+```
+
+Use synthetic CUI `1234567890101` for the main flow.
+
+## What This Demo Shows
+
+- Offline embedded catalog lookup.
+- Local Spanish guidance.
+- Preliminary complaint document generation.
+- Visible tool traces.
+
+## What This Demo Does Not Include
+
+- Real personal data or real breach data.
+- Embedded API keys.
+- Production legal advice.
+- Hosted Gemma 4 API mode.
+
+Hosted Gemma 4 and Cactus evidence are documented separately in `docs/evidence/`.

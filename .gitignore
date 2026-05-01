@@ -1,0 +1,30 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Flutter / Dart
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/build/
+**/.packages
+
+# Python / uv
+**/.venv/
+**/__pycache__/
+**/*.pyc
+
+# Native IDE files
+**/.idea/
+**/*.iml
+**/android/local.properties
+
+# Generated demo bundles
+submission/dist/
+submission/live-demo/*.apk
+submission/live-demo/*.sha256
+
+# OS files
+.DS_Store
+Thumbs.db

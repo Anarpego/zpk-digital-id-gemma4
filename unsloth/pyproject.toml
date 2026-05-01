@@ -1,0 +1,17 @@
+[project]
+name = "kan-unsloth"
+version = "0.1.0"
+description = "Kan Gemma 4 legal-Spanish fine-tuning scaffold."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+train = [
+  "accelerate",
+  "bitsandbytes",
+  "datasets",
+  "peft",
+  "transformers",
+  "trl",
+  "unsloth",
+]

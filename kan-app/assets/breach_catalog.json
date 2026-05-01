@@ -1,0 +1,30 @@
+{
+  "catalogVersion": "synthetic-guatemala-2026-05-01",
+  "purpose": "Offline synthetic breach catalog for the Kan hackathon demo. No real personal data is included.",
+  "recordsByCui": {
+    "1234567890101": [
+      {
+        "slug": "mintrab-tu-empleo-2026-04",
+        "name": "Portal Tu Empleo Mintrab",
+        "exposedFields": ["CUI", "nombre", "telefono", "correo"],
+        "reportedOn": "2026-04-12"
+      }
+    ],
+    "2890123450101": [
+      {
+        "slug": "digecam-registro-2026-04",
+        "name": "Registro publico Digecam",
+        "exposedFields": ["CUI", "direccion", "telefono"],
+        "reportedOn": "2026-04-23"
+      }
+    ],
+    "3012345670101": [
+      {
+        "slug": "banco-social-fake-ngo-2026-04",
+        "name": "Caso sintetico de ONG falsa",
+        "exposedFields": ["CUI", "foto DPI", "telefono"],
+        "reportedOn": "2026-04-29"
+      }
+    ]
+  }
+}
