@@ -35,6 +35,40 @@ Commands run from `kan-app`:
 The archive test verifies that the stored canonical record does not contain the
 raw synthetic CUI and does not contain the private complaint text.
 
+## Android Runtime Evidence
+
+Runtime run on Mac-hosted Android emulator `Medium_Phone_API_36.1`:
+
+```bash
+adb install -r kan-app/build/app/outputs/flutter-apk/app-debug.apk
+adb shell am start -n gt.kan.kan_app/.MainActivity
+adb shell input tap 540 1050
+adb shell run-as gt.kan.kan_app ls -l files/zpk-audit-archive
+adb shell run-as gt.kan.kan_app cat files/zpk-audit-archive/38854b33ba2fb9c9dde114cd377ee483dcc9b679fb0e9d74c4b943bb293eac43.json
+```
+
+Observed app-private file:
+
+```text
+38854b33ba2fb9c9dde114cd377ee483dcc9b679fb0e9d74c4b943bb293eac43.json
+```
+
+Exported redacted runtime record:
+
+- `docs/evidence/local-audit-archive-runtime-2026-05-01.json`
+
+SHA-256:
+
+```text
+38854b33ba2fb9c9dde114cd377ee483dcc9b679fb0e9d74c4b943bb293eac43  docs/evidence/local-audit-archive-runtime-2026-05-01.json
+```
+
+Negative check:
+
+```bash
+rg -q "1234567890101" docs/evidence/local-audit-archive-runtime-2026-05-01.json; test $? -eq 1
+```
+
 ## Non-Claims
 
 This is app-internal storage, not cross-device backup, HSM custody, or a
