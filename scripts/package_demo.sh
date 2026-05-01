@@ -42,7 +42,9 @@ zip -r "$ZIP" \
   submission/prize-claims.md \
   submission/publish-runbook.md \
   submission/final-video-captions.srt \
+  submission/final-video-narration.txt \
   submission/final-video-script.md \
+  submission/kan-final-demo-video.mp4 \
   submission/video-raw \
   submission/video-script-draft.md \
   unsloth \

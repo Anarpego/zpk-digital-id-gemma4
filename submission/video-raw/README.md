@@ -22,3 +22,16 @@ Verification:
 Limitation:
 
 - This is raw silent screen footage, not the final public YouTube video.
+
+## `kan-final-narration.aiff`
+
+Generated on 2026-05-01 with macOS text-to-speech from `submission/final-video-narration.txt`:
+
+```bash
+say -v Daniel -r 85 -o submission/video-raw/kan-final-narration.aiff -f submission/final-video-narration.txt
+```
+
+Purpose:
+
+- Narration source for `submission/kan-final-demo-video.mp4`.
+- Uses only claims already documented in the final writeup and evidence files.

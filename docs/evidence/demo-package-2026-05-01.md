@@ -4,9 +4,9 @@ Date: 2026-05-01
 
 Generated package:
 
-- `submission/dist/kan-demo-package-20260501T163056Z.zip`
-- Size: about 85 MB.
-- Contents: default local-mode debug APK, selected evidence screenshots, README, license, checklist, evidence docs, submission drafts, and Unsloth seed data.
+- `submission/dist/kan-demo-package-20260501T165942Z.zip`
+- Size: about 93 MB.
+- Contents: default local-mode debug APK, narrated final demo video, selected evidence screenshots, README, license, checklist, evidence docs, submission drafts, and Unsloth seed data.
 
 APK:
 
@@ -22,7 +22,7 @@ Command used:
 Verification:
 
 - `flutter build apk --debug` completed inside the script.
-- `unzip -l submission/dist/kan-demo-package-20260501T163056Z.zip` includes `.env.example`, `submission/live-demo/index.html`, `submission/final-kaggle-writeup.md`, `submission/prize-claims.md`, `submission/publish-runbook.md`, `submission/final-video-script.md`, `submission/final-video-captions.srt`, `submission/media-gallery-cover.svg`, `submission/video-raw/kan-demo-flow.mp4`, `docs/evidence/unsloth-scaffold-2026-05-01.md`, `unsloth/train_lora.py`, `unsloth/uv.lock`, and `unsloth/outputs/dry_run_report.md`.
+- `unzip -l submission/dist/kan-demo-package-20260501T165942Z.zip` includes `.env.example`, `submission/live-demo/index.html`, `submission/kan-final-demo-video.mp4`, `submission/final-kaggle-writeup.md`, `submission/prize-claims.md`, `submission/publish-runbook.md`, `submission/final-video-script.md`, `submission/final-video-narration.txt`, `submission/final-video-captions.srt`, `submission/media-gallery-cover.svg`, `submission/video-raw/kan-demo-flow.mp4`, `docs/evidence/unsloth-scaffold-2026-05-01.md`, `unsloth/train_lora.py`, `unsloth/uv.lock`, and `unsloth/outputs/dry_run_report.md`.
 - The archive includes `.env.example` but does not include `.env`.
 - The APK is the default local-mode debug build; it does not embed `KAN_GEMINI_API_KEY`.
 

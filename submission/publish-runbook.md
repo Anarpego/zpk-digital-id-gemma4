@@ -49,7 +49,7 @@ git push -u origin main
 Upload the latest local package:
 
 ```text
-submission/dist/kan-demo-package-20260501T163056Z.zip
+submission/dist/kan-demo-package-20260501T165942Z.zip
 ```
 
 Use a no-login public location. Kaggle writeup can link to either:
@@ -59,3 +59,13 @@ Use a no-login public location. Kaggle writeup can link to either:
 - Public Google Drive file with direct no-login access.
 
 Do not upload `.env`.
+
+## Video Upload
+
+Upload the rendered video:
+
+```text
+submission/kan-final-demo-video.mp4
+```
+
+It is under 3 minutes and uses the narration in `submission/final-video-narration.txt`.
