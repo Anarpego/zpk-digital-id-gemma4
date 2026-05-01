@@ -1,0 +1,32 @@
+{
+  "title": "Kan Gemma 4 Good Demo Package",
+  "subtitle": "Android-first breach response demo, video, evidence, and submission files",
+  "description": "Kan is a local-first Android assistant for Guatemalan citizens responding to personal-data leaks. This dataset contains the demo ZIP, final narrated video, writeup, evidence, and reproducibility files for the Gemma 4 Good Hackathon submission. It uses synthetic data only and includes no API keys.",
+  "id": "KAGGLE_USERNAME/kan-gemma4-good-demo",
+  "licenses": [
+    {
+      "name": "CC-BY-4.0"
+    }
+  ],
+  "keywords": [
+    "gemma",
+    "android",
+    "digital-equity",
+    "privacy",
+    "guatemala"
+  ],
+  "resources": [
+    {
+      "path": "kan-demo-package-20260501T173449Z.zip",
+      "description": "Downloadable demo package with APK, static demo page, final video, evidence, screenshots, and Unsloth scaffold."
+    },
+    {
+      "path": "kan-final-demo-video.mp4",
+      "description": "Narrated demo video under 3 minutes."
+    },
+    {
+      "path": "ARTIFACT_MANIFEST.md",
+      "description": "Checksums and upload checklist."
+    }
+  ]
+}

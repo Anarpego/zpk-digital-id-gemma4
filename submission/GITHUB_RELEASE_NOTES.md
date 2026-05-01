@@ -4,14 +4,14 @@ This release contains the public judging artifacts for Kan, a local-first Androi
 
 ## Assets
 
-- `kan-demo-package-20260501T172959Z.zip`: APK, static demo page, final video, writeup, evidence, screenshots, and Unsloth scaffold.
+- `kan-demo-package-20260501T173449Z.zip`: APK, static demo page, final video, writeup, evidence, screenshots, and Unsloth scaffold.
 - `kan-final-demo-video.mp4`: narrated demo video under 3 minutes.
 
 ## Verify
 
 ```bash
 ./scripts/verify_submission.sh
-shasum -a 256 submission/dist/kan-demo-package-20260501T172959Z.zip submission/kan-final-demo-video.mp4 submission/live-demo/kan-debug.apk
+shasum -a 256 submission/dist/kan-demo-package-20260501T173449Z.zip submission/kan-final-demo-video.mp4 submission/live-demo/kan-debug.apk
 ```
 
 Expected checksums:

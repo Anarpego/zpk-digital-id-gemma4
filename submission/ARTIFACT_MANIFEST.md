@@ -10,16 +10,18 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 |---|---|---|---|
 | Android APK | `submission/live-demo/kan-debug.apk` | Installable local-mode demo APK | `0e1010be2a9a850a2e694140156c32e7feb333254a0f061474100c5e20fdb8bb` |
 | Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34` |
-| Demo package | `submission/dist/kan-demo-package-20260501T172959Z.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | Generate with `shasum -a 256 submission/dist/kan-demo-package-20260501T172959Z.zip` |
+| Demo package | `submission/dist/kan-demo-package-20260501T173449Z.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | Generate with `shasum -a 256 submission/dist/kan-demo-package-20260501T173449Z.zip` |
 
 ## Kaggle Form Inputs
 
 - Repository URL: fill in after public GitHub push.
-- Live demo URL: fill in after uploading `submission/dist/kan-demo-package-20260501T172959Z.zip`.
+- Live demo URL: fill in after uploading `submission/dist/kan-demo-package-20260501T173449Z.zip`.
 - Video URL: fill in after uploading `submission/kan-final-demo-video.mp4`.
 - Kaggle form copy: `submission/KAGGLE_FORM.md`.
 - YouTube upload copy: `submission/YOUTUBE_DESCRIPTION.md`.
 - GitHub release notes: `submission/GITHUB_RELEASE_NOTES.md`.
+- Kaggle Dataset metadata template: `submission/kaggle-dataset-metadata.template.json`.
+- Kaggle Dataset README: `submission/KAGGLE_DATASET_README.md`.
 - Impact Track: Digital Equity & Inclusivity.
 - Special prizes: claim Cactus cautiously; do not claim Unsloth unless a larger-GPU adapter and before/after benchmark are added.
 
@@ -29,9 +31,10 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 git status --short
 git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv"
 shasum -a 256 submission/live-demo/kan-debug.apk submission/kan-final-demo-video.mp4
-unzip -l submission/dist/kan-demo-package-20260501T172959Z.zip | rg "\\.env|kan-final-demo-video|training_attempt|kan-debug.apk"
+unzip -l submission/dist/kan-demo-package-20260501T173449Z.zip | rg "\\.env|kan-final-demo-video|training_attempt|kan-debug.apk"
 ./scripts/verify_submission.sh
 ./scripts/publish_submission.sh --check
+KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 ```
 
 Expected:

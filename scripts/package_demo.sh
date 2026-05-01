@@ -42,7 +42,9 @@ zip -r "$ZIP" \
   submission/KAGGLE_FORM.md \
   submission/YOUTUBE_DESCRIPTION.md \
   submission/GITHUB_RELEASE_NOTES.md \
+  submission/KAGGLE_DATASET_README.md \
   submission/final-kaggle-writeup.md \
+  submission/kaggle-dataset-metadata.template.json \
   submission/kaggle-writeup-draft.md \
   submission/media-gallery-cover.svg \
   submission/prize-claims.md \

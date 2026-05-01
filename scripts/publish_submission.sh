@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 REPO_NAME="${REPO_NAME:-kan-gemma4-good}"
-ZIP="$ROOT/submission/dist/kan-demo-package-20260501T172959Z.zip"
+ZIP="$ROOT/submission/dist/kan-demo-package-20260501T173449Z.zip"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
 
 cd "$ROOT"

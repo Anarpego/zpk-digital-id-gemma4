@@ -48,7 +48,7 @@ git push -u origin main
 Upload the latest local package:
 
 ```text
-submission/dist/kan-demo-package-20260501T172959Z.zip
+submission/dist/kan-demo-package-20260501T173449Z.zip
 ```
 
 Use a no-login public location. Kaggle writeup can link to either:
@@ -58,6 +58,20 @@ Use a no-login public location. Kaggle writeup can link to either:
 - Public Google Drive file with direct no-login access.
 
 Do not upload `.env`.
+
+## Kaggle Dataset Upload Option
+
+Prepare a dataset upload folder without publishing:
+
+```bash
+KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
+```
+
+After installing and authenticating the Kaggle CLI:
+
+```bash
+kaggle datasets create -p submission/kaggle-dataset-upload --dir-mode zip
+```
 
 ## Video Upload
 

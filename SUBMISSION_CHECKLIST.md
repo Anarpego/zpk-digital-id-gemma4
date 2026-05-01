@@ -40,7 +40,9 @@
   - `submission/ARTIFACT_MANIFEST.md`
   - `submission/GITHUB_RELEASE_NOTES.md`
   - `submission/KAGGLE_FORM.md`
+  - `submission/KAGGLE_DATASET_README.md`
   - `submission/YOUTUBE_DESCRIPTION.md`
+  - `submission/kaggle-dataset-metadata.template.json`
   - `submission/kaggle-writeup-draft.md` (699 words, under 1,500)
   - `submission/final-kaggle-writeup.md` (635 words, under 1,500)
   - `submission/video-script-draft.md`
@@ -65,10 +67,11 @@
   - `.env.example`
   - `LICENSE`
   - `scripts/package_demo.sh`
+  - `scripts/prepare_kaggle_dataset.sh`
   - `scripts/publish_submission.sh`
   - `scripts/verify_submission.sh`
 - Local downloadable demo package exists:
-  - `submission/dist/kan-demo-package-20260501T172959Z.zip`
+  - `submission/dist/kan-demo-package-20260501T173449Z.zip`
   - `submission/live-demo/kan-debug.apk`
   - `submission/live-demo/kan-debug.apk.sha256`
   - `submission/live-demo/index.html`
@@ -103,7 +106,7 @@
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
-- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T172959Z.zip`.
+- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T173449Z.zip`.
 - `./scripts/verify_submission.sh`: pass; verified APK/video checksums, ZIP contents, no `.env`, and writeup length.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 - Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
