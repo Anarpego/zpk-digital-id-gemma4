@@ -4,7 +4,7 @@ Date: 2026-05-01
 
 Generated package:
 
-- `submission/dist/kan-demo-package-20260501T155615Z.zip`
+- `submission/dist/kan-demo-package-20260501T160524Z.zip`
 - Size: about 78 MB.
 - Contents: default local-mode debug APK, selected evidence screenshots, README, license, checklist, evidence docs, submission drafts, and Unsloth seed data.
 
@@ -22,7 +22,7 @@ Command used:
 Verification:
 
 - `flutter build apk --debug` completed inside the script.
-- `unzip -l submission/dist/kan-demo-package-20260501T155615Z.zip` includes `.env.example`, `submission/media-gallery-cover.svg`, `unsloth/train_lora.py`, `unsloth/uv.lock`, and `unsloth/outputs/dry_run_report.md`.
+- `unzip -l submission/dist/kan-demo-package-20260501T160524Z.zip` includes `.env.example`, `submission/final-kaggle-writeup.md`, `submission/prize-claims.md`, `submission/publish-runbook.md`, `submission/media-gallery-cover.svg`, `unsloth/train_lora.py`, `unsloth/uv.lock`, and `unsloth/outputs/dry_run_report.md`.
 - The archive includes `.env.example` but does not include `.env`.
 - The APK is the default local-mode debug build; it does not embed `KAN_GEMINI_API_KEY`.
 

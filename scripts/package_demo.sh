@@ -36,8 +36,11 @@ zip -r "$ZIP" \
   docs \
   submission/live-demo \
   submission/demo-runbook.md \
+  submission/final-kaggle-writeup.md \
   submission/kaggle-writeup-draft.md \
   submission/media-gallery-cover.svg \
+  submission/prize-claims.md \
+  submission/publish-runbook.md \
   submission/video-script-draft.md \
   unsloth \
   -x '*.DS_Store' 'unsloth/.venv/*' '*/__pycache__/*' '*.pyc'

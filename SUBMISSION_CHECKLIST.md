@@ -38,9 +38,12 @@
   - Trace shows `reasoner_mode(gemma-api:gemma-4-31b-it) -> ok` and token accounting.
 - Draft submission artifacts exist:
   - `submission/kaggle-writeup-draft.md` (699 words, under 1,500)
+  - `submission/final-kaggle-writeup.md` (635 words, under 1,500)
   - `submission/video-script-draft.md`
   - `submission/demo-runbook.md`
   - `submission/media-gallery-cover.svg`
+  - `submission/prize-claims.md`
+  - `submission/publish-runbook.md`
 - Root public-repo README exists:
   - `README.md`
 - Repo safety and package files exist:
@@ -49,7 +52,7 @@
   - `LICENSE`
   - `scripts/package_demo.sh`
 - Local downloadable demo package exists:
-  - `submission/dist/kan-demo-package-20260501T155615Z.zip`
+  - `submission/dist/kan-demo-package-20260501T160524Z.zip`
   - `submission/live-demo/kan-debug.apk`
   - `submission/live-demo/kan-debug.apk.sha256`
 - Unsloth seed artifacts exist but are not trained:
@@ -73,16 +76,16 @@
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
-- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T155615Z.zip`.
+- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T160524Z.zip`.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 
 ## Competition Deliverables Still Missing
 
 - Public code repository. A local Git repository now exists with publish-ready hygiene files, but it has not been pushed to a public remote.
-- Final Kaggle writeup under 1,500 words with measured Gemma/Cactus evidence.
+- Final Kaggle writeup upload. `submission/final-kaggle-writeup.md` exists under 1,500 words with measured Gemma/Cactus evidence, but it has not been pasted/submitted to Kaggle.
 - Public video, maximum 3 minutes, recorded and attached to the media gallery.
 - Final media gallery cover upload. A draft SVG cover now exists locally but has not been uploaded.
-- Final selected competition track and prize claims.
+- Final selected competition track and prize claims. `submission/prize-claims.md` exists; selected Impact Track is Digital Equity & Inclusivity, but claims have not been entered in Kaggle.
 - Stronger Cactus prize evidence. Local inference now works with `functiongemma-270m` and tools disabled, but Cactus tool-calling still fails with code `-1`, and this is not Gemma 4 evidence.
 - Decision on whether Cactus local-routing evidence is enough for a technical prize if Gemma 4 is served through Google AI Studio instead.
 - Unsloth adapter and before-after benchmark, if targeting the Unsloth prize. A uv-based training scaffold, seed dataset, eval cases, and dry-run report now exist, but no training run has happened.
