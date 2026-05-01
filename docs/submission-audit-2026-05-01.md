@@ -14,11 +14,11 @@ Objective: make Kan competitive for the Gemma 4 Good Hackathon without spending 
 | Gemma 4 usage | `GemmaApiReasoner`, app-mode screenshot with `gemma-4-31b-it`, API smoke docs | Verified for hosted API |
 | Cactus integration | `cactus ^1.3.0`, `CactusReasoner`, local inference screenshot with `functiongemma-270m`, fallback/tool-failure screenshots, model catalog doc | Partial: local inference works with tools disabled |
 | Cactus prize readiness | Successful no-tools Cactus inference exists; tool-calling fails with code `-1`; quality is not demo-ready | Partial |
-| Unsloth prize readiness | Seed dataset, eval cases, uv training scaffold, and dry-run report exist under `unsloth/`; no adapter or before/after benchmark | Partial |
+| Unsloth prize readiness | Seed dataset, eval cases, uv training scaffold, local dry-run, and Linux GPU dry-run evidence exist; no adapter or before/after benchmark | Partial |
 | Kaggle writeup under 1,500 words | `submission/final-kaggle-writeup.md`, 635 words, measured claims only | Ready locally |
 | Public video under 3 minutes | `submission/video-script-draft.md` only | Missing |
 | Public code repo | Local Git repository exists; `.env`, APKs, build outputs, and `.venv` are ignored; no public remote yet | Partial |
-| Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T160524Z.zip` exists with APK, checksum, screenshots, cover SVG, Unsloth scaffold, final writeup, and docs; not public yet | Partial |
+| Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T161059Z.zip` exists with APK, checksum, screenshots, cover SVG, Unsloth scaffold/evidence, final writeup, and docs; not public yet | Partial |
 | Media gallery cover image | Draft SVG exists at `submission/media-gallery-cover.svg`; not uploaded | Partial |
 
 ## Current Local Gates

@@ -52,7 +52,7 @@
   - `LICENSE`
   - `scripts/package_demo.sh`
 - Local downloadable demo package exists:
-  - `submission/dist/kan-demo-package-20260501T160524Z.zip`
+  - `submission/dist/kan-demo-package-20260501T161059Z.zip`
   - `submission/live-demo/kan-debug.apk`
   - `submission/live-demo/kan-debug.apk.sha256`
 - Unsloth seed artifacts exist but are not trained:
@@ -62,6 +62,8 @@
   - `unsloth/train_lora.py`
   - `unsloth/pyproject.toml`
   - `unsloth/outputs/dry_run_report.md`
+- Unsloth scaffold evidence exists:
+  - `docs/evidence/unsloth-scaffold-2026-05-01.md`
 
 ## Local Gates
 
@@ -76,8 +78,9 @@
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
-- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T160524Z.zip`.
+- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T161059Z.zip`.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
+- Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
 
 ## Competition Deliverables Still Missing
 
