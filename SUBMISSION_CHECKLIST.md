@@ -57,7 +57,7 @@
   - `LICENSE`
   - `scripts/package_demo.sh`
 - Local downloadable demo package exists:
-  - `submission/dist/kan-demo-package-20260501T162034Z.zip`
+  - `submission/dist/kan-demo-package-20260501T163056Z.zip`
   - `submission/live-demo/kan-debug.apk`
   - `submission/live-demo/kan-debug.apk.sha256`
   - `submission/live-demo/index.html`
@@ -70,6 +70,12 @@
   - `unsloth/outputs/dry_run_report.md`
 - Unsloth scaffold evidence exists:
   - `docs/evidence/unsloth-scaffold-2026-05-01.md`
+- Remote Unsloth training stack smoke passed in `/tmp/kan-unsloth-venv` on the Linux GPU box:
+  - `unsloth-2026.4.8`
+  - `torch-2.10.0+cu128`
+  - `transformers-5.5.0`
+  - CUDA detected `NVIDIA GeForce RTX 4050 Laptop GPU`
+  - Unsloth import passed, with Xformers fallback because Flash Attention 2 was broken.
 
 ## Local Gates
 
@@ -84,9 +90,10 @@
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
-- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T162034Z.zip`.
+- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T163056Z.zip`.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 - Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
+- Remote Linux GPU Unsloth dependency install and import smoke in `/tmp/kan-unsloth-venv`: pass; CUDA available.
 
 ## Competition Deliverables Still Missing
 
@@ -97,7 +104,7 @@
 - Final selected competition track and prize claims. `submission/prize-claims.md` exists; selected Impact Track is Digital Equity & Inclusivity, but claims have not been entered in Kaggle.
 - Stronger Cactus prize evidence. Local inference now works with `functiongemma-270m` and tools disabled, but Cactus tool-calling still fails with code `-1`, and this is not Gemma 4 evidence.
 - Decision on whether Cactus local-routing evidence is enough for a technical prize if Gemma 4 is served through Google AI Studio instead.
-- Unsloth adapter and before-after benchmark, if targeting the Unsloth prize. A uv-based training scaffold, seed dataset, eval cases, and dry-run report now exist, but no training run has happened.
+- Unsloth adapter and before-after benchmark, if targeting the Unsloth prize. A uv-based training scaffold, seed dataset, eval cases, dry-run report, and remote CUDA/Unsloth smoke now exist, but no training run has happened.
 - Public live demo URL. A downloadable demo ZIP now exists locally, but it has not been uploaded anywhere public.
 
 ## Next Build Priorities

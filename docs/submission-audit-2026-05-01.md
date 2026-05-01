@@ -14,11 +14,11 @@ Objective: make Kan competitive for the Gemma 4 Good Hackathon without spending 
 | Gemma 4 usage | `GemmaApiReasoner`, app-mode screenshot with `gemma-4-31b-it`, API smoke docs | Verified for hosted API |
 | Cactus integration | `cactus ^1.3.0`, `CactusReasoner`, local inference screenshot with `functiongemma-270m`, fallback/tool-failure screenshots, model catalog doc | Partial: local inference works with tools disabled |
 | Cactus prize readiness | Successful no-tools Cactus inference exists; tool-calling fails with code `-1`; quality is not demo-ready | Partial |
-| Unsloth prize readiness | Seed dataset, eval cases, uv training scaffold, local dry-run, and Linux GPU dry-run evidence exist; no adapter or before/after benchmark | Partial |
+| Unsloth prize readiness | Seed dataset, eval cases, uv training scaffold, local dry-run, Linux GPU dry-run, and remote CUDA/Unsloth import evidence exist; no adapter or before/after benchmark | Partial |
 | Kaggle writeup under 1,500 words | `submission/final-kaggle-writeup.md`, 635 words, measured claims only | Ready locally |
 | Public video under 3 minutes | final script/captions plus raw silent app footage at `submission/video-raw/kan-demo-flow.mp4`; no final rendered public video | Partial |
 | Public code repo | Local Git repository exists; `.env`, APKs, build outputs, and `.venv` are ignored; no public remote yet | Partial |
-| Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T162034Z.zip` exists with APK, checksum, static demo page, screenshots, cover SVG, raw video, Unsloth scaffold/evidence, final writeup, and docs; not public yet | Partial |
+| Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T163056Z.zip` exists with APK, checksum, static demo page, screenshots, cover SVG, raw video, Unsloth scaffold/evidence, final writeup, and docs; not public yet | Partial |
 | Media gallery cover image | Draft SVG exists at `submission/media-gallery-cover.svg`; not uploaded | Partial |
 
 ## Current Local Gates
@@ -32,6 +32,6 @@ Objective: make Kan competitive for the Gemma 4 Good Hackathon without spending 
 
 1. Capture a fresh default-mode emulator screenshot showing `load_breach_catalog(asset:assets/breach_catalog.json) -> ok`.
 2. Improve Cactus output quality or decide to present Cactus as routing/metrics evidence only.
-3. Run Unsloth training on a CUDA machine and produce adapter plus before/after evaluation.
+3. Run a tightly scoped Unsloth QLoRA attempt on the verified CUDA machine and produce adapter plus before/after evaluation if VRAM allows.
 4. Publish the repo and upload the demo ZIP to a public no-login location.
 5. Record the 3-minute video using only verified claims.
