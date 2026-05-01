@@ -22,7 +22,7 @@ Digital Equity & Inclusivity
 
 `TODO_PUBLIC_DEMO_ZIP_OR_DATASET_URL`
 
-Recommended artifact: `submission/dist/kan-demo-package-20260501T173449Z.zip`.
+Recommended artifact: `submission/dist/kan-demo-package-20260501T181515Z.zip`.
 
 ## Video URL
 
@@ -36,13 +36,14 @@ Kan targets a concrete high-stakes use case: a Guatemalan citizen suspects their
 
 ## Technical Summary
 
-Kan is a Flutter Android app with three reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, and hosted Gemma 4 mode verified with `gemma-4-31b-it`. The significant result is the end-to-end citizen workflow: local synthetic CUI lookup, visible privacy routing, Spanish explanation, action checklist, and a complaint draft without sending raw CUI to hosted reasoning by default. Evidence includes Android screenshots, passing Flutter tests, a Gemma 4 API smoke test, Cactus local-inference metrics, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
+Kan is a Flutter Android app with four reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, hosted Gemma 4 mode verified with `gemma-4-31b-it`, and an ML Kit/AICore mode that compiles and fails closed on the Mac emulator when the GenAI feature is unavailable. The significant result is the end-to-end citizen workflow: local synthetic CUI lookup, visible privacy routing, Spanish explanation, action checklist, and a complaint draft without sending raw CUI to hosted reasoning by default. Evidence includes Android screenshots, passing Flutter tests, a Gemma 4 API smoke test, Cactus local-inference metrics, ML Kit/AICore fallback evidence, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
 
 ## Prize Claims
 
 - Main Track: working social-impact prototype with Android app, local sensitive-data verification, Spanish guidance, document draft, hosted Gemma 4 evidence, and visible privacy traces.
 - Impact Track: Digital Equity & Inclusivity.
 - Cactus special prize: claim cautiously as partial local-inference/routing evidence only.
+- On-device Gemma 4: do not claim successful generation unless a supported AICore device produces a local `generateContent` trace.
 - Unsloth special prize: do not claim unless a larger GPU produces an adapter and before/after benchmark.
 
 ## Public Upload Checklist

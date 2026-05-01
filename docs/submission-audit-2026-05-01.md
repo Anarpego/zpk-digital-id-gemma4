@@ -19,7 +19,7 @@ Objective: make Kan competitive for the Gemma 4 Good Hackathon, prioritize winni
 | Public writeup under 1,500 words | `submission/final-kaggle-writeup.md`, `wc -w` = 635 | Ready locally |
 | Public video under 3 minutes | `submission/kan-final-demo-video.mp4`, `docs/evidence/final-video-2026-05-01.md` | Ready locally, not uploaded |
 | Public code repository | Git repo with clean status, `.gitignore`, `README.md`, `AGENTS.md`, `LICENSE` | Blocked: no remote and `gh` is not logged in |
-| Public demo files | `submission/dist/kan-demo-package-20260501T173449Z.zip`, static live-demo page, APK, checksums | Ready locally, not uploaded |
+| Public demo files | `submission/dist/kan-demo-package-20260501T181515Z.zip`, static live-demo page, APK, checksums | Ready locally, not uploaded |
 | Media gallery assets | `submission/media-gallery-cover.svg`, final video, screenshots | Ready locally, not uploaded |
 | No secret leakage | `.env` ignored; verifier checks ZIP has `.env.example` and not `.env` | Verified locally |
 | Python best practice | Unsloth uses `uv`/venv paths; no system Python needed for project checks | Verified locally |
@@ -48,7 +48,7 @@ Latest observed results:
 
 - Run `gh auth login`.
 - Create and push a public repository.
-- Upload `submission/dist/kan-demo-package-20260501T173449Z.zip` to a public no-login URL.
+- Upload `submission/dist/kan-demo-package-20260501T181515Z.zip` to a public no-login URL.
 - Upload `submission/kan-final-demo-video.mp4` to a public video URL.
 - Submit the Kaggle form using `submission/KAGGLE_FORM.md`, `submission/final-kaggle-writeup.md`, and `submission/YOUTUBE_DESCRIPTION.md`.
 - Use `submission/prize-claims.md`: claim Main Track and Digital Equity; claim Cactus only cautiously; do not claim Unsloth unless a larger GPU produces an adapter and before/after benchmark.

@@ -4,6 +4,7 @@ import '../config/app_config.dart';
 import 'cactus_reasoner.dart';
 import 'gemma_api_reasoner.dart';
 import 'kan_reasoner.dart';
+import 'mlkit_gemma_reasoner.dart';
 import 'mock_reasoner.dart';
 
 class ReasonerFactory {
@@ -30,6 +31,12 @@ class ReasonerFactory {
         ),
         fallback: const MockReasoner(),
         primaryLabel: 'gemma-api:${config.geminiModel}',
+      ),
+      ReasonerMode.mlKitGemma => FallbackReasoner(
+        primary: const MlKitGemmaReasoner(),
+        fallback: const MockReasoner(),
+        primaryLabel: 'mlkit-gemma:aicore',
+        timeout: Duration(seconds: config.mlKitTimeoutSeconds),
       ),
     };
   }

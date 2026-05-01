@@ -15,6 +15,7 @@ void main() {
     expect(config.cactusEnableTools, isTrue);
     expect(config.geminiApiKey, isEmpty);
     expect(config.geminiModel, 'gemma-4-31b-it');
+    expect(config.mlKitTimeoutSeconds, 120);
     expect(config.label, 'Mock local');
   });
 
@@ -31,6 +32,7 @@ void main() {
           cactusEnableTools: true,
           geminiApiKey: '',
           geminiModel: 'gemma-4-31b-it',
+          mlKitTimeoutSeconds: 120,
         ),
       );
 
@@ -48,6 +50,7 @@ void main() {
         cactusEnableTools: true,
         geminiApiKey: '',
         geminiModel: 'gemma-4-31b-it',
+        mlKitTimeoutSeconds: 120,
       ),
     );
 
@@ -63,6 +66,23 @@ void main() {
         cactusEnableTools: true,
         geminiApiKey: 'test-key',
         geminiModel: 'gemma-4-31b-it',
+        mlKitTimeoutSeconds: 120,
+      ),
+    );
+
+    expect(reasoner, isA<FallbackReasoner>());
+  });
+
+  test('factory wraps ML Kit Gemma mode with fallback reasoner', () {
+    final reasoner = const ReasonerFactory().build(
+      const AppConfig(
+        reasonerMode: ReasonerMode.mlKitGemma,
+        cactusModel: 'functiongemma-270m-pro',
+        cactusTimeoutSeconds: 45,
+        cactusEnableTools: true,
+        geminiApiKey: '',
+        geminiModel: 'gemma-4-31b-it',
+        mlKitTimeoutSeconds: 120,
       ),
     );
 

@@ -8,13 +8,16 @@ Kan focuses on one story: a citizen discovers that their DPI/CUI may have been e
 
 ## How Kan Uses Gemma 4
 
-Kan combines local-first privacy with verified Gemma 4 reasoning. The current app has three reasoner modes:
+Kan combines local-first privacy with verified Gemma 4 reasoning. The current app has four reasoner modes:
 
 1. Deterministic local mode for reliable offline demos and tests.
 2. Cactus local mode for on-device model routing and local inference metrics.
 3. Hosted Gemma 4 mode through the Gemini API using `gemma-4-31b-it`.
+4. ML Kit/AICore mode for the official Android on-device Prompt API path.
 
 The hosted Gemma 4 path is verified in the Android app. The trace screenshot shows `reasoner_mode(gemma-api:gemma-4-31b-it) -> ok`, `gemma_api.generateContent(gemma-4-31b-it) -> ok`, and token accounting. The separate API smoke test returned model version `gemma-4-31b-it`.
+
+The ML Kit/AICore path now compiles and runs on the Mac Android emulator, but the emulator reports the GenAI feature as `UNAVAILABLE`. Kan records that failure and falls back locally, so I do not claim verified offline Gemma 4 generation without a supported AICore device.
 
 Kan does not send raw CUI to hosted reasoning by default. The mobile routing policy records whether a task uses local tools, a local model, or an abstract no-PII server route. This makes privacy visible instead of burying it in a policy page.
 
@@ -49,4 +52,4 @@ The strongest current claim is not that Kan is production legal infrastructure. 
 
 ## Reproducibility
 
-The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 16 tests, and `flutter build apk --debug`.
+The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 17 tests, and `flutter build apk --debug`.

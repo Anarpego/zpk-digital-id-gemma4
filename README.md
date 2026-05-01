@@ -61,18 +61,30 @@ flutter run \
 
 Do not publish APKs with embedded API keys.
 
+ML Kit/AICore on-device mode, verified to build and to fail closed on the Mac emulator:
+
+```bash
+cd kan-app
+flutter run \
+  --dart-define=KAN_REASONER=mlkit-gemma \
+  --dart-define=KAN_MLKIT_TIMEOUT_SECONDS=120
+```
+
+This mode uses Android ML Kit Prompt API. It needs a supported AICore device for actual on-device Gemma/Gemini Nano generation; the available emulator reports `UNAVAILABLE` and the app falls back locally with a visible trace.
+
 ## Verified Evidence
 
 - Offline embedded catalog trace: `kan-app/kan-embedded-catalog-trace.png`
 - Hosted Gemma 4 app trace: `kan-app/kan-gemma-hosted-trace.png`
 - Cactus local inference trace: `kan-app/kan-cactus-270m-notools-trace.png`
 - Cactus tool failure isolation: `kan-app/kan-cactus-270m-trace.png`
+- ML Kit/AICore emulator result: `docs/evidence/mlkit-gemma-ondevice-2026-05-01.md`
 
 Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 16 tests
+- `flutter test` passes 17 tests
 - `flutter build apk --debug`
 
 ## Demo Package
@@ -87,7 +99,7 @@ The script rebuilds the default local-mode APK, copies selected screenshots into
 
 Current verified package:
 
-- `submission/dist/kan-demo-package-20260501T173449Z.zip`
+- `submission/dist/kan-demo-package-20260501T181515Z.zip`
 - Verify with `./scripts/verify_submission.sh`
 
 ## Submission Handoff
@@ -120,6 +132,7 @@ KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 - It is not legal advice and does not guarantee legal correctness.
 - Cactus tool-calling is not working yet; local Cactus inference works only with tools disabled.
 - Gemma 4 evidence is currently hosted through the Gemini API, not Cactus.
+- ML Kit/AICore mode is integrated and builds, but the Mac emulator reports the on-device GenAI feature as unavailable; do not claim verified offline Gemma 4 generation yet.
 - Unsloth artifacts include a scaffold and failed one-step Gemma 4 E2B attempt on a 6 GB RTX 4050; no trained adapter exists yet.
 
 ## Python Policy

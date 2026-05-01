@@ -2,12 +2,12 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ZIP="$ROOT/submission/dist/kan-demo-package-20260501T173449Z.zip"
+ZIP="$ROOT/submission/dist/kan-demo-package-20260501T181515Z.zip"
 APK="$ROOT/submission/live-demo/kan-debug.apk"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
 WRITEUP="$ROOT/submission/final-kaggle-writeup.md"
 
-EXPECTED_APK_SHA="0e1010be2a9a850a2e694140156c32e7feb333254a0f061474100c5e20fdb8bb"
+EXPECTED_APK_SHA="97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138"
 EXPECTED_VIDEO_SHA="42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34"
 
 fail() {

@@ -14,6 +14,7 @@ Claim Kan as a working social-impact prototype with:
 - Offline synthetic CUI verification for the sensitive-data path.
 - Spanish guidance and complaint draft.
 - Hosted Gemma 4 app mode verified with `gemma-4-31b-it`.
+- ML Kit/AICore Android mode integrated and verified to fail closed on the Mac emulator.
 - Visible privacy/routing/tool traces.
 - A complete breach-response workflow: detect, explain, act.
 
@@ -61,11 +62,11 @@ Current status is seed data, scaffold, verified CUDA/Unsloth imports, and a fail
 
 ### On-Device Gemma 4
 
-Do not claim on-device Gemma 4. Current Gemma 4 evidence is hosted through the Gemini API with `gemma-4-31b-it`.
+Do not claim successful on-device Gemma 4 generation. The Android ML Kit/AICore path now compiles and runs, but the available `Medium_Phone_API_36.1` emulator returns `UNAVAILABLE`. Claim only the integration/fallback evidence unless a supported AICore device produces a successful local generation trace.
 
 ### Offline Gemma 4
 
-Do not claim offline Gemma 4. The offline result is the sensitive-data workflow: embedded synthetic catalog lookup, routing trace, Spanish guidance, and local complaint draft. Gemma 4 is verified separately through hosted `gemma-4-31b-it`.
+Do not claim offline Gemma 4. The offline result is the sensitive-data workflow: embedded synthetic catalog lookup, routing trace, Spanish guidance, and local complaint draft. Gemma 4 is verified separately through hosted `gemma-4-31b-it`; the ML Kit/AICore path still needs a supported device for successful local generation.
 
 ### Production Legal Correctness
 

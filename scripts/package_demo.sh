@@ -33,6 +33,8 @@ zip -r "$ZIP" \
   .env.example \
   AGENTS.md \
   SUBMISSION_CHECKLIST.md \
+  scripts/package_demo.sh \
+  scripts/prepare_kaggle_dataset.sh \
   scripts/publish_submission.sh \
   scripts/verify_submission.sh \
   docs \
