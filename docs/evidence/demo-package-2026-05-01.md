@@ -12,7 +12,7 @@ Generated package:
 APK:
 
 - `submission/live-demo/kan-debug.apk`
-- SHA-256: `c64029395bc6cff366ea3f4e86e99210daed854b65b760dc76076cc773bad109`
+- SHA-256: `691b8fa3e1a73423937d644497d80202d1c1406f5ddfe0bf110c36b533458969`
 
 Command used:
 

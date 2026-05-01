@@ -8,10 +8,12 @@ class MockReasoner implements KanReasoner {
   const MockReasoner({
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
+    this.identityFabric = const DigitalIdentityFabric(),
   });
 
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
+  final DigitalIdentityFabric identityFabric;
 
   @override
   Future<ReasonedGuidance> explain({
@@ -19,7 +21,7 @@ class MockReasoner implements KanReasoner {
     required CaseScenario scenario,
   }) async {
     final assessment = agent.assess(result: result, scenario: scenario);
-    final trustReport = const DigitalIdentityFabric().evaluate(
+    final trustReport = await identityFabric.evaluate(
       result: result,
       scenario: scenario,
       assessment: assessment,

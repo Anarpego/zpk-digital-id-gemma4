@@ -9,7 +9,7 @@ void main() {
   test('prompt includes experience prior and local breach context', () async {
     final catalog = await LocalBreachCatalog.loadEmbedded();
     final result = catalog.verify('1234567890101');
-    final prompt = const ReasonerPromptBuilder().build(
+    final prompt = await const ReasonerPromptBuilder().build(
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );

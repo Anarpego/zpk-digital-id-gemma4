@@ -11,7 +11,7 @@ WRITEUP="$ROOT/submission/final-kaggle-writeup.md"
 DATASET_TEMPLATE="$ROOT/submission/kaggle-dataset-metadata.template.json"
 DATASET_UPLOAD="$ROOT/submission/kaggle-dataset-upload"
 
-EXPECTED_APK_SHA="c64029395bc6cff366ea3f4e86e99210daed854b65b760dc76076cc773bad109"
+EXPECTED_APK_SHA="691b8fa3e1a73423937d644497d80202d1c1406f5ddfe0bf110c36b533458969"
 EXPECTED_VIDEO_SHA="e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6"
 EXPECTED_COVER_SHA="15ba1a8f5037973ce6b0c76defdfd05bee438d2f8ddf15393cc75070e4a6f2b6"
 

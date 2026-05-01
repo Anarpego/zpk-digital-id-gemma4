@@ -8,7 +8,7 @@ This repository is optimized for hackathon evidence, not production deployment. 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, HMAC-SHA256-signed recovery credential, selective disclosure claims, and 15-minute consent proof.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, selective disclosure claims, and 15-minute consent proof.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
 - Unsloth seed data: `unsloth/`
@@ -137,6 +137,7 @@ KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 - Gemma 4 evidence is currently hosted through the Gemini API, not Cactus.
 - ML Kit/AICore mode is integrated and builds, but the Mac emulator reports the on-device GenAI feature as unavailable; do not claim verified offline Gemma 4 generation yet.
 - Unsloth artifacts include a scaffold and failed one-step Gemma 4 E2B attempt on a 6 GB RTX 4050; no trained adapter exists yet.
+- Runtime app signing uses Android Keystore through `DigitalIdentityFabric.device()`; deterministic Dart HMAC signing is used only for tests.
 
 ## Python Policy
 

@@ -13,10 +13,12 @@ class HomeScreen extends StatefulWidget {
     super.key,
     Object? reasoner,
     this.reasonerLabel = 'Mock local',
+    this.identityFabric,
   }) : reasoner = reasoner is KanReasoner ? reasoner : const MockReasoner();
 
   final KanReasoner reasoner;
   final String reasonerLabel;
+  final DigitalIdentityFabric? identityFabric;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _controller = TextEditingController(text: '1234567890101');
   final _templates = const LegalTemplateService();
   final _agent = const IdentityProtectionAgent();
-  final _trustFabric = const DigitalIdentityFabric();
+  late final DigitalIdentityFabric _trustFabric;
   late final Future<LocalBreachCatalog> _catalog;
 
   CaseScenario _scenario = CaseScenario.discoveredVictim;
@@ -39,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _trustFabric = widget.identityFabric ?? const DigitalIdentityFabric();
     _catalog = LocalBreachCatalog.loadEmbeddedOrFallback();
   }
 
@@ -57,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       scenario: _scenario,
     );
     final assessment = _agent.assess(result: result, scenario: _scenario);
-    final trustReport = _trustFabric.evaluate(
+    final trustReport = await _trustFabric.evaluate(
       result: result,
       scenario: _scenario,
       assessment: assessment,

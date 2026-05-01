@@ -1,10 +1,16 @@
 package gt.kan.kan_app
 
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import java.security.KeyStore
+import javax.crypto.KeyGenerator
+import javax.crypto.Mac
+import javax.crypto.SecretKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -28,6 +34,28 @@ class MainActivity : FlutterActivity() {
                         result.error("INVALID_PROMPT", "Prompt must not be empty.", null)
                     } else {
                         generateOnDevice(prompt, result)
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "gt.kan.kan_app/identity_keystore",
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "signHmacSha256" -> {
+                    val keyId = call.argument<String>("keyId")?.trim()
+                    val payload = call.argument<String>("payload") ?: ""
+                    if (keyId.isNullOrEmpty() || payload.isEmpty()) {
+                        result.error(
+                            "INVALID_SIGNING_INPUT",
+                            "keyId and payload are required.",
+                            null,
+                        )
+                    } else {
+                        signIdentityPayload(keyId, payload, result)
                     }
                 }
                 else -> result.notImplemented()
@@ -96,4 +124,53 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
+
+    private fun signIdentityPayload(
+        keyId: String,
+        payload: String,
+        result: MethodChannel.Result,
+    ) {
+        try {
+            val key = getOrCreateHmacKey(keyId)
+            val mac = Mac.getInstance("HmacSHA256")
+            mac.init(key)
+            val proof = mac.doFinal(payload.toByteArray(Charsets.UTF_8)).toHex()
+            result.success(
+                mapOf(
+                    "proofValue" to proof,
+                    "keyStore" to "android-keystore",
+                    "proofSuite" to "HmacSha256Signature2026",
+                ),
+            )
+        } catch (error: Throwable) {
+            result.error(
+                "KEYSTORE_SIGN_ERROR",
+                error.message ?: error.javaClass.simpleName,
+                mapOf("type" to error.javaClass.name),
+            )
+        }
+    }
+
+    private fun getOrCreateHmacKey(keyId: String): SecretKey {
+        val keyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+        keyStore.getKey(keyId, null)?.let { return it as SecretKey }
+
+        val generator = KeyGenerator.getInstance(
+            KeyProperties.KEY_ALGORITHM_HMAC_SHA256,
+            "AndroidKeyStore",
+        )
+        val spec = KeyGenParameterSpec.Builder(
+            keyId,
+            KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY,
+        )
+            .setDigests(KeyProperties.DIGEST_SHA256)
+            .setKeySize(256)
+            .build()
+        generator.init(spec)
+        return generator.generateKey()
+    }
+
+    private fun ByteArray.toHex(): String =
+        joinToString(separator = "") { byte -> "%02x".format(byte) }
 }

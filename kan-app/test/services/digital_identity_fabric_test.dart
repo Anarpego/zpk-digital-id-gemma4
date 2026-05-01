@@ -5,13 +5,13 @@ import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
 
 void main() {
-  test('builds a local-only trust packet without exposing raw CUI', () {
+  test('builds a local-only trust packet without exposing raw CUI', () async {
     final result = LocalBreachCatalog().verify('1234567890101');
     final assessment = const IdentityProtectionAgent().assess(
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final report = const DigitalIdentityFabric().evaluate(
+    final report = await const DigitalIdentityFabric().evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
@@ -25,7 +25,7 @@ void main() {
       contains('HmacSha256Signature2026'),
     );
     expect(
-      const DigitalIdentityFabric().verifyCredential(
+      await const DigitalIdentityFabric().verifyCredential(
         verifiableCredential: report.verifiableCredential,
       ),
       isTrue,
@@ -46,6 +46,12 @@ void main() {
     );
     expect(
       report.trace,
+      contains(
+        'trust_fabric.keystore(dart-test-hmac) -> zpk-local-test-issuer-key-2026-05',
+      ),
+    );
+    expect(
+      report.trace,
       contains('trust_fabric.verify_credential_signature(local) -> ok'),
     );
     expect(
@@ -54,7 +60,7 @@ void main() {
     );
   });
 
-  test('rejects tampered local recovery credentials', () {
+  test('rejects tampered local recovery credentials', () async {
     final result = LocalBreachCatalog(
       now: DateTime.utc(2026, 5, 1),
     ).verify('1234567890101');
@@ -62,7 +68,7 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final report = const DigitalIdentityFabric().evaluate(
+    final report = await const DigitalIdentityFabric().evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
@@ -74,7 +80,7 @@ void main() {
     };
 
     expect(
-      const DigitalIdentityFabric().verifyCredential(
+      await const DigitalIdentityFabric().verifyCredential(
         verifiableCredential: tampered,
       ),
       isFalse,

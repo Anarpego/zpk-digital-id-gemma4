@@ -12,6 +12,7 @@ class MlKitGemmaReasoner implements KanReasoner {
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
+    this.identityFabric = const DigitalIdentityFabric(),
   }) : _channel = channel,
        _promptBuilder = promptBuilder;
 
@@ -19,6 +20,7 @@ class MlKitGemmaReasoner implements KanReasoner {
   final ReasonerPromptBuilder _promptBuilder;
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
+  final DigitalIdentityFabric identityFabric;
 
   @override
   Future<ReasonedGuidance> explain({
@@ -26,13 +28,17 @@ class MlKitGemmaReasoner implements KanReasoner {
     required CaseScenario scenario,
   }) async {
     final assessment = agent.assess(result: result, scenario: scenario);
-    final trustReport = const DigitalIdentityFabric().evaluate(
+    final trustReport = await identityFabric.evaluate(
       result: result,
       scenario: scenario,
       assessment: assessment,
     );
     final routing = assessment.route;
-    final prompt = _promptBuilder.build(result: result, scenario: scenario);
+    final prompt = await _promptBuilder.build(
+      result: result,
+      scenario: scenario,
+      identityFabric: identityFabric,
+    );
 
     final response = await _channel.invokeMapMethod<String, Object?>(
       'generate',

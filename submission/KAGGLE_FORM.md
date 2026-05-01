@@ -8,7 +8,7 @@ ZPK Digital ID: Local-First Identity Protection for Guatemala
 
 ## Subtitle
 
-An Android-first digital identity wallet that registers citizens locally, protects CUI/DPI data with pseudonymous HMAC-signed proofs, and uses Gemma 4 reasoning for recovery guidance.
+An Android-first digital identity wallet that registers citizens locally, protects CUI/DPI data with pseudonymous Android Keystore-signed proofs, and uses Gemma 4 reasoning for recovery guidance.
 
 ## Impact Track
 
@@ -36,7 +36,7 @@ ZPK Digital ID targets a national-scale problem: citizens need digital identity 
 
 ## Technical Summary
 
-ZPK Digital ID is a Flutter Android app with four reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, hosted Gemma 4 mode verified with `gemma-4-31b-it`, and an ML Kit/AICore mode that compiles and fails closed on the Mac emulator when the GenAI feature is unavailable. The significant result is the local identity trust fabric: a DID-style document, HMAC-SHA256-signed recovery credential, selective disclosure claims, 15-minute consent proof, privacy route, Spanish explanation, and complaint packet without sending raw CUI to hosted reasoning by default. Evidence includes passing Flutter tests, Android APK build, Gemma 4 API smoke test, Cactus local-inference metrics, ML Kit/AICore fallback evidence, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
+ZPK Digital ID is a Flutter Android app with four reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, hosted Gemma 4 mode verified with `gemma-4-31b-it`, and an ML Kit/AICore mode that compiles and fails closed on the Mac emulator when the GenAI feature is unavailable. The significant result is the local identity trust fabric: a DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, selective disclosure claims, 15-minute consent proof, privacy route, Spanish explanation, and complaint packet without sending raw CUI to hosted reasoning by default. Evidence includes passing Flutter tests, Android APK build, Android Keystore runtime trace, Gemma 4 API smoke test, Cactus local-inference metrics, ML Kit/AICore fallback evidence, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
 
 ## Prize Claims
 

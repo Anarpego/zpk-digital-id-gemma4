@@ -15,6 +15,7 @@ class CactusReasoner implements KanReasoner {
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
+    this.identityFabric = const DigitalIdentityFabric(),
   }) : _lm = lm ?? CactusLM(enableToolFiltering: enableTools),
        _promptBuilder = promptBuilder;
 
@@ -24,6 +25,7 @@ class CactusReasoner implements KanReasoner {
   final bool enableTools;
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
+  final DigitalIdentityFabric identityFabric;
   final ReasonerPromptBuilder _promptBuilder;
 
   bool _initialized = false;
@@ -59,14 +61,18 @@ class CactusReasoner implements KanReasoner {
     required CaseScenario scenario,
   }) async {
     final assessment = agent.assess(result: result, scenario: scenario);
-    final trustReport = const DigitalIdentityFabric().evaluate(
+    final trustReport = await identityFabric.evaluate(
       result: result,
       scenario: scenario,
       assessment: assessment,
     );
     final routing = assessment.route;
     await _initialize();
-    final prompt = _promptBuilder.build(result: result, scenario: scenario);
+    final prompt = await _promptBuilder.build(
+      result: result,
+      scenario: scenario,
+      identityFabric: identityFabric,
+    );
     final completion = await _lm.generateCompletion(
       messages: [ChatMessage(role: 'user', content: prompt)],
       params: CactusCompletionParams(

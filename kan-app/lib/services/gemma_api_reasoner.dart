@@ -16,6 +16,7 @@ class GemmaApiReasoner implements KanReasoner {
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
+    this.identityFabric = const DigitalIdentityFabric(),
   }) : _client = client ?? http.Client(),
        _promptBuilder = promptBuilder;
 
@@ -25,6 +26,7 @@ class GemmaApiReasoner implements KanReasoner {
   final ReasonerPromptBuilder _promptBuilder;
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
+  final DigitalIdentityFabric identityFabric;
 
   @override
   Future<ReasonedGuidance> explain({
@@ -36,13 +38,17 @@ class GemmaApiReasoner implements KanReasoner {
     }
 
     final assessment = agent.assess(result: result, scenario: scenario);
-    final trustReport = const DigitalIdentityFabric().evaluate(
+    final trustReport = await identityFabric.evaluate(
       result: result,
       scenario: scenario,
       assessment: assessment,
     );
     final routing = assessment.route;
-    final prompt = _promptBuilder.build(result: result, scenario: scenario);
+    final prompt = await _promptBuilder.build(
+      result: result,
+      scenario: scenario,
+      identityFabric: identityFabric,
+    );
     final uri = Uri.https(
       'generativelanguage.googleapis.com',
       '/v1beta/models/$model:generateContent',

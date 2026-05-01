@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:crypto/crypto.dart';
-
 import '../models/kan_case.dart';
 import 'identity_protection_agent.dart';
+import 'identity_signer.dart';
 
 class LocalCredential {
   const LocalCredential({
@@ -57,22 +56,20 @@ class IdentityTrustReport {
 
 class DigitalIdentityFabric {
   const DigitalIdentityFabric({
-    this.issuerKeyId = 'zpk-local-issuer-key-2026-05',
-    this.issuerSecret = _demoIssuerSecret,
-  });
+    IdentitySigner signer = const LocalHmacIdentitySigner(),
+  }) : _signer = signer;
 
-  static const _demoIssuerSecret =
-      'zpk-local-demo-issuer-secret-replace-before-production';
+  const DigitalIdentityFabric.device()
+    : _signer = const DeviceKeystoreIdentitySigner();
 
-  final String issuerKeyId;
-  final String issuerSecret;
+  final IdentitySigner _signer;
 
-  IdentityTrustReport evaluate({
+  Future<IdentityTrustReport> evaluate({
     required VerificationResult result,
     required CaseScenario scenario,
     required IdentityAgentAssessment assessment,
-  }) {
-    final pseudonym = _stablePseudonym(result.cui);
+  }) async {
+    final pseudonym = await _stablePseudonym(result.cui);
     final risk = assessment.riskLevel.label;
     final registryState = result.isValidCui ? 'format_verified' : 'blocked';
     final did = 'did:zpk:gt:$pseudonym';
@@ -95,11 +92,13 @@ class DigitalIdentityFabric {
       'catalog': result.catalogSource,
       'issuedAt': issuedAt,
     };
-    final proofValue = _sign({
+    final proofPayload = _canonicalJson({
       'credentialSubject': credentialSubject,
       'issuer': 'did:zpk:gt:local-trust-fabric',
       'type': ['VerifiableCredential', 'ZpkIdentityRecoveryCredential'],
     });
+    final signature = await _signer.signCanonical(proofPayload);
+    final proofValue = signature.proofValue;
     final verifiableCredential = {
       'type': ['VerifiableCredential', 'ZpkIdentityRecoveryCredential'],
       'issuer': 'did:zpk:gt:local-trust-fabric',
@@ -108,8 +107,10 @@ class DigitalIdentityFabric {
         'type': 'HmacSha256Signature2026',
         'cryptosuite': 'HMAC-SHA-256',
         'created': issuedAt,
-        'verificationMethod': 'did:zpk:gt:local-trust-fabric#$issuerKeyId',
+        'verificationMethod':
+            'did:zpk:gt:local-trust-fabric#${_signer.issuerKeyId}',
         'proofPurpose': 'assertionMethod',
+        'keyStore': signature.keyStore,
         'proofValue': proofValue,
       },
     };
@@ -165,7 +166,8 @@ class DigitalIdentityFabric {
         'trust_fabric.did_document(local) -> $did',
         'trust_fabric.vc_selective_disclosure(local) -> ${result.matches.length}_matches',
         'trust_fabric.sign_credential(hmac-sha256) -> ok',
-        'trust_fabric.verify_credential_signature(local) -> ${verifyCredential(verifiableCredential: verifiableCredential) ? 'ok' : 'failed'}',
+        'trust_fabric.keystore(${signature.keyStore}) -> ${_signer.issuerKeyId}',
+        'trust_fabric.verify_credential_signature(local) -> ${await verifyCredential(verifiableCredential: verifiableCredential) ? 'ok' : 'failed'}',
         'trust_fabric.issue_consent(local, 15m) -> signed',
         'trust_fabric.revocation_recovery(local) -> ${assessment.riskLevel.label}',
         'trust_fabric.institution_packet(redacted) -> ${result.matches.length}_matches',
@@ -173,34 +175,40 @@ class DigitalIdentityFabric {
     );
   }
 
-  bool verifyCredential({required Map<String, Object> verifiableCredential}) {
+  Future<bool> verifyCredential({
+    required Map<String, Object> verifiableCredential,
+  }) async {
     final proof = verifiableCredential['proof'] as Map<String, Object>?;
     final proofValue = proof?['proofValue'] as String?;
     if (proofValue == null || proofValue.isEmpty) {
       return false;
     }
-    return proofValue ==
-        _sign({
-          'credentialSubject': verifiableCredential['credentialSubject'],
-          'issuer': verifiableCredential['issuer'],
-          'type': verifiableCredential['type'],
-        });
+    final expectedSignature = await _signer.signCanonical(
+      _canonicalJson({
+        'credentialSubject': verifiableCredential['credentialSubject'],
+        'issuer': verifiableCredential['issuer'],
+        'type': verifiableCredential['type'],
+      }),
+    );
+    return proofValue == expectedSignature.proofValue;
   }
 
-  String _stablePseudonym(String cui) {
+  Future<String> _stablePseudonym(String cui) async {
     if (cui.length != 13) {
       return 'zpk-gt-invalid';
     }
-    return 'zpk-gt-${_stableToken(cui).substring(0, 16)}';
+    return 'zpk-gt-${(await _stableToken(cui)).substring(0, 16)}';
   }
 
-  String _stableToken(String input) {
-    return _sign({'purpose': 'zpk-local-pseudonym', 'value': input});
-  }
-
-  String _sign(Map<String, Object?> payload) {
-    final hmac = Hmac(sha256, utf8.encode(issuerSecret));
-    return hmac.convert(utf8.encode(_canonicalJson(payload))).toString();
+  Future<String> _stableToken(String input) async {
+    final signature = await _signer.signCanonical(
+      _canonicalJson({
+        'issuer': _signer.issuerKeyId,
+        'purpose': 'zpk-local-pseudonym',
+        'value': input,
+      }),
+    );
+    return signature.proofValue;
   }
 
   String _canonicalJson(Object? value) {

@@ -28,10 +28,11 @@ The important change is that Gemma is no longer just a response generator. ZPK b
 - `trust_fabric.did_document(local) -> did:zpk:gt:...`
 - `trust_fabric.vc_selective_disclosure(local) -> ...`
 - `trust_fabric.sign_credential(hmac-sha256) -> ok`
+- `trust_fabric.keystore(android-keystore) -> zpk-android-keystore-issuer-key-2026-05`
 - `trust_fabric.verify_credential_signature(local) -> ok`
 - `trust_fabric.issue_consent(local, 15m) -> signed`
 
-This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, HMAC-SHA256-signed verifiable-credential-style recovery credential, selective disclosure claims, short-lived consent proof, revocation/recovery status, and a redacted institutional packet. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
+This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential, selective disclosure claims, short-lived consent proof, revocation/recovery status, and a redacted institutional packet. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
 
 ## Local-First Architecture
 

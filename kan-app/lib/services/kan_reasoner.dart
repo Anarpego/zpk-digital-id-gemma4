@@ -71,15 +71,16 @@ class ReasonerPromptBuilder {
     'Generar documentos con datos personales solo en el dispositivo.',
   ];
 
-  String build({
+  Future<String> build({
     required VerificationResult result,
     required CaseScenario scenario,
-  }) {
+    DigitalIdentityFabric identityFabric = const DigitalIdentityFabric(),
+  }) async {
     final assessment = const IdentityProtectionAgent().assess(
       result: result,
       scenario: scenario,
     );
-    final trustReport = const DigitalIdentityFabric().evaluate(
+    final trustReport = await identityFabric.evaluate(
       result: result,
       scenario: scenario,
       assessment: assessment,
