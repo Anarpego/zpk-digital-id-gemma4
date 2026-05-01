@@ -27,7 +27,7 @@ Commands run from `kan-app`:
   test/services/reasoner_prompt_builder_test.dart
   test/services/gemma_api_reasoner_test.dart test/widget_test.dart`: passed.
 - `flutter analyze`: passed with no issues.
-- `flutter test`: 25 tests passed.
+- `flutter test`: 27 tests passed.
 
 ## Non-Claims
 

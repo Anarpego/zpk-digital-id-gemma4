@@ -38,6 +38,16 @@ class MlKitGemmaReasoner implements KanReasoner {
       assessment: assessment,
     );
     final routing = assessment.route;
+    final statusProbe = await _channel.invokeMapMethod<String, Object?>(
+      'status',
+    );
+    final probedStatus = statusProbe?['status'] as String? ?? 'UNKNOWN';
+    final probedModel =
+        statusProbe?['model'] as String? ?? 'mlkit-genai-prompt-aicore';
+    if (probedStatus != 'AVAILABLE') {
+      throw StateError('ML Kit Gemma status is $probedStatus.');
+    }
+
     final prompt = await _promptBuilder.build(
       result: result,
       scenario: scenario,
@@ -79,6 +89,7 @@ class MlKitGemmaReasoner implements KanReasoner {
         ...assessment.toolTrace,
         ...trustReport.trace,
         ...privacyReport.trace,
+        'mlkit_gemma.status_probe($probedModel) -> $probedStatus',
         'gemma_agent.prompt(redacted_facts) -> ok',
         'mlkit_gemma.status -> $status',
         'mlkit_gemma.generateContent($model) -> ok',

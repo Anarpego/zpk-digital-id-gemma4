@@ -38,6 +38,7 @@ class MainActivity : FlutterActivity() {
             "gt.kan.kan_app/mlkit_gemma",
         ).setMethodCallHandler { call, result ->
             when (call.method) {
+                "status" -> checkOnDeviceStatus(result)
                 "generate" -> {
                     val prompt = call.argument<String>("prompt")?.trim()
                     if (prompt.isNullOrEmpty()) {
@@ -76,6 +77,27 @@ class MainActivity : FlutterActivity() {
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         scope.cancel()
         super.cleanUpFlutterEngine(flutterEngine)
+    }
+
+    private fun checkOnDeviceStatus(result: MethodChannel.Result) {
+        scope.launch {
+            try {
+                val generativeModel = Generation.getClient()
+                val status = generativeModel.checkStatus()
+                result.success(
+                    mapOf(
+                        "status" to status.toString(),
+                        "model" to "mlkit-genai-prompt-aicore",
+                    ),
+                )
+            } catch (error: Throwable) {
+                result.error(
+                    "MLKIT_GEMMA_STATUS_ERROR",
+                    error.message ?: error.javaClass.simpleName,
+                    mapOf("type" to error.javaClass.name),
+                )
+            }
+        }
     }
 
     private fun generateOnDevice(prompt: String, result: MethodChannel.Result) {
