@@ -8,6 +8,8 @@ APK="$ROOT/submission/live-demo/kan-debug.apk"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
 COVER="$ROOT/submission/media-gallery-cover.png"
 WRITEUP="$ROOT/submission/final-kaggle-writeup.md"
+KAGGLE_FORM="$ROOT/submission/KAGGLE_FORM.md"
+PRIZE_CLAIMS="$ROOT/submission/prize-claims.md"
 DATASET_TEMPLATE="$ROOT/submission/kaggle-dataset-metadata.template.json"
 DATASET_UPLOAD="$ROOT/submission/kaggle-dataset-upload"
 
@@ -42,6 +44,8 @@ need_file "$APK.sha256"
 need_file "$VIDEO"
 need_file "$COVER"
 need_file "$WRITEUP"
+need_file "$KAGGLE_FORM"
+need_file "$PRIZE_CLAIMS"
 
 shasum -a 256 -c "$ZIP_SHA" >/dev/null || fail "ZIP checksum mismatch"
 shasum -a 256 -c "$APK.sha256" >/dev/null || fail "APK checksum mismatch"
@@ -50,6 +54,28 @@ shasum -a 256 -c "$APK.sha256" >/dev/null || fail "APK checksum mismatch"
 
 writeup_words="$(wc -w < "$WRITEUP" | tr -d ' ')"
 [[ "$writeup_words" -le 1500 ]] || fail "writeup is over 1500 words: $writeup_words"
+
+for public_copy in "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.md"; do
+  if grep -Eiq 'TODO_PUBLIC|placeholder|working social-impact prototype' "$public_copy"; then
+    fail "public copy contains stale placeholder/prototype claim: $public_copy"
+  fi
+done
+
+for claim in \
+  'signed local authentication proof' \
+  'citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore' \
+  'hosted Gemma 4 mode verified with `gemma-4-31b-it`' \
+  'fails closed on the Mac emulator'; do
+  grep -Fq "$claim" "$KAGGLE_FORM" || fail "Kaggle form missing claim: $claim"
+done
+
+for trace in \
+  'auth.verify(local) -> ok' \
+  'audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed' \
+  'privacy_guard.raw_cui -> absent' \
+  'reasoner_mode(mlkit-gemma:aicore) -> fallback'; do
+  grep -Fq "$trace" "$WRITEUP" "$ROOT/docs/evidence"/*.md || fail "missing evidence trace: $trace"
+done
 
 video_seconds="$(video_duration_seconds "$VIDEO")"
 [[ -n "$video_seconds" ]] || fail "could not read video duration"
@@ -84,16 +110,38 @@ for required in \
   'submission/media-gallery-cover.svg' \
   'submission/live-demo/kan-debug.apk' \
   'submission/final-kaggle-writeup.md' \
+  'docs/evidence/local-authentication-proof-2026-05-01.md' \
+  'docs/evidence/local-audit-archive-sealed-runtime-2026-05-01.json' \
+  'docs/evidence/mlkit-gemma-ondevice-2026-05-01.md' \
+  'docs/evidence/gemma4-api-smoke-2026-05-01.md' \
+  'docs/evidence/cactus-local-inference-2026-05-01.md' \
   'unsloth/outputs/training_attempt_2026-05-01.md'; do
   grep -q " $required$" "$zip_listing" || fail "ZIP missing $required"
 done
 
+unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
+  | grep -Fq 'auth.verify(local) -> ok' \
+  || fail "ZIP local authentication evidence missing verification trace"
+unzip -p "$ZIP" docs/evidence/local-audit-archive-sealed-runtime-2026-05-01.json \
+  | grep -Fq '"cipherSuite":"AES-GCM-256"' \
+  || fail "ZIP sealed audit evidence missing AES-GCM envelope"
+if unzip -p "$ZIP" docs/evidence/local-audit-archive-sealed-runtime-2026-05-01.json \
+  | grep -Eq 'citizenPseudonym|zpk-gt-|1234567890101|recoveryPacketSignature'; then
+  fail "ZIP sealed audit evidence leaks readable identity fields"
+fi
+
 jq . "$DATASET_TEMPLATE" >/dev/null || fail "invalid Kaggle Dataset metadata template"
 
 if [[ -d "$DATASET_UPLOAD" ]]; then
+  need_file "$DATASET_UPLOAD/dataset-metadata.json"
   while IFS= read -r resource_path; do
     [[ -f "$DATASET_UPLOAD/$resource_path" ]] || fail "Kaggle Dataset upload missing resource: $resource_path"
   done < <(jq -r '.resources[].path' "$DATASET_UPLOAD/dataset-metadata.json")
+
+  grep -Fq 'signed local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
+    || fail "Kaggle Dataset upload form missing authentication proof claim"
+  grep -Fq 'auth.verify(local) -> ok' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
+    || fail "Kaggle Dataset upload writeup missing authentication trace"
 fi
 
 echo "PASS: submission artifacts verified"

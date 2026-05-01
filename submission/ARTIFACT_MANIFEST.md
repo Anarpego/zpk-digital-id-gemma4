@@ -48,3 +48,7 @@ Expected:
 - The archive contains `.env.example` but not `.env`.
 - The video is under 180 seconds.
 - The media cover is 1600x900.
+- `verify_submission.sh` also checks that the public copy and ZIP include
+  the signed local authentication proof, encrypted audit archive, hosted
+  Gemma 4 evidence, and ML Kit/AICore fail-closed caveat without stale
+  placeholders or unsupported offline-Gemma claims.
