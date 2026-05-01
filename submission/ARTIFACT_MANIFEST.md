@@ -10,12 +10,12 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 |---|---|---|---|
 | Android APK | `submission/live-demo/kan-debug.apk` | Installable local-mode demo APK | `97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138` |
 | Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34` |
-| Demo package | `submission/dist/kan-demo-package-20260501T181515Z.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | Generate with `shasum -a 256 submission/dist/kan-demo-package-20260501T181515Z.zip` |
+| Demo package | `submission/dist/kan-demo-package-final.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | Generate with `shasum -a 256 submission/dist/kan-demo-package-final.zip` |
 
 ## Kaggle Form Inputs
 
 - Repository URL: fill in after public GitHub push.
-- Live demo URL: fill in after uploading `submission/dist/kan-demo-package-20260501T181515Z.zip`.
+- Live demo URL: fill in after uploading `submission/dist/kan-demo-package-final.zip`.
 - Video URL: fill in after uploading `submission/kan-final-demo-video.mp4`.
 - Kaggle form copy: `submission/KAGGLE_FORM.md`.
 - YouTube upload copy: `submission/YOUTUBE_DESCRIPTION.md`.
@@ -31,7 +31,7 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 git status --short
 git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv"
 shasum -a 256 submission/live-demo/kan-debug.apk submission/kan-final-demo-video.mp4
-unzip -l submission/dist/kan-demo-package-20260501T181515Z.zip | rg "\\.env|kan-final-demo-video|training_attempt|kan-debug.apk"
+unzip -l submission/dist/kan-demo-package-final.zip | rg "\\.env|kan-final-demo-video|training_attempt|kan-debug.apk"
 ./scripts/verify_submission.sh
 ./scripts/publish_submission.sh --check
 KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh

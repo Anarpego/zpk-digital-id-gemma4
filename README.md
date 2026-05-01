@@ -99,7 +99,7 @@ The script rebuilds the default local-mode APK, copies selected screenshots into
 
 Current verified package:
 
-- `submission/dist/kan-demo-package-20260501T181515Z.zip`
+- `submission/dist/kan-demo-package-final.zip`
 - Verify with `./scripts/verify_submission.sh`
 
 ## Submission Handoff

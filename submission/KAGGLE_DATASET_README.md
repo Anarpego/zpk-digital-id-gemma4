@@ -4,7 +4,7 @@ This upload folder is for a public Kaggle Dataset that can serve as the no-login
 
 Contents:
 
-- `kan-demo-package-20260501T181515Z.zip`: APK, static demo page, final video, evidence docs, screenshots, final writeup, and Unsloth scaffold.
+- `kan-demo-package-final.zip`: APK, static demo page, final video, evidence docs, screenshots, final writeup, and Unsloth scaffold.
 - `kan-final-demo-video.mp4`: narrated video under 3 minutes.
 - `ARTIFACT_MANIFEST.md`: checksums and submission checklist.
 - `final-kaggle-writeup.md`: writeup text under 1,500 words.

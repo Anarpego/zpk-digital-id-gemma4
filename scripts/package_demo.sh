@@ -5,8 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP="$ROOT/kan-app"
 LIVE="$ROOT/submission/live-demo"
 DIST="$ROOT/submission/dist"
-STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-ZIP="$DIST/kan-demo-package-$STAMP.zip"
+ZIP="$DIST/kan-demo-package-final.zip"
 
 mkdir -p "$LIVE" "$DIST"
 

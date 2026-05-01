@@ -48,7 +48,7 @@ git push -u origin main
 Upload the latest local package:
 
 ```text
-submission/dist/kan-demo-package-20260501T181515Z.zip
+submission/dist/kan-demo-package-final.zip
 ```
 
 Use a no-login public location. Kaggle writeup can link to either:
