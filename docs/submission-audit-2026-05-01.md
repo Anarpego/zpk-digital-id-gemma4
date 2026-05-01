@@ -18,7 +18,7 @@ Objective: make Kan competitive for the Gemma 4 Good Hackathon without spending 
 | Kaggle writeup under 1,500 words | `submission/final-kaggle-writeup.md`, 635 words, measured claims only | Ready locally |
 | Public video under 3 minutes | final script/captions, narration text, narration audio, and rendered MP4 at `submission/kan-final-demo-video.mp4`; not uploaded publicly yet | Partial |
 | Public code repo | Local Git repository exists; `.env`, APKs, build outputs, and `.venv` are ignored; no public remote yet | Partial |
-| Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T171844Z.zip` exists with APK, checksum, static demo page, screenshots, cover SVG, raw video, Unsloth scaffold/evidence, final writeup, and docs; not public yet | Partial |
+| Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T172021Z.zip` exists with APK, checksum, static demo page, screenshots, cover SVG, raw video, Unsloth scaffold/evidence, final writeup, and docs; not public yet | Partial |
 | Media gallery cover image | Draft SVG exists at `submission/media-gallery-cover.svg`; not uploaded | Partial |
 
 ## Current Local Gates

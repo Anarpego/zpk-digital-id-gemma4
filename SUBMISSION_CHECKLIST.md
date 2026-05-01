@@ -37,6 +37,7 @@
   - `kan-app/kan-gemma-hosted-trace.png`
   - Trace shows `reasoner_mode(gemma-api:gemma-4-31b-it) -> ok` and token accounting.
 - Draft submission artifacts exist:
+  - `submission/ARTIFACT_MANIFEST.md`
   - `submission/kaggle-writeup-draft.md` (699 words, under 1,500)
   - `submission/final-kaggle-writeup.md` (635 words, under 1,500)
   - `submission/video-script-draft.md`
@@ -62,7 +63,7 @@
   - `LICENSE`
   - `scripts/package_demo.sh`
 - Local downloadable demo package exists:
-  - `submission/dist/kan-demo-package-20260501T171844Z.zip`
+  - `submission/dist/kan-demo-package-20260501T172021Z.zip`
   - `submission/live-demo/kan-debug.apk`
   - `submission/live-demo/kan-debug.apk.sha256`
   - `submission/live-demo/index.html`
@@ -97,7 +98,7 @@
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
-- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T171844Z.zip`.
+- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T172021Z.zip`.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 - Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
 - Remote Linux GPU Unsloth dependency install and import smoke in `/tmp/kan-unsloth-venv`: pass; CUDA available.
@@ -117,7 +118,7 @@
 
 ## Next Build Priorities
 
-1. Benchmark `CactusReasoner` with `functiongemma-270m-pro` on Android.
-2. Add a small Training-Free GRPO experiment log: cases, rollouts, selected experience prior, and quality delta.
-3. Draft the video script around one citizen story and visibly show offline mode, tool calls, and generated document.
-4. Add post-quantum credential security as a short future-trust segment, not as a blocker.
+1. Publish the GitHub repository after authenticating `gh`.
+2. Upload the demo ZIP and final video to public no-login URLs.
+3. Paste `submission/final-kaggle-writeup.md` into Kaggle and attach the media/gallery assets.
+4. Move Unsloth training to a larger GPU if pursuing that special prize.
