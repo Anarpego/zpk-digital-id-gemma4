@@ -64,6 +64,12 @@ class DigitalIdentityFabric {
 
   final IdentitySigner _signer;
 
+  String get issuerKeyId => _signer.issuerKeyId;
+
+  Future<IdentitySignature> signCanonicalPayload(String canonicalPayload) {
+    return _signer.signCanonical(canonicalPayload);
+  }
+
   Future<IdentityTrustReport> evaluate({
     required VerificationResult result,
     required CaseScenario scenario,

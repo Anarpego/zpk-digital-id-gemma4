@@ -67,6 +67,14 @@ void main() {
       guidance.toolTrace,
       contains('gemma_api.tokens -> prompt 35, total 80'),
     );
+    expect(
+      guidance.toolTrace,
+      contains(startsWith('agent_ledger.hash_chain(sha256) -> ')),
+    );
+    expect(
+      guidance.toolTrace,
+      contains(startsWith('agent_ledger.sign(dart-test-hmac) -> ')),
+    );
   });
 
   test('fails closed when API key is missing', () async {

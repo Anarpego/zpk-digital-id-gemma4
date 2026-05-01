@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 
 import '../models/kan_case.dart';
+import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
@@ -51,6 +52,15 @@ class MlKitGemmaReasoner implements KanReasoner {
 
     final status = response?['status'] as String? ?? 'AVAILABLE';
     final model = response?['model'] as String? ?? 'mlkit-genai-prompt';
+    final ledger =
+        await AgentExecutionLedgerService(identityFabric: identityFabric).build(
+          assessment: assessment,
+          trustReport: trustReport,
+          result: result,
+          scenario: scenario,
+          reasonerLabel: 'mlkit-gemma:$model',
+          usedLocalOnly: true,
+        );
 
     return ReasonedGuidance(
       summary: text,
@@ -64,6 +74,7 @@ class MlKitGemmaReasoner implements KanReasoner {
         'gemma_agent.prompt(redacted_facts) -> ok',
         'mlkit_gemma.status -> $status',
         'mlkit_gemma.generateContent($model) -> ok',
+        ...ledger.trace,
       ],
       usedLocalOnly: true,
       routingDecision: routing,

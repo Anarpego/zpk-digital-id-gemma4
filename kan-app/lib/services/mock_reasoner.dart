@@ -1,4 +1,5 @@
 import '../models/kan_case.dart';
+import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
@@ -27,6 +28,20 @@ class MockReasoner implements KanReasoner {
       assessment: assessment,
     );
     final routing = assessment.route;
+    Future<List<String>> ledgerTrace({required bool usedLocalOnly}) async {
+      final ledger =
+          await AgentExecutionLedgerService(
+            identityFabric: identityFabric,
+          ).build(
+            assessment: assessment,
+            trustReport: trustReport,
+            result: result,
+            scenario: scenario,
+            reasonerLabel: 'mock-local',
+            usedLocalOnly: usedLocalOnly,
+          );
+      return ledger.trace;
+    }
 
     if (!result.isValidCui) {
       return ReasonedGuidance(
@@ -36,7 +51,11 @@ class MockReasoner implements KanReasoner {
           'Revise el numero en su DPI.',
           'Intente de nuevo sin espacios ni guiones.',
         ],
-        toolTrace: [...assessment.toolTrace, ...trustReport.trace],
+        toolTrace: [
+          ...assessment.toolTrace,
+          ...trustReport.trace,
+          ...await ledgerTrace(usedLocalOnly: true),
+        ],
         usedLocalOnly: true,
         routingDecision: routing,
       );
@@ -50,6 +69,7 @@ class MockReasoner implements KanReasoner {
       'gemma_agent_context(redacted) -> national_identity_playbook',
       'fill_legal_template(local) -> ready',
     ];
+    final signedLedgerTrace = await ledgerTrace(usedLocalOnly: true);
 
     if (!result.isExposed) {
       return ReasonedGuidance(
@@ -60,7 +80,7 @@ class MockReasoner implements KanReasoner {
           'No comparta foto de DPI por WhatsApp.',
           'Reporte nuevos indicios para actualizar catalogos comunitarios sin guardar identificadores completos.',
         ],
-        toolTrace: trace,
+        toolTrace: [...trace, ...signedLedgerTrace],
         usedLocalOnly: true,
         routingDecision: routing,
       );
@@ -80,7 +100,7 @@ class MockReasoner implements KanReasoner {
         'Pida bloqueo preventivo si detecta creditos o cuentas no reconocidas.',
         'Comparta solo hechos redactados si una institucion nacional o aliado regional necesita apoyar.',
       ],
-      toolTrace: trace,
+      toolTrace: [...trace, ...signedLedgerTrace],
       usedLocalOnly: true,
       routingDecision: routing,
     );

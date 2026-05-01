@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/kan_case.dart';
+import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
@@ -76,6 +77,15 @@ class GemmaApiReasoner implements KanReasoner {
     final text = _extractFinalText(body);
     final usage = body['usageMetadata'] as Map<String, dynamic>? ?? {};
     final modelVersion = body['modelVersion'] as String? ?? model;
+    final ledger =
+        await AgentExecutionLedgerService(identityFabric: identityFabric).build(
+          assessment: assessment,
+          trustReport: trustReport,
+          result: result,
+          scenario: scenario,
+          reasonerLabel: 'gemma-api:$modelVersion',
+          usedLocalOnly: false,
+        );
 
     return ReasonedGuidance(
       summary: text,
@@ -90,6 +100,7 @@ class GemmaApiReasoner implements KanReasoner {
         'gemma_agent.prompt(redacted_facts) -> ok',
         'gemma_api.generateContent($modelVersion) -> ok',
         'gemma_api.tokens -> prompt ${usage['promptTokenCount'] ?? 'n/a'}, total ${usage['totalTokenCount'] ?? 'n/a'}',
+        ...ledger.trace,
       ],
       usedLocalOnly: false,
       routingDecision: routing,

@@ -22,6 +22,6 @@ Expected checksums:
 - Demo ZIP: generate from the uploaded asset with `shasum -a 256`.
 - Final video: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
 - Media cover: `15ba1a8f5037973ce6b0c76defdfd05bee438d2f8ddf15393cc75070e4a6f2b6`
-- APK: `691b8fa3e1a73423937d644497d80202d1c1406f5ddfe0bf110c36b533458969`
+- APK: `7b164de2b62af2130f21dcae29d3ba85c7dcb71446242d81bf8755494c164f3b`
 
 The package includes `.env.example` but must not include `.env`.

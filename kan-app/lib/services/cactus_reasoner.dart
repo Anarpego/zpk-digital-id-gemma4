@@ -1,6 +1,7 @@
 import 'package:cactus/cactus.dart';
 
 import '../models/kan_case.dart';
+import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
@@ -85,6 +86,15 @@ class CactusReasoner implements KanReasoner {
     if (!completion.success) {
       throw StateError('Cactus completion failed: ${completion.response}');
     }
+    final ledger =
+        await AgentExecutionLedgerService(identityFabric: identityFabric).build(
+          assessment: assessment,
+          trustReport: trustReport,
+          result: result,
+          scenario: scenario,
+          reasonerLabel: 'cactus:$model',
+          usedLocalOnly: true,
+        );
 
     return ReasonedGuidance(
       summary: completion.response.trim(),
@@ -102,6 +112,7 @@ class CactusReasoner implements KanReasoner {
         'cactus.metrics -> ttft ${completion.timeToFirstTokenMs.round()}ms, total ${completion.totalTimeMs.round()}ms, ${completion.tokensPerSecond.toStringAsFixed(1)} tok/s',
         for (final call in completion.toolCalls)
           '${call.name}(cactus) -> ${call.arguments}',
+        ...ledger.trace,
       ],
       usedLocalOnly: true,
       routingDecision: routing,

@@ -40,6 +40,10 @@ trust_fabric.keystore(android-keystore) -> zpk-android-keystore-issuer-key-2026-
 trust_fabric.verify_credential_signature(local) -> ok
 ```
 
+The same signer is reused with purpose-separated payloads for the local agent
+execution ledger. Tests verify the ledger hash chain and ensure it does not
+contain the raw CUI.
+
 ## Non-Claims
 
 This is not government-grade key governance, remote attestation, W3C VC
