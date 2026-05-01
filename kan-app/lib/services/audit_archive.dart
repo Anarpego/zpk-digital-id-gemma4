@@ -66,8 +66,21 @@ class AuditArchiveReceipt {
   final List<String> trace;
 }
 
+class AuditArchiveClearReceipt {
+  const AuditArchiveClearReceipt({
+    required this.deletedCount,
+    required this.location,
+    required this.trace,
+  });
+
+  final int deletedCount;
+  final String location;
+  final List<String> trace;
+}
+
 abstract interface class AuditArchive {
   Future<AuditArchiveReceipt> append(AuditArchiveRecord record);
+  Future<AuditArchiveClearReceipt> clear();
 }
 
 class NativeAuditArchive implements AuditArchive {
@@ -101,6 +114,22 @@ class NativeAuditArchive implements AuditArchive {
       ],
     );
   }
+
+  @override
+  Future<AuditArchiveClearReceipt> clear() async {
+    final response = await _channel.invokeMapMethod<String, Object?>('clear');
+    final location = response?['location'] as String? ?? 'native-internal';
+    final deletedCount = response?['deletedCount'] as int? ?? 0;
+
+    return AuditArchiveClearReceipt(
+      deletedCount: deletedCount,
+      location: location,
+      trace: [
+        'audit_archive.clear(internal_storage) -> $deletedCount',
+        'audit_archive.location -> $location',
+      ],
+    );
+  }
 }
 
 class MemoryAuditArchive implements AuditArchive {
@@ -124,6 +153,20 @@ class MemoryAuditArchive implements AuditArchive {
         'audit_archive.private_complaint -> omitted',
         'audit_archive.append(memory) -> ok',
         'audit_archive.records -> ${records.length}',
+      ],
+    );
+  }
+
+  @override
+  Future<AuditArchiveClearReceipt> clear() async {
+    final deletedCount = records.length;
+    records.clear();
+    return AuditArchiveClearReceipt(
+      deletedCount: deletedCount,
+      location: 'memory-audit-archive',
+      trace: [
+        'audit_archive.clear(memory) -> $deletedCount',
+        'audit_archive.location -> memory-audit-archive',
       ],
     );
   }
@@ -167,6 +210,10 @@ class AuditArchiveService {
       throw StateError('Audit archive record contains private local data.');
     }
     return archive.append(record);
+  }
+
+  Future<AuditArchiveClearReceipt> clearLocalArchive() {
+    return archive.clear();
   }
 }
 

@@ -59,4 +59,45 @@ void main() {
       expect(storedRecord, contains(packet.redactedPacketHash));
     },
   );
+
+  test('clears local archive records on request', () async {
+    final archive = MemoryAuditArchive();
+    final service = AuditArchiveService(archive: archive);
+    final result = LocalBreachCatalog(
+      now: DateTime.utc(2026, 5, 1),
+    ).verify('1234567890101');
+    final scenario = CaseScenario.discoveredVictim;
+    final fabric = const DigitalIdentityFabric();
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: scenario,
+    );
+    final trustReport = await fabric.evaluate(
+      result: result,
+      scenario: scenario,
+      assessment: assessment,
+    );
+    final guidance = await MockReasoner(
+      identityFabric: fabric,
+    ).explain(result: result, scenario: scenario);
+    final packet = await RecoveryPacketService(identityFabric: fabric).build(
+      result: result,
+      scenario: scenario,
+      trustReport: trustReport,
+      privateLocalComplaint: 'private complaint stays local',
+    );
+
+    await service.appendRecoveryAudit(
+      result: result,
+      scenario: scenario,
+      guidance: guidance,
+      trustReport: trustReport,
+      recoveryPacket: packet,
+    );
+    final clearReceipt = await service.clearLocalArchive();
+
+    expect(clearReceipt.deletedCount, 1);
+    expect(archive.records, isEmpty);
+    expect(clearReceipt.trace, contains('audit_archive.clear(memory) -> 1'));
+  });
 }

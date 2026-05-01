@@ -54,6 +54,13 @@ void main() {
       find.textContaining('audit_archive.raw_cui -> omitted'),
       findsOneWidget,
     );
+    await tester.tap(find.text('Borrar archivo local'));
+    await tester.pumpAndSettle();
+    expect(find.text('Archivo local borrado'), findsOneWidget);
+    expect(
+      find.textContaining('audit_archive.clear(memory) -> 1'),
+      findsOneWidget,
+    );
     await tester.pumpWidget(const SizedBox.shrink());
   });
 

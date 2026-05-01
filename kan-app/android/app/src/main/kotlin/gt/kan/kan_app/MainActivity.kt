@@ -92,6 +92,7 @@ class MainActivity : FlutterActivity() {
                         appendAuditRecord(recordJson, recordHash, result)
                     }
                 }
+                "clear" -> clearAuditArchive(result)
                 else -> result.notImplemented()
             }
         }
@@ -237,6 +238,33 @@ class MainActivity : FlutterActivity() {
         } catch (error: Throwable) {
             result.error(
                 "AUDIT_ARCHIVE_ERROR",
+                error.message ?: error.javaClass.simpleName,
+                mapOf("type" to error.javaClass.name),
+            )
+        }
+    }
+
+    private fun clearAuditArchive(result: MethodChannel.Result) {
+        try {
+            val archiveDir = File(filesDir, "zpk-audit-archive")
+            var deletedCount = 0
+            archiveDir.listFiles { candidate ->
+                candidate.isFile && candidate.name.endsWith(".json")
+            }?.forEach { file ->
+                if (file.delete()) {
+                    deletedCount += 1
+                }
+            }
+
+            result.success(
+                mapOf(
+                    "location" to "app-internal:zpk-audit-archive",
+                    "deletedCount" to deletedCount,
+                ),
+            )
+        } catch (error: Throwable) {
+            result.error(
+                "AUDIT_ARCHIVE_CLEAR_ERROR",
                 error.message ?: error.javaClass.simpleName,
                 mapOf("type" to error.javaClass.name),
             )

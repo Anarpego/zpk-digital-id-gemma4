@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   IdentityTrustReport? _trustReport;
   RecoveryPacket? _recoveryPacket;
   AuditArchiveReceipt? _auditReceipt;
+  AuditArchiveClearReceipt? _auditClearReceipt;
   String? _complaint;
   String? _auditError;
   bool _isVerifying = false;
@@ -111,10 +112,24 @@ class _HomeScreenState extends State<HomeScreen> {
       _trustReport = trustReport;
       _recoveryPacket = recoveryPacket;
       _auditReceipt = auditReceipt;
+      _auditClearReceipt = null;
       _complaint = complaint;
       _auditError = auditError;
       _isVerifying = false;
     });
+  }
+
+  Future<void> _clearAuditArchive() async {
+    try {
+      final receipt = await _auditArchive.clearLocalArchive();
+      setState(() {
+        _auditReceipt = null;
+        _auditClearReceipt = receipt;
+        _auditError = null;
+      });
+    } catch (error) {
+      setState(() => _auditError = error.toString());
+    }
   }
 
   @override
@@ -201,7 +216,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 12),
               ],
               if (_auditReceipt != null) ...[
-                _AuditArchivePanel(receipt: _auditReceipt!),
+                _AuditArchivePanel(
+                  receipt: _auditReceipt!,
+                  onClear: _clearAuditArchive,
+                ),
+                const SizedBox(height: 12),
+              ] else if (_auditClearReceipt != null) ...[
+                _AuditArchiveClearedPanel(receipt: _auditClearReceipt!),
                 const SizedBox(height: 12),
               ] else if (_auditError != null) ...[
                 _AuditArchiveErrorPanel(error: _auditError!),
@@ -519,9 +540,10 @@ class _RecoveryPacketPanel extends StatelessWidget {
 }
 
 class _AuditArchivePanel extends StatelessWidget {
-  const _AuditArchivePanel({required this.receipt});
+  const _AuditArchivePanel({required this.receipt, required this.onClear});
 
   final AuditArchiveReceipt receipt;
+  final VoidCallback onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -551,6 +573,54 @@ class _AuditArchivePanel extends StatelessWidget {
             Text('Hash: ${receipt.recordHash.substring(0, 16)}'),
             Text('Ubicacion: ${receipt.location}', style: text.bodySmall),
             Text('Registros: ${receipt.recordCount}', style: text.bodySmall),
+            const Divider(height: 24),
+            for (final trace in receipt.trace)
+              Text(trace, style: text.bodySmall),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: onClear,
+              icon: const Icon(Icons.delete_outline),
+              label: const Text('Borrar archivo local'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AuditArchiveClearedPanel extends StatelessWidget {
+  const _AuditArchiveClearedPanel({required this.receipt});
+
+  final AuditArchiveClearReceipt receipt;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Archivo local borrado',
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.delete_sweep_outlined),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text('Registros borrados: ${receipt.deletedCount}'),
+            Text('Ubicacion: ${receipt.location}', style: text.bodySmall),
             const Divider(height: 24),
             for (final trace in receipt.trace)
               Text(trace, style: text.bodySmall),

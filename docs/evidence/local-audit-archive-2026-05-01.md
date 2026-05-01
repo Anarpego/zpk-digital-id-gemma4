@@ -21,6 +21,7 @@ registration.
   - archive record count
   - `audit_archive.raw_cui -> omitted`
   - `audit_archive.private_complaint -> omitted`
+- The citizen can clear local audit receipts from the app UI.
 
 ## Verification
 
@@ -29,11 +30,14 @@ Commands run from `kan-app`:
 - `flutter test test/services/audit_archive_test.dart test/widget_test.dart`:
   passed.
 - `flutter analyze`: passed with no issues.
-- `flutter test`: 28 tests passed.
+- `flutter test`: 29 tests passed.
 - `flutter build apk --debug`: passed.
 
 The archive test verifies that the stored canonical record does not contain the
 raw synthetic CUI and does not contain the private complaint text.
+It also verifies `clearLocalArchive()` removes local archive records. The widget
+test verifies the visible `Borrar archivo local` control and
+`Archivo local borrado` receipt.
 
 ## Android Runtime Evidence
 
