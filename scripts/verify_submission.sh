@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ZIP="$ROOT/submission/dist/kan-demo-package-20260501T172529Z.zip"
+ZIP="$ROOT/submission/dist/kan-demo-package-20260501T172959Z.zip"
 APK="$ROOT/submission/live-demo/kan-debug.apk"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
 WRITEUP="$ROOT/submission/final-kaggle-writeup.md"

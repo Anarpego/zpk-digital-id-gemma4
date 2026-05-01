@@ -33,6 +33,7 @@ zip -r "$ZIP" \
   .env.example \
   AGENTS.md \
   SUBMISSION_CHECKLIST.md \
+  scripts/publish_submission.sh \
   scripts/verify_submission.sh \
   docs \
   submission/live-demo \
@@ -40,6 +41,7 @@ zip -r "$ZIP" \
   submission/ARTIFACT_MANIFEST.md \
   submission/KAGGLE_FORM.md \
   submission/YOUTUBE_DESCRIPTION.md \
+  submission/GITHUB_RELEASE_NOTES.md \
   submission/final-kaggle-writeup.md \
   submission/kaggle-writeup-draft.md \
   submission/media-gallery-cover.svg \

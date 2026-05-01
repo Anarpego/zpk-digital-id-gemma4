@@ -34,7 +34,8 @@ After logging in:
 
 ```bash
 gh auth login
-gh repo create kan-gemma4-good --public --source . --remote origin --push
+./scripts/publish_submission.sh --check
+./scripts/publish_submission.sh
 ```
 
 Alternative manual push:
@@ -49,7 +50,7 @@ git push -u origin main
 Upload the latest local package:
 
 ```text
-submission/dist/kan-demo-package-20260501T172529Z.zip
+submission/dist/kan-demo-package-20260501T172959Z.zip
 ```
 
 Use a no-login public location. Kaggle writeup can link to either:
