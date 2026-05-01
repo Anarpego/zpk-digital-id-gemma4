@@ -64,7 +64,7 @@
   <body>
     <header>
       <h1>ZPK Digital ID</h1>
-      <p>Local-first identity registration and recovery for Guatemalan citizens. This downloadable Android app creates a pseudonymous ZPK identity, checks synthetic CUI risk, issues a local consent proof, encrypts a local audit receipt, and prepares a redacted recovery packet on device.</p>
+      <p>Local-first identity registration and recovery for Guatemalan citizens. This downloadable Android app creates a pseudonymous ZPK identity, checks synthetic CUI risk, issues a signed authentication proof, encrypts a local audit receipt, and prepares a redacted recovery packet on device.</p>
       <div class="actions">
         <a class="button" href="kan-debug.apk">Download Android APK</a>
         <a class="button secondary" href="kan-debug.apk.sha256">APK SHA-256</a>
@@ -87,7 +87,7 @@ adb shell monkey -p gt.kan.kan_app 1</code></pre>
           <li>Offline ZPK identity registration with no cloud dependency.</li>
           <li>DID-style document, verifiable-credential-style recovery credential, and selective disclosure claims.</li>
           <li>Local Spanish guidance and preliminary complaint generation.</li>
-          <li>Visible traces for catalog lookup, privacy routing, consent proof, signed revocation, encrypted audit storage, and redacted institutional packet.</li>
+          <li>Visible traces for catalog lookup, privacy routing, signed authentication proof, consent proof, signed revocation, encrypted audit storage, and redacted institutional packet.</li>
           <li>Separate evidence screenshots for hosted Gemma 4 and Cactus local inference.</li>
           <li>A narrated final demo video under 3 minutes.</li>
         </ul>

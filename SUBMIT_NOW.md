@@ -60,7 +60,7 @@ Claim strongly:
 - Main Track: working Android social-impact app.
 - Impact Track: Digital Equity & Inclusivity.
 - Local-first ZPK identity registration, selective disclosure, and recovery workflow.
-- Visible privacy/tool traces for DID-style credential, consent proof, redacted institutional packet, encrypted local audit archive, and signed local revocation.
+- Visible privacy/tool traces for DID-style credential, signed authentication proof, consent proof, redacted institutional packet, encrypted local audit archive, and signed local revocation.
 - Hosted Gemma 4 evidence with `gemma-4-31b-it`.
 
 Claim cautiously:

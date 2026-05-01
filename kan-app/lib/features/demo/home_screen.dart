@@ -7,6 +7,7 @@ import '../../services/identity_protection_agent.dart';
 import '../../services/kan_reasoner.dart';
 import '../../services/legal_template_service.dart';
 import '../../services/local_breach_catalog.dart';
+import '../../services/local_authentication_service.dart';
 import '../../services/mock_reasoner.dart';
 import '../../services/recovery_packet_service.dart';
 import '../../services/revocation_service.dart';
@@ -36,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final DigitalIdentityFabric _trustFabric;
   late final RecoveryPacketService _packetService;
   late final RevocationService _revocationService;
+  late final LocalAuthenticationService _authenticationService;
   late final AuditArchiveService _auditArchive;
   late final Future<LocalBreachCatalog> _catalog;
 
@@ -43,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   VerificationResult? _result;
   ReasonedGuidance? _guidance;
   IdentityTrustReport? _trustReport;
+  LocalAuthenticationProof? _authenticationProof;
   RecoveryPacket? _recoveryPacket;
   LocalRevocationReceipt? _revocationReceipt;
   AuditArchiveReceipt? _auditReceipt;
@@ -57,6 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _trustFabric = widget.identityFabric ?? const DigitalIdentityFabric();
     _packetService = RecoveryPacketService(identityFabric: _trustFabric);
     _revocationService = RevocationService(identityFabric: _trustFabric);
+    _authenticationService = LocalAuthenticationService(
+      identityFabric: _trustFabric,
+    );
     _auditArchive = AuditArchiveService(
       archive: widget.auditArchive ?? MemoryAuditArchive(),
     );
@@ -114,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _result = result;
       _guidance = guidance;
       _trustReport = trustReport;
+      _authenticationProof = null;
       _recoveryPacket = recoveryPacket;
       _revocationReceipt = null;
       _auditReceipt = auditReceipt;
@@ -150,6 +157,20 @@ class _HomeScreenState extends State<HomeScreen> {
       reason: 'citizen_requested_local_revocation',
     );
     setState(() => _revocationReceipt = receipt);
+  }
+
+  Future<void> _issueAuthenticationProof() async {
+    final result = _result;
+    final trustReport = _trustReport;
+    if (result == null || trustReport == null) {
+      return;
+    }
+    final proof = await _authenticationService.buildProof(
+      result: result,
+      scenario: _scenario,
+      trustReport: trustReport,
+    );
+    setState(() => _authenticationProof = proof);
   }
 
   @override
@@ -231,6 +252,11 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               _TrustFabricPanel(report: _trustReport!),
               const SizedBox(height: 12),
+              _AuthenticationProofPanel(
+                proof: _authenticationProof,
+                onIssue: _issueAuthenticationProof,
+              ),
+              const SizedBox(height: 12),
               _RevocationPanel(
                 receipt: _revocationReceipt,
                 onRevoke: _revokeLocalCredential,
@@ -281,6 +307,84 @@ class _EmptyState extends StatelessWidget {
             Icon(Icons.info_outline),
             SizedBox(width: 12),
             Expanded(child: Text('La verificacion local aparecera aqui.')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AuthenticationProofPanel extends StatelessWidget {
+  const _AuthenticationProofPanel({required this.proof, required this.onIssue});
+
+  final LocalAuthenticationProof? proof;
+  final VoidCallback onIssue;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Autenticacion local',
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.key_outlined),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (proof == null) ...[
+              Text(
+                'Emite una prueba firmada para una institucion sin revelar CUI.',
+                style: text.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: onIssue,
+                icon: const Icon(Icons.key_outlined),
+                label: const Text('Probar autenticacion local'),
+              ),
+            ] else ...[
+              Text(
+                'Institucion: ${proof!.relyingParty}',
+                style: text.bodySmall,
+              ),
+              Text(
+                'Pseudonimo: ${proof!.pseudonymousId}',
+                style: text.bodySmall,
+              ),
+              Text(
+                'Reto: ${proof!.challenge.substring(0, 18)}',
+                style: text.bodySmall,
+              ),
+              Text(
+                'Hash: ${proof!.payloadHash.substring(0, 16)}',
+                style: text.bodySmall,
+              ),
+              Text(
+                'Firma: ${proof!.signature.substring(0, 16)} (${proof!.keyStore})',
+                style: text.bodySmall,
+              ),
+              Text(
+                'Expira: ${proof!.expiresInMinutes} min',
+                style: text.bodySmall,
+              ),
+              const Divider(height: 24),
+              for (final trace in proof!.trace)
+                Text(trace, style: text.bodySmall),
+            ],
           ],
         ),
       ),

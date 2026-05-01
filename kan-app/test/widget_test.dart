@@ -38,6 +38,15 @@ void main() {
     );
     expect(find.text('Registro ZPK local'), findsOneWidget);
     await tester.scrollUntilVisible(
+      find.text('Probar autenticacion local'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Probar autenticacion local'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('auth.sign'), findsOneWidget);
+    expect(find.textContaining('auth.verify(local) -> ok'), findsOneWidget);
+    await tester.scrollUntilVisible(
       find.text('Revocar credencial local'),
       500,
       scrollable: find.byType(Scrollable).first,

@@ -8,7 +8,7 @@ This repository is optimized for a public hackathon submission and reproducible 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, signed redacted recovery packet, signed local revocation receipt, selective disclosure claims, and 15-minute consent proof.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, signed local authentication proof, signed redacted recovery packet, signed local revocation receipt, selective disclosure claims, and 15-minute consent proof.
 - Local privacy controls: raw CUI prompt guard, encrypted app-internal audit archive, citizen archive deletion, `FLAG_SECURE`, disabled Android backup, and cleartext traffic disabled.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
@@ -76,7 +76,7 @@ This mode uses Android ML Kit Prompt API. It needs a supported AICore device for
 
 ## Offline Agentic Flow
 
-The default APK runs without a backend. The local agent performs CUI format validation, embedded catalog lookup, identity-risk classification, privacy routing, DID-style credential issuance, signed recovery packet generation, signed revocation, encrypted local audit storage, and Spanish recovery guidance. Gemma 4 is used only through redacted hosted prompts unless a supported on-device AICore runtime is available.
+The default APK runs without a backend. The local agent performs CUI format validation, embedded catalog lookup, identity-risk classification, privacy routing, DID-style credential issuance, signed authentication proof generation, signed recovery packet generation, signed revocation, encrypted local audit storage, and Spanish recovery guidance. Gemma 4 is used only through redacted hosted prompts unless a supported on-device AICore runtime is available.
 
 ## Verified Evidence
 
@@ -86,13 +86,14 @@ The default APK runs without a backend. The local agent performs CUI format vali
 - Cactus tool failure isolation: `kan-app/kan-cactus-270m-trace.png`
 - ML Kit/AICore emulator result: `docs/evidence/mlkit-gemma-ondevice-2026-05-01.md`
 - ZPK local trust fabric: `docs/evidence/zpk-local-trust-fabric-2026-05-01.md`
+- Local authentication proof: `docs/evidence/local-authentication-proof-2026-05-01.md`
 - Encrypted audit archive runtime evidence: `docs/evidence/local-audit-archive-2026-05-01.md`
 
 Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 30 tests
+- `flutter test` passes 32 tests
 - `flutter build apk --debug`
 
 ## Evidence Package
@@ -114,7 +115,7 @@ Current verified package:
 
 Final copy/paste and upload files live in `submission/`:
 
-- `submission/final-kaggle-writeup.md`: Kaggle writeup, about 840 words.
+- `submission/final-kaggle-writeup.md`: Kaggle writeup, about 850 words.
 - `submission/KAGGLE_FORM.md`: final form fields and prize-claim guidance.
 - `submission/YOUTUBE_DESCRIPTION.md`: video upload title, description, and tags.
 - `submission/ARTIFACT_MANIFEST.md`: upload checklist and checksums.
