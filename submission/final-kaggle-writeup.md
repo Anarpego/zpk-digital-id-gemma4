@@ -40,6 +40,8 @@ This local trust fabric simulates the infrastructure a national digital identity
 
 The APK bundles `assets/breach_catalog.json`, a synthetic offline catalog with no real personal data. `LocalBreachCatalog.loadEmbeddedOrFallback()` loads it on device. The CUI is used only locally to create a pseudonymous ZPK citizen ID and risk assessment. Hosted reasoning receives only redacted facts such as match count, risk level, scenario, and action needs.
 
+The Android shell adds production-style privacy hardening for the demo: `FLAG_SECURE` blocks screenshots and screen recording, app backup/data extraction is disabled, and cleartext traffic is disallowed.
+
 After a synthetic match, ZPK generates Spanish guidance and a preliminary complaint document locally. The app can be installed from the demo package and run without a backend.
 
 ## Cactus And Adaptation Evidence

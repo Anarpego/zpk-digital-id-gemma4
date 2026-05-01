@@ -140,6 +140,7 @@ KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 - Runtime app signing uses Android Keystore through `DigitalIdentityFabric.device()`; deterministic Dart HMAC signing is used only for tests.
 - Each recovery run emits a signed SHA-256 hash-chain agent ledger so tool calls, credential issuance, consent, and reasoner routing are auditable without storing raw CUI.
 - Recovery packets are split into a private local complaint with full CUI and a signed redacted share packet for institutions.
+- Android hardening blocks screenshots/screen recording, disables app backup/data extraction, and disallows cleartext traffic.
 
 ## Python Policy
 
