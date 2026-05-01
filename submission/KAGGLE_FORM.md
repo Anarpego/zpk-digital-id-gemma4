@@ -8,7 +8,7 @@ Kan: Local-First Breach Defense for Guatemalan Citizens
 
 ## Subtitle
 
-An Android-first Gemma 4 assistant that checks synthetic breach exposure locally, explains risk in plain Spanish, and prepares a preliminary complaint draft without sending CUI to a server.
+An Android-first breach-response assistant with an offline sensitive-data path and verified Gemma 4 reasoning for plain-Spanish guidance and complaint drafting.
 
 ## Impact Track
 
@@ -32,15 +32,15 @@ Recommended artifact: `submission/kan-final-demo-video.mp4`.
 
 ## Short Summary
 
-Kan helps Guatemalan citizens answer three urgent questions after a data leak: am I affected, what does it mean, and what can I do today? The demo uses only synthetic data. It verifies a CUI against an embedded local breach catalog, explains the result in Spanish, and generates a preliminary complaint draft on device.
+Kan targets a concrete high-stakes use case: a Guatemalan citizen suspects their DPI/CUI was exposed after a breach or fake aid program. The app answers three urgent questions: am I affected, what does it mean, and what can I do today? The demo uses only synthetic data. It verifies a CUI against an embedded local breach catalog, explains the result in Spanish, and generates a preliminary complaint draft on device.
 
 ## Technical Summary
 
-Kan is a Flutter Android app with three reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, and hosted Gemma 4 mode verified with `gemma-4-31b-it`. The default APK keeps sensitive checks local and shows trace events for catalog loading, lookup, routing, and document generation. Evidence includes Android screenshots, passing Flutter tests, a Gemma 4 API smoke test, Cactus local-inference metrics, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
+Kan is a Flutter Android app with three reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, and hosted Gemma 4 mode verified with `gemma-4-31b-it`. The significant result is the end-to-end citizen workflow: local synthetic CUI lookup, visible privacy routing, Spanish explanation, action checklist, and a complaint draft without sending raw CUI to hosted reasoning by default. Evidence includes Android screenshots, passing Flutter tests, a Gemma 4 API smoke test, Cactus local-inference metrics, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
 
 ## Prize Claims
 
-- Main Track: working social-impact prototype with Android app, local verification, Spanish guidance, document draft, hosted Gemma 4 evidence, and visible privacy traces.
+- Main Track: working social-impact prototype with Android app, local sensitive-data verification, Spanish guidance, document draft, hosted Gemma 4 evidence, and visible privacy traces.
 - Impact Track: Digital Equity & Inclusivity.
 - Cactus special prize: claim cautiously as partial local-inference/routing evidence only.
 - Unsloth special prize: do not claim unless a larger GPU produces an adapter and before/after benchmark.

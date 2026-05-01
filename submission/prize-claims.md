@@ -11,10 +11,11 @@ Use only claims backed by current evidence unless more work is completed.
 Claim Kan as a working social-impact prototype with:
 
 - Android app.
-- Offline synthetic CUI verification.
+- Offline synthetic CUI verification for the sensitive-data path.
 - Spanish guidance and complaint draft.
 - Hosted Gemma 4 app mode verified with `gemma-4-31b-it`.
 - Visible privacy/routing/tool traces.
+- A complete breach-response workflow: detect, explain, act.
 
 ### Digital Equity & Inclusivity
 
@@ -26,6 +27,7 @@ Evidence:
 - Low-friction Android demo.
 - Local-first breach response for citizens who may not understand legal or cybersecurity language.
 - Complaint document generation instead of generic chatbot advice.
+- Significant use case: helping a citizen move from suspected DPI/CUI exposure to a concrete next action.
 
 ### Cactus Prize
 
@@ -60,6 +62,10 @@ Current status is seed data, scaffold, verified CUDA/Unsloth imports, and a fail
 ### On-Device Gemma 4
 
 Do not claim on-device Gemma 4. Current Gemma 4 evidence is hosted through the Gemini API with `gemma-4-31b-it`.
+
+### Offline Gemma 4
+
+Do not claim offline Gemma 4. The offline result is the sensitive-data workflow: embedded synthetic catalog lookup, routing trace, Spanish guidance, and local complaint draft. Gemma 4 is verified separately through hosted `gemma-4-31b-it`.
 
 ### Production Legal Correctness
 
