@@ -106,7 +106,7 @@ Current verified package:
 
 Final copy/paste and upload files live in `submission/`:
 
-- `submission/final-kaggle-writeup.md`: Kaggle writeup, 635 words.
+- `submission/final-kaggle-writeup.md`: Kaggle writeup, 695 words.
 - `submission/KAGGLE_FORM.md`: final form fields and prize-claim guidance.
 - `submission/YOUTUBE_DESCRIPTION.md`: video upload title, description, and tags.
 - `submission/ARTIFACT_MANIFEST.md`: upload checklist and checksums.
