@@ -20,8 +20,8 @@ Technical evidence in the repository includes:
 - Cactus local-inference metrics on Android.
 - Unsloth Gemma 4 E2B scaffold plus a documented 6 GB GPU OOM training attempt.
 
-Repository: TODO_PUBLIC_REPO_URL
-Demo package: TODO_PUBLIC_DEMO_ZIP_OR_DATASET_URL
+Repository: paste public GitHub URL after upload
+Demo package: paste public demo ZIP, release asset, or Kaggle Dataset URL after upload
 
 Submitted for the Gemma 4 Good Hackathon.
 

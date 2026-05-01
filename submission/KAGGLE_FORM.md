@@ -1,6 +1,6 @@
 # Kaggle Submission Fields
 
-Use these fields for the final Kaggle submission. Replace placeholder URLs only after the public repository, demo ZIP, and video have been uploaded.
+Use these fields for the final Kaggle submission. Fill the URL fields only after the public repository, demo ZIP, and video have been uploaded.
 
 ## Title
 
@@ -16,17 +16,17 @@ Digital Equity & Inclusivity
 
 ## Repository URL
 
-`TODO_PUBLIC_REPO_URL`
+Paste the public GitHub repository URL after upload.
 
 ## Live Demo URL
 
-`TODO_PUBLIC_DEMO_ZIP_OR_DATASET_URL`
+Paste the public demo ZIP, release asset, or Kaggle Dataset URL after upload.
 
 Recommended artifact: `submission/dist/kan-demo-package-final.zip`.
 
 ## Video URL
 
-`TODO_PUBLIC_VIDEO_URL`
+Paste the public video URL after upload.
 
 Recommended artifact: `submission/kan-final-demo-video.mp4`.
 
