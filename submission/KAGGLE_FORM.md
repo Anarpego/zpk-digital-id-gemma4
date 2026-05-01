@@ -40,7 +40,7 @@ ZPK Digital ID is a Flutter Android app with four reasoner modes: deterministic 
 
 ## Prize Claims
 
-- Main Track: working social-impact prototype with Android app, local sensitive-data verification, Spanish guidance, document draft, hosted Gemma 4 evidence, and visible privacy traces.
+- Main Track: working social-impact Android app with local sensitive-data verification, Spanish guidance, document draft, hosted Gemma 4 evidence, and visible privacy traces.
 - Impact Track: Digital Equity & Inclusivity.
 - Cactus special prize: claim cautiously as partial local-inference/routing evidence only.
 - On-device Gemma 4: do not claim successful generation unless a supported AICore device produces a local `generateContent` trace.

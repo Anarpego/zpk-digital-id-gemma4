@@ -57,10 +57,10 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 
 Claim strongly:
 
-- Main Track: working Android social-impact prototype.
+- Main Track: working Android social-impact app.
 - Impact Track: Digital Equity & Inclusivity.
 - Local-first ZPK identity registration, selective disclosure, and recovery workflow.
-- Visible privacy/tool traces for DID-style credential, consent proof, and redacted institutional packet.
+- Visible privacy/tool traces for DID-style credential, consent proof, redacted institutional packet, encrypted local audit archive, and signed local revocation.
 - Hosted Gemma 4 evidence with `gemma-4-31b-it`.
 
 Claim cautiously:
@@ -72,5 +72,5 @@ Do not claim:
 
 - Successful offline/on-device Gemma 4 generation.
 - Completed Unsloth adapter or RL fine-tune.
-- Real government integration, hardware-backed key custody, or standards certification.
+- Real government integration, hardware-backed key custody on every possible citizen device, or standards certification.
 - Production legal advice.

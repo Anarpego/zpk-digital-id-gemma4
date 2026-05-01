@@ -1,14 +1,15 @@
 # ZPK Digital ID
 
-ZPK Digital ID is a local-first Android prototype for the Gemma 4 Good Hackathon. It registers a citizen into a privacy-preserving identity wallet, issues a pseudonymous local credential, checks a synthetic offline CUI risk catalog, and prepares recovery guidance without sending raw CUI to the cloud.
+ZPK Digital ID is a local-first Android app for the Gemma 4 Good Hackathon. It registers a citizen into a privacy-preserving identity wallet, issues a pseudonymous local credential, checks a synthetic offline CUI risk catalog, and prepares recovery guidance without sending raw CUI to the cloud.
 
-This repository is optimized for hackathon evidence, not production deployment. It intentionally avoids real personal data.
+This repository is optimized for a public hackathon submission and reproducible evidence. It intentionally avoids real personal data, real breach records, and government registry connectivity.
 
-## Current Prototype
+## Current App
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, signed redacted recovery packet, selective disclosure claims, and 15-minute consent proof.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, signed redacted recovery packet, signed local revocation receipt, selective disclosure claims, and 15-minute consent proof.
+- Local privacy controls: raw CUI prompt guard, encrypted app-internal audit archive, citizen archive deletion, `FLAG_SECURE`, disabled Android backup, and cleartext traffic disabled.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
 - Unsloth seed data: `unsloth/`
@@ -73,6 +74,10 @@ flutter run \
 
 This mode uses Android ML Kit Prompt API. It needs a supported AICore device for actual on-device Gemma/Gemini Nano generation; the available emulator reports `UNAVAILABLE` and the app falls back locally with a visible trace.
 
+## Offline Agentic Flow
+
+The default APK runs without a backend. The local agent performs CUI format validation, embedded catalog lookup, identity-risk classification, privacy routing, DID-style credential issuance, signed recovery packet generation, signed revocation, encrypted local audit storage, and Spanish recovery guidance. Gemma 4 is used only through redacted hosted prompts unless a supported on-device AICore runtime is available.
+
 ## Verified Evidence
 
 - Offline embedded catalog trace: `kan-app/kan-embedded-catalog-trace.png`
@@ -81,15 +86,16 @@ This mode uses Android ML Kit Prompt API. It needs a supported AICore device for
 - Cactus tool failure isolation: `kan-app/kan-cactus-270m-trace.png`
 - ML Kit/AICore emulator result: `docs/evidence/mlkit-gemma-ondevice-2026-05-01.md`
 - ZPK local trust fabric: `docs/evidence/zpk-local-trust-fabric-2026-05-01.md`
+- Encrypted audit archive runtime evidence: `docs/evidence/local-audit-archive-2026-05-01.md`
 
 Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 22 tests
+- `flutter test` passes 30 tests
 - `flutter build apk --debug`
 
-## Demo Package
+## Evidence Package
 
 Build a local downloadable package for Kaggle live-demo evidence:
 
@@ -108,7 +114,7 @@ Current verified package:
 
 Final copy/paste and upload files live in `submission/`:
 
-- `submission/final-kaggle-writeup.md`: Kaggle writeup, 695 words.
+- `submission/final-kaggle-writeup.md`: Kaggle writeup, about 840 words.
 - `submission/KAGGLE_FORM.md`: final form fields and prize-claim guidance.
 - `submission/YOUTUBE_DESCRIPTION.md`: video upload title, description, and tags.
 - `submission/ARTIFACT_MANIFEST.md`: upload checklist and checksums.
@@ -132,6 +138,7 @@ KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 ## Important Non-Claims
 
 - The app does not use real breach data.
+- It is not a deployed national identity system and does not integrate with the Guatemalan registry.
 - It is not legal advice and does not guarantee legal correctness.
 - Cactus tool-calling is not working yet; local Cactus inference works only with tools disabled.
 - Gemma 4 evidence is currently hosted through the Gemini API, not Cactus.
@@ -140,6 +147,7 @@ KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 - Runtime app signing uses Android Keystore through `DigitalIdentityFabric.device()`; deterministic Dart HMAC signing is used only for tests.
 - Each recovery run emits a signed SHA-256 hash-chain agent ledger so tool calls, credential issuance, consent, and reasoner routing are auditable without storing raw CUI.
 - Recovery packets are split into a private local complaint with full CUI and a signed redacted share packet for institutions.
+- App-internal audit receipts are sealed with AES-GCM using an Android Keystore key before storage.
 - Android hardening blocks screenshots/screen recording, disables app backup/data extraction, and disallows cleartext traffic.
 
 ## Python Policy

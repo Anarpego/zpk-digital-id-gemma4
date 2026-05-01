@@ -2,13 +2,13 @@
 
 ## Project Structure & Module Organization
 
-This workspace contains `kan.md`, the implementation brief, and the active Flutter prototype in `kan-app/`. Prioritize demo reliability, privacy proof, and prize evidence.
+This workspace contains `kan.md`, the implementation brief, and the active Flutter Android app in `kan-app/`. Prioritize app reliability, privacy proof, and prize evidence.
 
 Current layout:
 - `kan-app/lib/`: Flutter app code. Put screens under `lib/features/`, services under `lib/services/`, models under `lib/models/`, and configuration under `lib/config/`.
 - `kan-app/test/`: widget and service tests.
 - `docs/`: technical evidence, routing notes, and model/API verification.
-- `submission/`: Kaggle writeup, video script, and demo runbook drafts.
+- `submission/`: Kaggle writeup, video script, and manual upload runbooks.
 - Future `kan-server/`: Phoenix API code under `lib/kan/` and `lib/kan_web/`, migrations under `priv/repo/migrations/`, and tests under `test/`.
 
 ## Build, Test, and Development Commands

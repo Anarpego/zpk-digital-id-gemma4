@@ -8,7 +8,7 @@ Use only claims backed by current evidence unless more work is completed.
 
 ### Main Track
 
-Claim ZPK Digital ID as a working social-impact prototype with:
+Claim ZPK Digital ID as a working social-impact Android app with:
 
 - Android app.
 - Offline ZPK identity registration and synthetic CUI risk verification.
