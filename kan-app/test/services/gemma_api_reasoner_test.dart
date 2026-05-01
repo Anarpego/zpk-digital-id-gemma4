@@ -47,6 +47,7 @@ void main() {
 
     expect(guidance.summary, 'Respuesta final segura.');
     expect(guidance.usedLocalOnly, isFalse);
+    expect(guidance.toolTrace, contains('privacy_guard.raw_cui -> absent'));
     expect(
       guidance.toolTrace,
       contains('gemma_agent.prompt(redacted_facts) -> ok'),

@@ -22,5 +22,6 @@ void main() {
     expect(prompt, contains('patron_latam'));
     expect(prompt, contains('mintrab-tu-empleo-2026-04'));
     expect(prompt, contains('No pidas mas datos'));
+    expect(prompt, isNot(contains(result.cui)));
   });
 }

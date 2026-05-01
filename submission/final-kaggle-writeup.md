@@ -25,6 +25,8 @@ The important change is that Gemma is no longer just a response generator. ZPK b
 
 - `agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, draft_action_packet`
 - `select_privacy_route(...) -> pii_block_ok`
+- `privacy_guard.raw_cui -> absent`
+- `privacy_guard.13_digit_identifier -> absent`
 - `trust_fabric.did_document(local) -> did:zpk:gt:...`
 - `trust_fabric.vc_selective_disclosure(local) -> ...`
 - `trust_fabric.sign_credential(hmac-sha256) -> ok`
@@ -38,7 +40,7 @@ This local trust fabric simulates the infrastructure a national digital identity
 
 ## Local-First Architecture
 
-The APK bundles `assets/breach_catalog.json`, a synthetic offline catalog with no real personal data. `LocalBreachCatalog.loadEmbeddedOrFallback()` loads it on device. The CUI is used only locally to create a pseudonymous ZPK citizen ID and risk assessment. Hosted reasoning receives only redacted facts such as match count, risk level, scenario, and action needs.
+The APK bundles `assets/breach_catalog.json`, a synthetic offline catalog with no real personal data. `LocalBreachCatalog.loadEmbeddedOrFallback()` loads it on device. The CUI is used only locally to create a pseudonymous ZPK citizen ID and risk assessment. Hosted reasoning receives only redacted facts such as match count, risk level, scenario, and action needs. A code-level `PrivacyGuard` now blocks the active raw CUI or any unredacted 13-digit identifier before hosted Gemma, Cactus local inference, or ML Kit/AICore generation.
 
 The Android shell adds production-style privacy hardening for the demo: `FLAG_SECURE` blocks screenshots and screen recording, app backup/data extraction is disabled, and cleartext traffic is disallowed.
 
@@ -56,4 +58,4 @@ ZPK targets Digital Equity & Inclusivity because it turns identity safety into a
 
 ## Reproducibility
 
-The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 22 tests, and `flutter build apk --debug`.
+The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 25 tests, and `flutter build apk --debug`.

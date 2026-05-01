@@ -7,6 +7,7 @@ import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
+import 'privacy_guard.dart';
 import 'routing_policy.dart';
 
 class GemmaApiReasoner implements KanReasoner {
@@ -18,6 +19,7 @@ class GemmaApiReasoner implements KanReasoner {
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
+    this.privacyGuard = const PrivacyGuard(),
   }) : _client = client ?? http.Client(),
        _promptBuilder = promptBuilder;
 
@@ -28,6 +30,7 @@ class GemmaApiReasoner implements KanReasoner {
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
   final DigitalIdentityFabric identityFabric;
+  final PrivacyGuard privacyGuard;
 
   @override
   Future<ReasonedGuidance> explain({
@@ -49,6 +52,10 @@ class GemmaApiReasoner implements KanReasoner {
       result: result,
       scenario: scenario,
       identityFabric: identityFabric,
+    );
+    final privacyReport = privacyGuard.requireRedactedModelPrompt(
+      prompt: prompt,
+      result: result,
     );
     final uri = Uri.https(
       'generativelanguage.googleapis.com',
@@ -97,6 +104,7 @@ class GemmaApiReasoner implements KanReasoner {
       toolTrace: [
         ...assessment.toolTrace,
         ...trustReport.trace,
+        ...privacyReport.trace,
         'gemma_agent.prompt(redacted_facts) -> ok',
         'gemma_api.generateContent($modelVersion) -> ok',
         'gemma_api.tokens -> prompt ${usage['promptTokenCount'] ?? 'n/a'}, total ${usage['totalTokenCount'] ?? 'n/a'}',

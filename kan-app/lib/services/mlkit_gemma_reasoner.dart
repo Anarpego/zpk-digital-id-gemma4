@@ -5,6 +5,7 @@ import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
+import 'privacy_guard.dart';
 import 'routing_policy.dart';
 
 class MlKitGemmaReasoner implements KanReasoner {
@@ -14,6 +15,7 @@ class MlKitGemmaReasoner implements KanReasoner {
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
+    this.privacyGuard = const PrivacyGuard(),
   }) : _channel = channel,
        _promptBuilder = promptBuilder;
 
@@ -22,6 +24,7 @@ class MlKitGemmaReasoner implements KanReasoner {
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
   final DigitalIdentityFabric identityFabric;
+  final PrivacyGuard privacyGuard;
 
   @override
   Future<ReasonedGuidance> explain({
@@ -39,6 +42,10 @@ class MlKitGemmaReasoner implements KanReasoner {
       result: result,
       scenario: scenario,
       identityFabric: identityFabric,
+    );
+    final privacyReport = privacyGuard.requireRedactedModelPrompt(
+      prompt: prompt,
+      result: result,
     );
 
     final response = await _channel.invokeMapMethod<String, Object?>(
@@ -71,6 +78,7 @@ class MlKitGemmaReasoner implements KanReasoner {
       toolTrace: [
         ...assessment.toolTrace,
         ...trustReport.trace,
+        ...privacyReport.trace,
         'gemma_agent.prompt(redacted_facts) -> ok',
         'mlkit_gemma.status -> $status',
         'mlkit_gemma.generateContent($model) -> ok',

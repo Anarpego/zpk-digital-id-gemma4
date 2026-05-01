@@ -3,6 +3,7 @@ import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
+import 'privacy_guard.dart';
 import 'routing_policy.dart';
 
 class MockReasoner implements KanReasoner {
@@ -10,11 +11,13 @@ class MockReasoner implements KanReasoner {
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
+    this.privacyGuard = const PrivacyGuard(),
   });
 
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
   final DigitalIdentityFabric identityFabric;
+  final PrivacyGuard privacyGuard;
 
   @override
   Future<ReasonedGuidance> explain({
@@ -26,6 +29,10 @@ class MockReasoner implements KanReasoner {
       result: result,
       scenario: scenario,
       assessment: assessment,
+    );
+    final privacyReport = privacyGuard.requireRedactedModelPrompt(
+      prompt: assessment.toPromptBlock(),
+      result: result,
     );
     final routing = assessment.route;
     Future<List<String>> ledgerTrace({required bool usedLocalOnly}) async {
@@ -54,6 +61,7 @@ class MockReasoner implements KanReasoner {
         toolTrace: [
           ...assessment.toolTrace,
           ...trustReport.trace,
+          ...privacyReport.trace,
           ...await ledgerTrace(usedLocalOnly: true),
         ],
         usedLocalOnly: true,
@@ -64,6 +72,7 @@ class MockReasoner implements KanReasoner {
     final trace = [
       ...assessment.toolTrace,
       ...trustReport.trace,
+      ...privacyReport.trace,
       'select_legal_flow(local, ${scenario.shortCode})',
       'apply_experience_prior(tf-grpo) -> ${ReasonerPromptBuilder.experiencePrior.length} reglas',
       'gemma_agent_context(redacted) -> national_identity_playbook',

@@ -5,6 +5,7 @@ import 'agent_execution_ledger.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
+import 'privacy_guard.dart';
 import 'routing_policy.dart';
 
 class CactusReasoner implements KanReasoner {
@@ -17,6 +18,7 @@ class CactusReasoner implements KanReasoner {
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
+    this.privacyGuard = const PrivacyGuard(),
   }) : _lm = lm ?? CactusLM(enableToolFiltering: enableTools),
        _promptBuilder = promptBuilder;
 
@@ -27,6 +29,7 @@ class CactusReasoner implements KanReasoner {
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
   final DigitalIdentityFabric identityFabric;
+  final PrivacyGuard privacyGuard;
   final ReasonerPromptBuilder _promptBuilder;
 
   bool _initialized = false;
@@ -74,6 +77,10 @@ class CactusReasoner implements KanReasoner {
       scenario: scenario,
       identityFabric: identityFabric,
     );
+    final privacyReport = privacyGuard.requireRedactedModelPrompt(
+      prompt: prompt,
+      result: result,
+    );
     final completion = await _lm.generateCompletion(
       messages: [ChatMessage(role: 'user', content: prompt)],
       params: CactusCompletionParams(
@@ -106,6 +113,7 @@ class CactusReasoner implements KanReasoner {
       toolTrace: [
         ...assessment.toolTrace,
         ...trustReport.trace,
+        ...privacyReport.trace,
         'gemma_agent.prompt(redacted_facts) -> ok',
         'cactus.tools -> ${enableTools ? 'enabled' : 'disabled'}',
         'cactus.generateCompletion(local, $model) -> ${completion.success ? 'ok' : 'error'}',

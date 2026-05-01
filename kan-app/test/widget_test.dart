@@ -24,6 +24,10 @@ void main() {
       find.textContaining('trust_fabric.issue_consent(local, 15m)'),
       findsOneWidget,
     );
+    expect(
+      find.textContaining('privacy_guard.raw_cui -> absent'),
+      findsOneWidget,
+    );
     expect(find.textContaining('agent_ledger.sign'), findsOneWidget);
     await tester.drag(find.byType(ListView), const Offset(0, -600));
     await tester.pumpAndSettle();
