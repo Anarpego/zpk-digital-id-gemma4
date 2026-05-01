@@ -17,7 +17,7 @@ Objective: make Kan competitive for the Gemma 4 Good Hackathon without spending 
 | Unsloth prize readiness | Seed dataset, eval cases, uv training scaffold, and dry-run report exist under `unsloth/`; no adapter or before/after benchmark | Partial |
 | Kaggle writeup under 1,500 words | `submission/kaggle-writeup-draft.md`, 657 words | Draft |
 | Public video under 3 minutes | `submission/video-script-draft.md` only | Missing |
-| Public code repo | Local Git repository exists; `.env`, APKs, build outputs, and `.venv` are ignored; nothing has been committed or published | Partial |
+| Public code repo | Local Git repository exists; `.env`, APKs, build outputs, and `.venv` are ignored; no public remote yet | Partial |
 | Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T155615Z.zip` exists with APK, checksum, screenshots, cover SVG, Unsloth scaffold, and docs; not public yet | Partial |
 | Media gallery cover image | Draft SVG exists at `submission/media-gallery-cover.svg`; not uploaded | Partial |
 

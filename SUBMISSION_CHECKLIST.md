@@ -78,7 +78,7 @@
 
 ## Competition Deliverables Still Missing
 
-- Public code repository. A local Git repository now exists with `README.md`, `.gitignore`, `.env.example`, and `LICENSE`, but it has not been committed or published.
+- Public code repository. A local Git repository now exists with publish-ready hygiene files, but it has not been pushed to a public remote.
 - Final Kaggle writeup under 1,500 words with measured Gemma/Cactus evidence.
 - Public video, maximum 3 minutes, recorded and attached to the media gallery.
 - Final media gallery cover upload. A draft SVG cover now exists locally but has not been uploaded.
