@@ -22,7 +22,7 @@ Digital Equity & Inclusivity
 
 `TODO_PUBLIC_DEMO_ZIP_OR_DATASET_URL`
 
-Recommended artifact: `submission/dist/kan-demo-package-20260501T172300Z.zip`.
+Recommended artifact: `submission/dist/kan-demo-package-20260501T172529Z.zip`.
 
 ## Video URL
 

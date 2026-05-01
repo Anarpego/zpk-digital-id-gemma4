@@ -33,6 +33,7 @@ zip -r "$ZIP" \
   .env.example \
   AGENTS.md \
   SUBMISSION_CHECKLIST.md \
+  scripts/verify_submission.sh \
   docs \
   submission/live-demo \
   submission/demo-runbook.md \
