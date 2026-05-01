@@ -111,6 +111,7 @@ Final copy/paste and upload files live in `submission/`:
 - `submission/YOUTUBE_DESCRIPTION.md`: video upload title, description, and tags.
 - `submission/ARTIFACT_MANIFEST.md`: upload checklist and checksums.
 - `submission/kan-final-demo-video.mp4`: narrated final video under 3 minutes.
+- `SUBMIT_NOW.md`: shortest final manual submission handoff.
 
 After authenticating externally:
 

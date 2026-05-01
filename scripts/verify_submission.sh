@@ -69,6 +69,7 @@ if grep -q ' \.env$' "$zip_listing"; then
 fi
 
 for required in \
+  'SUBMIT_NOW.md' \
   'scripts/prepare_kaggle_dataset.sh' \
   'scripts/publish_submission.sh' \
   'scripts/verify_submission.sh' \
