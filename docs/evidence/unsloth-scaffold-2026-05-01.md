@@ -11,6 +11,7 @@ Purpose: prepare, but not yet claim, an Unsloth fine-tuning path for Kan.
 - `unsloth/train_lora.py`: dry-run validator plus lazy Unsloth training scaffold.
 - `unsloth/pyproject.toml`: uv project with optional `train` dependencies.
 - `unsloth/outputs/dry_run_report.md`: local dry-run result.
+- `unsloth/outputs/training_attempt_2026-05-01.md`: remote one-step training attempt result.
 
 ## Local Validation
 
@@ -91,6 +92,28 @@ Result:
 - Note: Unsloth reported Flash Attention 2 was broken and used Xformers instead.
 - Post-install dry run: `PASS`
 
+## One-Step Training Attempt
+
+Command:
+
+```bash
+HF_HUB_ENABLE_HF_TRANSFER=1 /tmp/kan-unsloth-venv/bin/python /tmp/kan-unsloth/unsloth/train_lora.py --run-name lora-smoke --max-seq-length 1024 --batch-size 1 --gradient-accumulation-steps 1 --max-steps 1
+```
+
+Result:
+
+- Model: `unsloth/gemma-4-E2B-it-unsloth-bnb-4bit`
+- Model files downloaded successfully.
+- Weights loaded successfully.
+- Dataset formatting and tokenization completed for 6 examples.
+- Training failed before step 1 with CUDA OOM on the 6 GB RTX 4050.
+
+Failure excerpt:
+
+```text
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.38 GiB. GPU 0 has a total capacity of 5.65 GiB of which 3.24 GiB is free.
+```
+
 ## Limitation
 
-No Unsloth training has been run yet. Do not claim the Unsloth prize until there is an adapter artifact and before/after benchmark. The RTX 4050 6 GB machine has a working CUDA/Unsloth stack, but its 6 GB VRAM is tight and should be treated as experimental for Gemma 4 QLoRA.
+No successful Unsloth training has been run yet. Do not claim the Unsloth prize until there is an adapter artifact and before/after benchmark. The RTX 4050 6 GB machine has a working CUDA/Unsloth stack, but it is not sufficient for the current Gemma 4 E2B QLoRA path.
