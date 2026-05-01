@@ -1,6 +1,6 @@
-# Kan
+# ZPK Digital ID
 
-Kan is a local-first Android prototype for the Gemma 4 Good Hackathon. It helps Guatemalan citizens respond to data breaches by checking a synthetic offline CUI catalog, explaining risk in plain Spanish, and generating a preliminary complaint document on device.
+ZPK Digital ID is a local-first Android prototype for the Gemma 4 Good Hackathon. It registers a citizen into a privacy-preserving identity wallet, issues a pseudonymous local credential, checks a synthetic offline CUI risk catalog, and prepares recovery guidance without sending raw CUI to the cloud.
 
 This repository is optimized for hackathon evidence, not production deployment. It intentionally avoids real personal data.
 
@@ -8,6 +8,7 @@ This repository is optimized for hackathon evidence, not production deployment. 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
+- Local ZPK trust fabric: DID-style document, verifiable-credential-style recovery credential, selective disclosure claims, and 15-minute consent proof.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
 - Unsloth seed data: `unsloth/`
@@ -79,12 +80,13 @@ This mode uses Android ML Kit Prompt API. It needs a supported AICore device for
 - Cactus local inference trace: `kan-app/kan-cactus-270m-notools-trace.png`
 - Cactus tool failure isolation: `kan-app/kan-cactus-270m-trace.png`
 - ML Kit/AICore emulator result: `docs/evidence/mlkit-gemma-ondevice-2026-05-01.md`
+- ZPK local trust fabric: `docs/evidence/zpk-local-trust-fabric-2026-05-01.md`
 
 Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 17 tests
+- `flutter test` passes 19 tests
 - `flutter build apk --debug`
 
 ## Demo Package

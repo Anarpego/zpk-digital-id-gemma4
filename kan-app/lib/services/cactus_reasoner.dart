@@ -1,6 +1,8 @@
 import 'package:cactus/cactus.dart';
 
 import '../models/kan_case.dart';
+import 'digital_identity_fabric.dart';
+import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
 import 'routing_policy.dart';
 
@@ -12,6 +14,7 @@ class CactusReasoner implements KanReasoner {
     this.enableTools = true,
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
     this.routingPolicy = const RoutingPolicy(),
+    this.agent = const IdentityProtectionAgent(),
   }) : _lm = lm ?? CactusLM(enableToolFiltering: enableTools),
        _promptBuilder = promptBuilder;
 
@@ -20,6 +23,7 @@ class CactusReasoner implements KanReasoner {
   final int maxTokens;
   final bool enableTools;
   final RoutingPolicy routingPolicy;
+  final IdentityProtectionAgent agent;
   final ReasonerPromptBuilder _promptBuilder;
 
   bool _initialized = false;
@@ -54,7 +58,13 @@ class CactusReasoner implements KanReasoner {
     required VerificationResult result,
     required CaseScenario scenario,
   }) async {
-    final routing = routingPolicy.decide(result: result, scenario: scenario);
+    final assessment = agent.assess(result: result, scenario: scenario);
+    final trustReport = const DigitalIdentityFabric().evaluate(
+      result: result,
+      scenario: scenario,
+      assessment: assessment,
+    );
+    final routing = assessment.route;
     await _initialize();
     final prompt = _promptBuilder.build(result: result, scenario: scenario);
     final completion = await _lm.generateCompletion(
@@ -75,9 +85,12 @@ class CactusReasoner implements KanReasoner {
       nextSteps: const [
         'Revise la respuesta antes de generar documentos.',
         'Mantenga el CUI y datos personales solo en el dispositivo.',
+        'Escalar con hechos redactados permite usar el mismo patron en Guatemala y otros paises.',
       ],
       toolTrace: [
-        routing.trace,
+        ...assessment.toolTrace,
+        ...trustReport.trace,
+        'gemma_agent.prompt(redacted_facts) -> ok',
         'cactus.tools -> ${enableTools ? 'enabled' : 'disabled'}',
         'cactus.generateCompletion(local, $model) -> ${completion.success ? 'ok' : 'error'}',
         'cactus.metrics -> ttft ${completion.timeToFirstTokenMs.round()}ms, total ${completion.totalTimeMs.round()}ms, ${completion.tokensPerSecond.toStringAsFixed(1)} tok/s',

@@ -22,7 +22,7 @@ class KanApp extends StatelessWidget {
     const seed = Color(0xff006d5b);
 
     return MaterialApp(
-      title: 'Kan',
+      title: 'ZPK Digital ID',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(

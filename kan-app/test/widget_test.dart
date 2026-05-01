@@ -7,8 +7,8 @@ void main() {
   testWidgets('offline demo verifies exposed synthetic CUI', (tester) async {
     await tester.pumpWidget(const KanApp());
 
-    expect(find.text('Kan'), findsOneWidget);
-    expect(find.text('Modo local'), findsOneWidget);
+    expect(find.text('ZPK Digital ID'), findsOneWidget);
+    expect(find.text('Wallet local'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.verified_user_outlined));
     await tester.pumpAndSettle();
@@ -16,17 +16,22 @@ void main() {
     expect(find.text('Coincidencia encontrada'), findsOneWidget);
     expect(
       find.textContaining(
-        'load_breach_catalog(asset:assets/breach_catalog.json)',
+        'local_breach_lookup(asset:assets/breach_catalog.json)',
       ),
       findsOneWidget,
     );
     expect(
-      find.textContaining('verify_dpi_in_local_leaks(local)'),
+      find.textContaining('trust_fabric.issue_consent(local, 15m)'),
       findsOneWidget,
     );
     await tester.drag(find.byType(ListView), const Offset(0, -600));
     await tester.pumpAndSettle();
-    expect(find.text('Denuncia lista'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Registro ZPK local'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Registro ZPK local'), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
@@ -37,8 +42,8 @@ void main() {
 
     await tester.enterText(find.byType(TextField), '123');
     await tester.pump();
-    await tester.ensureVisible(find.text('Verificar y generar guia'));
-    await tester.tap(find.text('Verificar y generar guia'));
+    await tester.ensureVisible(find.text('Registrar ZPK y generar guia'));
+    await tester.tap(find.text('Registrar ZPK y generar guia'));
     await _pumpUntilFound(tester, find.text('CUI invalido'));
     await tester.drag(find.byType(ListView), const Offset(0, -240));
     await tester.pump();

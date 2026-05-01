@@ -1,6 +1,6 @@
-# Kan Gemma 4 Good Submission Package
+# ZPK Digital ID Gemma 4 Good Submission Package
 
-This release contains the public judging artifacts for Kan, a local-first Android assistant for Guatemalan citizens responding to personal-data leaks.
+This release contains the public judging artifacts for ZPK Digital ID, a local-first Android identity wallet for Guatemalan citizens. It demonstrates pseudonymous registration, selective disclosure, consent proof, CUI risk lookup, and recovery guidance without sending raw CUI to hosted reasoning by default.
 
 ## Assets
 
@@ -21,7 +21,7 @@ Expected checksums:
 
 - Demo ZIP: generate from the uploaded asset with `shasum -a 256`.
 - Final video: `42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34`
-- Media cover: `3c1039c1843ee8763439b1be6fb27151056770e33f4f0e7e7a5d04f9ada16db3`
-- APK: `97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138`
+- Media cover: `882f32b3e35b8b73fcf7b32dda46f021fe82bfdcad33b44a5a707aa7de265875`
+- APK: `e65033655d713cd53f3612565a62efd3b5f5d1af170323a6db0bf634609f97b2`
 
 The package includes `.env.example` but must not include `.env`.

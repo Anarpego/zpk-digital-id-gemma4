@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import '../models/kan_case.dart';
+import 'digital_identity_fabric.dart';
+import 'identity_protection_agent.dart';
 
 abstract interface class KanReasoner {
   Future<ReasonedGuidance> explain({
@@ -73,6 +75,15 @@ class ReasonerPromptBuilder {
     required VerificationResult result,
     required CaseScenario scenario,
   }) {
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: scenario,
+    );
+    final trustReport = const DigitalIdentityFabric().evaluate(
+      result: result,
+      scenario: scenario,
+      assessment: assessment,
+    );
     final matches = result.matches
         .map(
           (match) =>
@@ -81,10 +92,29 @@ class ReasonerPromptBuilder {
         .join('\n');
 
     return '''
-Eres Kan, un asistente ciudadano guatemalteco.
+Eres ZPK Digital ID, un agente ciudadano para registro, autenticacion y
+recuperacion segura de identidad en Guatemala.
+Tu meta es ayudar a una persona a defender su identidad digital sin filtrar CUI,
+DPI, telefono, direccion ni evidencia privada. Piensa como un sistema nacional
+que puede repetirse en Guatemala y otros paises de America Latina.
 
 Reglas aprendidas por experiencia:
 ${experiencePrior.map((rule) => '- $rule').join('\n')}
+
+${assessment.toPromptBlock()}
+
+Infraestructura local de identidad:
+- emisor_demo: ${trustReport.credential.issuer}
+- pseudonimo_ciudadano: ${trustReport.credential.pseudonymousId}
+- nivel_aseguramiento: ${trustReport.credential.assuranceLevel}
+- consentimiento: ${trustReport.consentGrant.scope}
+- prueba_local: ${trustReport.consentGrant.localProof}
+- did_local: ${trustReport.didDocument['id']}
+- credencial_verificable_demo: ${trustReport.verifiableCredential['type']}
+- divulgacion_selectiva: ${trustReport.selectiveDisclosureClaims.join(', ')}
+- recuperacion: ${trustReport.recoveryStatus}
+- paquete_institucional:
+${trustReport.institutionPacket.map((item) => '  - $item').join('\n')}
 
 Caso:
 - flujo: ${scenario.label}
@@ -93,7 +123,10 @@ Caso:
 - brechas:
 ${matches.isEmpty ? 'ninguna' : matches}
 
-Responde en espanol claro. No inventes instituciones. No pidas mas datos personales. Si hay coincidencia, recomienda evidencia, DPI fisico y denuncia preliminar. Si no hay coincidencia, explica que no prueba ausencia de riesgo.
+Responde en espanol claro. No inventes instituciones. No pidas mas datos
+personales. Si hay coincidencia, recomienda evidencia, DPI fisico y denuncia
+preliminar. Si no hay coincidencia, explica que no prueba ausencia de riesgo.
+Incluye solo hechos redactados, pasos accionables y una nota de escala nacional.
 ''';
   }
 }

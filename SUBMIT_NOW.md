@@ -38,7 +38,7 @@ uvx kaggle datasets create -p submission/kaggle-dataset-upload --dir-mode zip
 
 Copy fields from `submission/KAGGLE_FORM.md`.
 
-- Title: `Kan: Local-First Breach Defense for Guatemalan Citizens`
+- Title: `ZPK Digital ID: Local-First Identity Protection for Guatemala`
 - Impact Track: `Digital Equity & Inclusivity`
 - Writeup: paste `submission/final-kaggle-writeup.md`
 - Video: upload or link `submission/kan-final-demo-video.mp4`
@@ -49,9 +49,9 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 ## 4. Hashes To Confirm Uploads
 
 - ZIP: see `submission/dist/kan-demo-package-final.zip.sha256`
-- APK: `97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138`
+- APK: `e65033655d713cd53f3612565a62efd3b5f5d1af170323a6db0bf634609f97b2`
 - Video: `42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34`
-- Cover PNG: `3c1039c1843ee8763439b1be6fb27151056770e33f4f0e7e7a5d04f9ada16db3`
+- Cover PNG: `882f32b3e35b8b73fcf7b32dda46f021fe82bfdcad33b44a5a707aa7de265875`
 
 ## 5. Prize Claims
 
@@ -59,7 +59,8 @@ Claim strongly:
 
 - Main Track: working Android social-impact prototype.
 - Impact Track: Digital Equity & Inclusivity.
-- Local-first sensitive-data workflow with visible privacy traces.
+- Local-first ZPK identity registration, selective disclosure, and recovery workflow.
+- Visible privacy/tool traces for DID-style credential, consent proof, and redacted institutional packet.
 - Hosted Gemma 4 evidence with `gemma-4-31b-it`.
 
 Claim cautiously:
@@ -71,4 +72,5 @@ Do not claim:
 
 - Successful offline/on-device Gemma 4 generation.
 - Completed Unsloth adapter or RL fine-tune.
+- Real government integration or production-grade cryptography.
 - Production legal advice.

@@ -8,42 +8,42 @@ Narration text: `submission/final-video-narration.txt`.
 
 ## 0:00-0:18 Problem
 
-Visual: cover image, phone with Kan.
+Visual: cover image, phone with ZPK Digital ID.
 
 Voiceover:
-When personal data leaks, many citizens are left with three questions: am I affected, what does it mean, and what do I do today? Kan is a local-first Android assistant for that moment.
+In Guatemala, digital identity must work even when institutions, aid programs, or employer portals leak personal data. ZPK Digital ID is a local-first Android wallet for that reality.
 
 ## 0:18-0:50 Offline Check
 
-Visual: app home screen, `Modo local`, synthetic CUI `1234567890101`.
+Visual: app home screen, `Wallet local`, synthetic CUI `1234567890101`.
 
 Voiceover:
-The demo uses synthetic data only. Kan loads an embedded breach catalog on the device. The CUI is checked locally, not sent to a server. When there is a match, the user sees plain Spanish instead of technical breach jargon.
+The demo uses synthetic data only. A citizen enters a test CUI, and ZPK registers a pseudonymous identity on the device. The raw CUI is not sent to a server.
 
 ## 0:50-1:20 Action
 
-Visual: `Coincidencia encontrada`, `Guia de accion`, complaint draft.
+Visual: `Registro ZPK local`, DID-style credential, selective disclosure claims.
 
 Voiceover:
-Kan does not stop at a chatbot answer. It creates next steps and a preliminary complaint draft the citizen can review, print, or share with someone they trust.
+The local agent checks risk, chooses a privacy route, and creates a DID-style document, a verifiable-credential-style recovery credential, selective disclosure claims, and a 15-minute consent proof.
 
 ## 1:20-1:55 Gemma 4 And Routing
 
 Visual: hosted Gemma 4 trace screenshot, routing/tool traces.
 
 Voiceover:
-For richer reasoning, Kan has a hosted Gemma 4 mode verified with `gemma-4-31b-it`. The routing trace records which path ran and whether personal data was sent. By default, sensitive checks stay local.
+For richer reasoning, ZPK has a hosted Gemma 4 mode verified with `gemma-4-31b-it`. The prompt receives redacted facts, not the raw CUI. The trace records which tools ran and whether personal data stayed local.
 
 ## 1:55-2:20 Cactus And Adaptation
 
 Visual: Cactus local metrics screenshot, Unsloth scaffold files.
 
 Voiceover:
-The app also integrates Cactus for local model routing. Current Cactus evidence shows local inference metrics on Android, while tool-calling remains a known limitation. For adaptation, Kan includes a Training-Free GRPO-style experience prior and an Unsloth fine-tuning scaffold for Guatemalan legal Spanish.
+The app also integrates Cactus for local model routing. Current Cactus evidence shows local inference metrics on Android, while tool-calling remains a known limitation. For adaptation, ZPK includes a Training-Free GRPO-style experience prior and an Unsloth fine-tuning scaffold for Guatemalan legal Spanish.
 
 ## 2:20-2:50 Impact
 
 Visual: generated document, local-mode badge, final cover.
 
 Voiceover:
-Kan targets Digital Equity and Safety. It is Spanish-first, Android-first, offline-first, and designed so privacy is visible. The goal is simple: help a citizen move from fear to a concrete next action.
+ZPK targets Digital Equity and Safety. It is Spanish-first, Android-first, offline-first, and designed so privacy is visible. This is an offline testbed for safer national digital identity in Guatemala and a pattern that can extend across Latin America.

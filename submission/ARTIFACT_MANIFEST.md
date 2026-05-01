@@ -8,9 +8,9 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 
 | Artifact | Path | Purpose | SHA-256 |
 |---|---|---|---|
-| Android APK | `submission/live-demo/kan-debug.apk` | Installable local-mode demo APK | `97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138` |
+| Android APK | `submission/live-demo/kan-debug.apk` | Installable local-mode demo APK | `e65033655d713cd53f3612565a62efd3b5f5d1af170323a6db0bf634609f97b2` |
 | Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34` |
-| Media cover | `submission/media-gallery-cover.png` | 1600x900 Kaggle media-gallery image | `3c1039c1843ee8763439b1be6fb27151056770e33f4f0e7e7a5d04f9ada16db3` |
+| Media cover | `submission/media-gallery-cover.png` | 1600x900 Kaggle media-gallery image | `882f32b3e35b8b73fcf7b32dda46f021fe82bfdcad33b44a5a707aa7de265875` |
 | Demo package | `submission/dist/kan-demo-package-final.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | See `submission/dist/kan-demo-package-final.zip.sha256` |
 
 ## Kaggle Form Inputs

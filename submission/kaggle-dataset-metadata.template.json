@@ -1,7 +1,7 @@
 {
-  "title": "Kan Gemma 4 Good Demo Package",
-  "subtitle": "Android-first breach response demo, video, evidence, and submission files",
-  "description": "Kan is a local-first Android assistant for Guatemalan citizens responding to personal-data leaks. This dataset contains the demo ZIP, final narrated video, writeup, evidence, and reproducibility files for the Gemma 4 Good Hackathon submission. It uses synthetic data only and includes no API keys.",
+  "title": "ZPK Digital ID Gemma 4 Good Demo Package",
+  "subtitle": "Android-first identity registration and recovery demo, video, evidence, and submission files",
+  "description": "ZPK Digital ID is a local-first Android identity wallet for Guatemalan citizens. This dataset contains the demo ZIP, final narrated video, writeup, evidence, and reproducibility files for the Gemma 4 Good Hackathon submission. It uses synthetic data only and includes no API keys.",
   "id": "KAGGLE_USERNAME/kan-gemma4-good-demo",
   "licenses": [
     {

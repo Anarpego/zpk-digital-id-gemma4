@@ -16,7 +16,11 @@ void main() {
 
     expect(prompt, contains('Reglas aprendidas por experiencia'));
     expect(prompt, contains('Primero confirmar exposicion local'));
+    expect(prompt, contains('Agente ZPK de proteccion de identidad'));
+    expect(prompt, contains('Infraestructura local de identidad'));
+    expect(prompt, contains('pseudonimo_ciudadano: zpk-gt-'));
+    expect(prompt, contains('patron_latam'));
     expect(prompt, contains('mintrab-tu-empleo-2026-04'));
-    expect(prompt, contains('No pidas mas datos personales'));
+    expect(prompt, contains('No pidas mas datos'));
   });
 }

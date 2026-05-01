@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Kan Demo Package</title>
+    <title>ZPK Digital ID Demo Package</title>
     <style>
       :root {
         color-scheme: light;
@@ -63,8 +63,8 @@
   </head>
   <body>
     <header>
-      <h1>Kan</h1>
-      <p>Local-first breach defense for Guatemalan citizens. This downloadable demo verifies a synthetic CUI, explains the risk in Spanish, and prepares a preliminary complaint draft on device.</p>
+      <h1>ZPK Digital ID</h1>
+      <p>Local-first identity registration and recovery for Guatemalan citizens. This downloadable demo creates a pseudonymous ZPK identity, checks synthetic CUI risk, issues a local consent proof, and prepares a redacted recovery packet on device.</p>
       <div class="actions">
         <a class="button" href="kan-debug.apk">Download Android APK</a>
         <a class="button secondary" href="kan-debug.apk.sha256">APK SHA-256</a>
@@ -84,9 +84,10 @@ adb shell monkey -p gt.kan.kan_app 1</code></pre>
       <section>
         <h2>What The Demo Shows</h2>
         <ul>
-          <li>Offline embedded catalog lookup.</li>
+          <li>Offline ZPK identity registration with no cloud dependency.</li>
+          <li>DID-style document, verifiable-credential-style recovery credential, and selective disclosure claims.</li>
           <li>Local Spanish guidance and preliminary complaint generation.</li>
-          <li>Visible traces for catalog load, local lookup, routing, and document fill.</li>
+          <li>Visible traces for catalog lookup, privacy routing, consent proof, and redacted institutional packet.</li>
           <li>Separate evidence screenshots for hosted Gemma 4 and Cactus local inference.</li>
           <li>A narrated final demo video under 3 minutes.</li>
         </ul>

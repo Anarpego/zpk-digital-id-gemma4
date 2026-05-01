@@ -4,11 +4,11 @@ Use these fields for the final Kaggle submission. Replace placeholder URLs only 
 
 ## Title
 
-Kan: Local-First Breach Defense for Guatemalan Citizens
+ZPK Digital ID: Local-First Identity Protection for Guatemala
 
 ## Subtitle
 
-An Android-first breach-response assistant with an offline sensitive-data path and verified Gemma 4 reasoning for plain-Spanish guidance and complaint drafting.
+An Android-first digital identity wallet that registers citizens locally, protects CUI/DPI data with pseudonymous proofs, and uses Gemma 4 reasoning for recovery guidance.
 
 ## Impact Track
 
@@ -32,11 +32,11 @@ Recommended artifact: `submission/kan-final-demo-video.mp4`.
 
 ## Short Summary
 
-Kan targets a concrete high-stakes use case: a Guatemalan citizen suspects their DPI/CUI was exposed after a breach or fake aid program. The app answers three urgent questions: am I affected, what does it mean, and what can I do today? The demo uses only synthetic data. It verifies a CUI against an embedded local breach catalog, explains the result in Spanish, and generates a preliminary complaint draft on device.
+ZPK Digital ID targets a national-scale problem: citizens need digital identity and authentication, but vulnerable countries cannot assume every registry, aid program, or institution will protect personal data perfectly. The demo registers a synthetic Guatemalan citizen into a local wallet, creates a pseudonymous ZPK credential, verifies CUI risk against an embedded catalog, explains the result in Spanish, and generates a recovery packet on device.
 
 ## Technical Summary
 
-Kan is a Flutter Android app with four reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, hosted Gemma 4 mode verified with `gemma-4-31b-it`, and an ML Kit/AICore mode that compiles and fails closed on the Mac emulator when the GenAI feature is unavailable. The significant result is the end-to-end citizen workflow: local synthetic CUI lookup, visible privacy routing, Spanish explanation, action checklist, and a complaint draft without sending raw CUI to hosted reasoning by default. Evidence includes Android screenshots, passing Flutter tests, a Gemma 4 API smoke test, Cactus local-inference metrics, ML Kit/AICore fallback evidence, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
+ZPK Digital ID is a Flutter Android app with four reasoner modes: deterministic local mode for reliable offline demos, Cactus local mode for on-device model-routing evidence, hosted Gemma 4 mode verified with `gemma-4-31b-it`, and an ML Kit/AICore mode that compiles and fails closed on the Mac emulator when the GenAI feature is unavailable. The significant result is the local identity trust fabric: a DID-style document, verifiable-credential-style recovery credential, selective disclosure claims, 15-minute consent proof, privacy route, Spanish explanation, and complaint packet without sending raw CUI to hosted reasoning by default. Evidence includes passing Flutter tests, Android APK build, Gemma 4 API smoke test, Cactus local-inference metrics, ML Kit/AICore fallback evidence, and a documented Unsloth training attempt that reached Gemma 4 E2B load/tokenization before failing on the available 6 GB GPU.
 
 ## Prize Claims
 

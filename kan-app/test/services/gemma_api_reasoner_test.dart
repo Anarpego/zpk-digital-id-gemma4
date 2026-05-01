@@ -49,6 +49,14 @@ void main() {
     expect(guidance.usedLocalOnly, isFalse);
     expect(
       guidance.toolTrace,
+      contains('gemma_agent.prompt(redacted_facts) -> ok'),
+    );
+    expect(
+      guidance.toolTrace,
+      contains('trust_fabric.issue_consent(local, 15m) -> ok'),
+    );
+    expect(
+      guidance.toolTrace,
       contains('gemma_api.generateContent(gemma-4-31b-it) -> ok'),
     );
     expect(

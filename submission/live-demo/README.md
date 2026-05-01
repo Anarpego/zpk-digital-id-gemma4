@@ -1,4 +1,4 @@
-# Kan Demo Package
+# ZPK Digital ID Demo Package
 
 This package is intended for Kaggle live-demo/download evidence. It contains a debug Android APK built in default local mode, selected screenshots, a narrated final demo video, and documentation links.
 
@@ -17,10 +17,12 @@ Use synthetic CUI `1234567890101` for the main flow.
 
 ## What This Demo Shows
 
-- Offline embedded catalog lookup.
+- Offline ZPK identity registration.
+- DID-style document and verifiable-credential-style recovery credential.
+- Selective disclosure claims and 15-minute consent proof.
 - Local Spanish guidance.
 - Preliminary complaint document generation.
-- Visible tool traces.
+- Visible tool traces for privacy routing and redacted institutional packet generation.
 
 ## What This Demo Does Not Include
 

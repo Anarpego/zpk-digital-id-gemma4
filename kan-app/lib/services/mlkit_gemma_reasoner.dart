@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 
 import '../models/kan_case.dart';
+import 'digital_identity_fabric.dart';
+import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
 import 'routing_policy.dart';
 
@@ -9,19 +11,27 @@ class MlKitGemmaReasoner implements KanReasoner {
     MethodChannel channel = const MethodChannel('gt.kan.kan_app/mlkit_gemma'),
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
     this.routingPolicy = const RoutingPolicy(),
+    this.agent = const IdentityProtectionAgent(),
   }) : _channel = channel,
        _promptBuilder = promptBuilder;
 
   final MethodChannel _channel;
   final ReasonerPromptBuilder _promptBuilder;
   final RoutingPolicy routingPolicy;
+  final IdentityProtectionAgent agent;
 
   @override
   Future<ReasonedGuidance> explain({
     required VerificationResult result,
     required CaseScenario scenario,
   }) async {
-    final routing = routingPolicy.decide(result: result, scenario: scenario);
+    final assessment = agent.assess(result: result, scenario: scenario);
+    final trustReport = const DigitalIdentityFabric().evaluate(
+      result: result,
+      scenario: scenario,
+      assessment: assessment,
+    );
+    final routing = assessment.route;
     final prompt = _promptBuilder.build(result: result, scenario: scenario);
 
     final response = await _channel.invokeMapMethod<String, Object?>(
@@ -43,7 +53,9 @@ class MlKitGemmaReasoner implements KanReasoner {
         'Mantenga el CUI y las pruebas dentro del dispositivo.',
       ],
       toolTrace: [
-        routing.trace,
+        ...assessment.toolTrace,
+        ...trustReport.trace,
+        'gemma_agent.prompt(redacted_facts) -> ok',
         'mlkit_gemma.status -> $status',
         'mlkit_gemma.generateContent($model) -> ok',
       ],

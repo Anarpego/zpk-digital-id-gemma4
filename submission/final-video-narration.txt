@@ -1,11 +1,13 @@
-When personal data leaks, many citizens are left with three questions: am I affected, what does it mean, and what do I do today? Kan is a local-first Android assistant for that moment.
+In Guatemala, digital identity must work even when institutions, aid programs, or employer portals leak personal data. ZPK Digital ID is a local-first Android wallet for that reality.
 
-The demo uses synthetic data only. Kan loads an embedded breach catalog on the device. The CUI is checked locally, not sent to a server. When there is a match, the user sees plain Spanish instead of technical breach jargon.
+The demo uses synthetic data only. A citizen enters a test CUI, and ZPK registers a pseudonymous identity on the device. The raw CUI is not sent to a server.
 
-Kan does not stop at a chatbot answer. It creates next steps and a preliminary complaint draft the citizen can review, print, or share with someone they trust.
+The local agent checks risk, chooses a privacy route, and creates a DID-style document, a verifiable-credential-style recovery credential, selective disclosure claims, and a 15-minute consent proof.
 
-For richer reasoning, Kan has a hosted Gemma 4 mode verified with gemma four thirty-one b it. The routing trace records which path ran and whether personal data was sent. By default, sensitive checks stay local.
+If a synthetic risk match exists, ZPK explains it in plain Spanish and prepares a redacted institutional packet plus a preliminary complaint draft.
 
-The app also integrates Cactus for local model routing. Current Cactus evidence shows local inference metrics on Android, while tool-calling remains a known limitation. For adaptation, Kan includes a Training-Free GRPO-style experience prior and an Unsloth fine-tuning scaffold for Guatemalan legal Spanish.
+For richer reasoning, the app has a hosted Gemma 4 mode verified with gemma-4-31b-it. The prompt receives redacted facts, not the raw CUI. The trace shows which tools ran and whether personal data stayed local.
 
-Kan targets Digital Equity and Safety. It is Spanish-first, Android-first, offline-first, and designed so privacy is visible. The goal is simple: help a citizen move from fear to a concrete next action.
+ZPK also includes Cactus local inference evidence, ML Kit AICore integration with fail-closed fallback on the emulator, and an Unsloth scaffold for future adaptation.
+
+This is not a production government identity system. It is an offline testbed for safer national digital identity in Guatemala and a pattern that can extend across Latin America.

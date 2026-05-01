@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../models/kan_case.dart';
+import '../../services/digital_identity_fabric.dart';
+import '../../services/identity_protection_agent.dart';
 import '../../services/kan_reasoner.dart';
 import '../../services/legal_template_service.dart';
 import '../../services/local_breach_catalog.dart';
@@ -23,11 +25,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _controller = TextEditingController(text: '1234567890101');
   final _templates = const LegalTemplateService();
+  final _agent = const IdentityProtectionAgent();
+  final _trustFabric = const DigitalIdentityFabric();
   late final Future<LocalBreachCatalog> _catalog;
 
   CaseScenario _scenario = CaseScenario.discoveredVictim;
   VerificationResult? _result;
   ReasonedGuidance? _guidance;
+  IdentityTrustReport? _trustReport;
   String? _complaint;
   bool _isVerifying = false;
 
@@ -51,6 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
       result: result,
       scenario: _scenario,
     );
+    final assessment = _agent.assess(result: result, scenario: _scenario);
+    final trustReport = _trustFabric.evaluate(
+      result: result,
+      scenario: _scenario,
+      assessment: assessment,
+    );
     final complaint = result.isValidCui
         ? _templates.buildComplaint(result: result, scenario: _scenario)
         : null;
@@ -58,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _result = result;
       _guidance = guidance;
+      _trustReport = trustReport;
       _complaint = complaint;
       _isVerifying = false;
     });
@@ -69,9 +81,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kan'),
+        title: const Text('ZPK Digital ID'),
         actions: [
-          const _StatusChip(icon: Icons.lock_outline, label: 'Modo local'),
+          const _StatusChip(icon: Icons.lock_outline, label: 'Wallet local'),
           _StatusChip(icon: Icons.memory_outlined, label: widget.reasonerLabel),
           const SizedBox(width: 8),
         ],
@@ -81,14 +93,14 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           children: [
             Text(
-              'Verifique un DPI y prepare una denuncia',
+              'Registre, proteja y recupere identidad',
               style: Theme.of(
                 context,
               ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(
-              'Demo con datos sinteticos. El CUI se procesa en el dispositivo.',
+              'Demo ZPK con datos sinteticos. El CUI se queda en el dispositivo y solo salen pruebas redactadas.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
@@ -128,8 +140,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   : const Icon(Icons.verified_user_outlined),
               label: Text(
                 _isVerifying
-                    ? 'Verificando en local'
-                    : 'Verificar y generar guia',
+                    ? 'Registrando en local'
+                    : 'Registrar ZPK y generar guia',
               ),
             ),
             const SizedBox(height: 20),
@@ -139,6 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
               _ResultPanel(result: _result!),
               const SizedBox(height: 12),
               _GuidancePanel(guidance: _guidance!),
+              const SizedBox(height: 12),
+              _TrustFabricPanel(report: _trustReport!),
               const SizedBox(height: 12),
               if (_complaint != null) _TemplatePreview(text: _complaint!),
             ],
@@ -168,6 +182,86 @@ class _EmptyState extends StatelessWidget {
             Icon(Icons.info_outline),
             SizedBox(width: 12),
             Expanded(child: Text('La verificacion local aparecera aqui.')),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TrustFabricPanel extends StatelessWidget {
+  const _TrustFabricPanel({required this.report});
+
+  final IdentityTrustReport report;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Registro ZPK local',
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.hub_outlined),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                Chip(
+                  avatar: const Icon(Icons.fingerprint, size: 18),
+                  label: Text(report.credential.pseudonymousId),
+                  visualDensity: VisualDensity.compact,
+                ),
+                Chip(
+                  avatar: const Icon(Icons.timer_outlined, size: 18),
+                  label: Text('${report.consentGrant.expiresInMinutes} min'),
+                  visualDensity: VisualDensity.compact,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(report.recoveryStatus),
+            const SizedBox(height: 10),
+            Text('DID y credencial verificable demo', style: text.labelLarge),
+            const SizedBox(height: 4),
+            Text('DID: ${report.didDocument['id']}', style: text.bodySmall),
+            Text(
+              'Prueba: ${report.consentGrant.localProof}',
+              style: text.bodySmall,
+            ),
+            Text(
+              'Divulgacion: ${report.selectiveDisclosureClaims.join(', ')}',
+              style: text.bodySmall,
+            ),
+            const SizedBox(height: 10),
+            Text('Paquete institucional', style: text.labelLarge),
+            const SizedBox(height: 4),
+            for (final item in report.institutionPacket)
+              Text(item, style: text.bodySmall),
+            const SizedBox(height: 10),
+            Text('Escala Guatemala / LatAm', style: text.labelLarge),
+            const SizedBox(height: 4),
+            for (final note in report.interoperabilityNotes)
+              Text(note, style: text.bodySmall),
+            const Divider(height: 24),
+            for (final trace in report.trace)
+              Text(trace, style: text.bodySmall),
           ],
         ),
       ),

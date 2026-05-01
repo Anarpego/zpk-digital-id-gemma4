@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/kan_case.dart';
+import 'digital_identity_fabric.dart';
+import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
 import 'routing_policy.dart';
 
@@ -13,6 +15,7 @@ class GemmaApiReasoner implements KanReasoner {
     http.Client? client,
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
     this.routingPolicy = const RoutingPolicy(),
+    this.agent = const IdentityProtectionAgent(),
   }) : _client = client ?? http.Client(),
        _promptBuilder = promptBuilder;
 
@@ -21,6 +24,7 @@ class GemmaApiReasoner implements KanReasoner {
   final http.Client _client;
   final ReasonerPromptBuilder _promptBuilder;
   final RoutingPolicy routingPolicy;
+  final IdentityProtectionAgent agent;
 
   @override
   Future<ReasonedGuidance> explain({
@@ -31,7 +35,13 @@ class GemmaApiReasoner implements KanReasoner {
       throw StateError('KAN_GEMINI_API_KEY is required for hosted Gemma mode.');
     }
 
-    final routing = routingPolicy.decide(result: result, scenario: scenario);
+    final assessment = agent.assess(result: result, scenario: scenario);
+    final trustReport = const DigitalIdentityFabric().evaluate(
+      result: result,
+      scenario: scenario,
+      assessment: assessment,
+    );
+    final routing = assessment.route;
     final prompt = _promptBuilder.build(result: result, scenario: scenario);
     final uri = Uri.https(
       'generativelanguage.googleapis.com',
@@ -66,9 +76,12 @@ class GemmaApiReasoner implements KanReasoner {
       nextSteps: const [
         'Revise la respuesta antes de generar documentos.',
         'No envie CUI ni datos personales al servidor.',
+        'Use el paquete local para escalar con hechos redactados a nivel nacional.',
       ],
       toolTrace: [
-        routing.trace,
+        ...assessment.toolTrace,
+        ...trustReport.trace,
+        'gemma_agent.prompt(redacted_facts) -> ok',
         'gemma_api.generateContent($modelVersion) -> ok',
         'gemma_api.tokens -> prompt ${usage['promptTokenCount'] ?? 'n/a'}, total ${usage['totalTokenCount'] ?? 'n/a'}',
       ],
