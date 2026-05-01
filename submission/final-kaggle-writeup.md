@@ -33,6 +33,7 @@ The important change is that Gemma is no longer just a response generator. ZPK b
 - `trust_fabric.keystore(android-keystore) -> zpk-android-keystore-issuer-key-2026-05`
 - `trust_fabric.verify_credential_signature(local) -> ok`
 - `trust_fabric.issue_consent(local, 15m) -> signed`
+- `auth.relying_party(local_allowlist) -> approved`
 - `auth.challenge(local) -> ...`
 - `auth.sign(android-keystore) -> ...`
 - `auth.verify(local) -> ok`
@@ -47,7 +48,7 @@ The important change is that Gemma is no longer just a response generator. ZPK b
 - `audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed`
 - `audit_archive.clear(...) -> ...`
 
-This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential, expiring signed local authentication proof, signed agent execution ledger, signed redacted recovery packet, selective disclosure claims, short-lived consent proof, signed local revocation receipt that blocks later auth proofs, a redacted institutional packet, and a citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
+This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential, allowlisted expiring signed local authentication proof, signed agent execution ledger, signed redacted recovery packet, selective disclosure claims, short-lived consent proof, signed local revocation receipt that blocks later auth proofs, a redacted institutional packet, and a citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
 
 ## Local-First Architecture
 
@@ -69,4 +70,4 @@ ZPK targets Digital Equity & Inclusivity because it turns identity safety into a
 
 ## Reproducibility
 
-The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 34 tests, and `flutter build apk --debug`.
+The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 35 tests, and `flutter build apk --debug`.

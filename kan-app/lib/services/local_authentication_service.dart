@@ -36,13 +36,31 @@ class LocalAuthenticationProof {
   final List<String> trace;
 }
 
+class RelyingPartyPolicy {
+  const RelyingPartyPolicy({this.allowedParties = defaultAllowedParties});
+
+  static const defaultAllowedParties = {
+    'municipalidad-guatemala-demo': ['identity_recovery', 'citizen_support'],
+    'registro-civil-gt-demo': ['identity_recovery'],
+  };
+
+  final Map<String, List<String>> allowedParties;
+
+  List<String> scopesFor(String relyingParty) =>
+      allowedParties[relyingParty] ?? const [];
+
+  bool isAllowed(String relyingParty) => scopesFor(relyingParty).isNotEmpty;
+}
+
 class LocalAuthenticationService {
   const LocalAuthenticationService({
     this.identityFabric = const DigitalIdentityFabric(),
+    this.relyingPartyPolicy = const RelyingPartyPolicy(),
     this.fixedNow,
   });
 
   final DigitalIdentityFabric identityFabric;
+  final RelyingPartyPolicy relyingPartyPolicy;
   final DateTime? fixedNow;
 
   Future<LocalAuthenticationProof> buildProof({
@@ -56,6 +74,10 @@ class LocalAuthenticationService {
       throw StateError(
         'Local credential ${revocationReceipt.revocationId} is revoked.',
       );
+    }
+    final allowedScopes = relyingPartyPolicy.scopesFor(relyingParty);
+    if (allowedScopes.isEmpty) {
+      throw StateError('Relying party $relyingParty is not allowed.');
     }
 
     final issuedAt = _now();
@@ -78,6 +100,7 @@ class LocalAuthenticationService {
       'challenge': challenge,
       'citizenPseudonym': trustReport.credential.pseudonymousId,
       'did': trustReport.didDocument['id']!,
+      'allowedScopes': allowedScopes,
       'requestedClaims': requestedClaims,
       'issuedAt': issuedAt.toIso8601String(),
       'expiresAt': expiresAt.toIso8601String(),
@@ -117,6 +140,8 @@ class LocalAuthenticationService {
       keyStore: signature.keyStore,
       sharePacket: signedSharePacket,
       trace: [
+        'auth.relying_party(local_allowlist) -> approved',
+        'auth.scopes(local_policy) -> ${allowedScopes.join('+')}',
         'auth.challenge(local) -> ${payloadHash.substring(0, 16)}',
         'auth.selective_disclosure(local) -> ${requestedClaims.length}_claims',
         'auth.raw_cui -> omitted',

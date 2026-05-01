@@ -62,7 +62,7 @@ for public_copy in "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.m
 done
 
 for claim in \
-  'signed local authentication proof' \
+  'allowlisted expiring signed local authentication proof' \
   'citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore' \
   'hosted Gemma 4 mode verified with `gemma-4-31b-it`' \
   'fails closed on the Mac emulator'; do
@@ -71,6 +71,7 @@ done
 
 for trace in \
   'auth.verify(local) -> ok' \
+  'auth.relying_party(local_allowlist) -> approved' \
   'auth.valid_until(local) ->' \
   'auth.blocked(revocation) -> credential_revoked' \
   'audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed' \
@@ -125,6 +126,9 @@ unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
   | grep -Fq 'auth.verify(local) -> ok' \
   || fail "ZIP local authentication evidence missing verification trace"
 unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
+  | grep -Fq 'auth.relying_party(local_allowlist) -> approved' \
+  || fail "ZIP local authentication evidence missing relying-party trace"
+unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
   | grep -Fq 'auth.valid_until(local) ->' \
   || fail "ZIP local authentication evidence missing expiry trace"
 unzip -p "$ZIP" docs/evidence/local-authentication-proof-2026-05-01.md \
@@ -146,7 +150,7 @@ if [[ -d "$DATASET_UPLOAD" ]]; then
     [[ -f "$DATASET_UPLOAD/$resource_path" ]] || fail "Kaggle Dataset upload missing resource: $resource_path"
   done < <(jq -r '.resources[].path' "$DATASET_UPLOAD/dataset-metadata.json")
 
-  grep -Fq 'signed local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
+  grep -Fq 'allowlisted expiring signed local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
     || fail "Kaggle Dataset upload form missing authentication proof claim"
   grep -Fq 'auth.verify(local) -> ok' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
     || fail "Kaggle Dataset upload writeup missing authentication trace"

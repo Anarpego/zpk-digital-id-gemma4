@@ -12,7 +12,7 @@ Claim ZPK Digital ID as a working social-impact Android app with:
 
 - Android app.
 - Offline ZPK identity registration and synthetic CUI risk verification.
-- DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, expiring signed local authentication proof, signed agent execution ledger, signed redacted recovery packet, revocation that blocks later auth proofs, selective disclosure claims, and 15-minute consent proof.
+- DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, allowlisted expiring signed local authentication proof, signed agent execution ledger, signed redacted recovery packet, revocation that blocks later auth proofs, selective disclosure claims, and 15-minute consent proof.
 - Android privacy hardening: screenshot/screen-recording blocked, backup/data extraction disabled, and cleartext traffic disabled.
 - Spanish guidance, redacted institutional packet, and complaint draft.
 - Hosted Gemma 4 app mode verified with `gemma-4-31b-it`.

@@ -36,6 +36,16 @@ void main() {
     expect(proof.issuedAt, DateTime.utc(2026, 5, 1, 12));
     expect(proof.expiresAt, DateTime.utc(2026, 5, 1, 12, 5));
     expect(proof.sharePacket.toString(), isNot(contains(result.cui)));
+    expect(
+      proof.trace,
+      contains('auth.relying_party(local_allowlist) -> approved'),
+    );
+    expect(
+      proof.trace,
+      contains(
+        'auth.scopes(local_policy) -> identity_recovery+citizen_support',
+      ),
+    );
     expect(proof.trace, contains('auth.raw_cui -> omitted'));
     expect(
       proof.trace,
@@ -77,6 +87,34 @@ void main() {
       isFalse,
     );
   });
+
+  test(
+    'does not issue authentication proof to unknown relying party',
+    () async {
+      final result = LocalBreachCatalog(
+        now: DateTime.utc(2026, 5, 1),
+      ).verify('1234567890101');
+      final assessment = const IdentityProtectionAgent().assess(
+        result: result,
+        scenario: CaseScenario.discoveredVictim,
+      );
+      final trustReport = await const DigitalIdentityFabric().evaluate(
+        result: result,
+        scenario: CaseScenario.discoveredVictim,
+        assessment: assessment,
+      );
+
+      await expectLater(
+        const LocalAuthenticationService().buildProof(
+          result: result,
+          scenario: CaseScenario.discoveredVictim,
+          trustReport: trustReport,
+          relyingParty: 'unknown-institution-demo',
+        ),
+        throwsStateError,
+      );
+    },
+  );
 
   test('rejects expired authentication proof packets', () async {
     final result = LocalBreachCatalog(
