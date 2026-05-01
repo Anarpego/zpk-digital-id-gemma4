@@ -44,15 +44,23 @@ if grep -q ' \.env$' "$zip_listing"; then
 fi
 
 for required in \
+  'scripts/prepare_kaggle_dataset.sh' \
+  'scripts/publish_submission.sh' \
+  'scripts/verify_submission.sh' \
   'submission/ARTIFACT_MANIFEST.md' \
+  'submission/GITHUB_RELEASE_NOTES.md' \
+  'submission/KAGGLE_DATASET_README.md' \
   'submission/KAGGLE_FORM.md' \
   'submission/YOUTUBE_DESCRIPTION.md' \
+  'submission/kaggle-dataset-metadata.template.json' \
   'submission/kan-final-demo-video.mp4' \
   'submission/live-demo/kan-debug.apk' \
   'submission/final-kaggle-writeup.md' \
   'unsloth/outputs/training_attempt_2026-05-01.md'; do
   grep -q " $required$" "$zip_listing" || fail "ZIP missing $required"
 done
+
+jq . "$ROOT/submission/kaggle-dataset-metadata.template.json" >/dev/null || fail "invalid Kaggle Dataset metadata template"
 
 echo "PASS: submission artifacts verified"
 echo "ZIP: $ZIP"
