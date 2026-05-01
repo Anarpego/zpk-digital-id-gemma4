@@ -21,8 +21,24 @@
       "description": "Downloadable demo package with APK, static demo page, final video, evidence, screenshots, and Unsloth scaffold."
     },
     {
+      "path": "kan-demo-package-final.zip.sha256",
+      "description": "SHA-256 checksum for the downloadable demo package."
+    },
+    {
       "path": "kan-final-demo-video.mp4",
       "description": "Narrated demo video under 3 minutes."
+    },
+    {
+      "path": "media-gallery-cover.png",
+      "description": "1600x900 cover image for the Kaggle media gallery."
+    },
+    {
+      "path": "final-kaggle-writeup.md",
+      "description": "Final writeup text under 1,500 words."
+    },
+    {
+      "path": "KAGGLE_FORM.md",
+      "description": "Copy/paste Kaggle submission fields and prize-claim guidance."
     },
     {
       "path": "ARTIFACT_MANIFEST.md",

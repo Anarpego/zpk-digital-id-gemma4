@@ -8,6 +8,8 @@ APK="$ROOT/submission/live-demo/kan-debug.apk"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
 COVER="$ROOT/submission/media-gallery-cover.png"
 WRITEUP="$ROOT/submission/final-kaggle-writeup.md"
+DATASET_TEMPLATE="$ROOT/submission/kaggle-dataset-metadata.template.json"
+DATASET_UPLOAD="$ROOT/submission/kaggle-dataset-upload"
 
 EXPECTED_APK_SHA="97f46a47ac06bbdd232e70e98cec6a7d03b4093ca7a43e38ebb391f63ce97138"
 EXPECTED_VIDEO_SHA="42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34"
@@ -85,7 +87,13 @@ for required in \
   grep -q " $required$" "$zip_listing" || fail "ZIP missing $required"
 done
 
-jq . "$ROOT/submission/kaggle-dataset-metadata.template.json" >/dev/null || fail "invalid Kaggle Dataset metadata template"
+jq . "$DATASET_TEMPLATE" >/dev/null || fail "invalid Kaggle Dataset metadata template"
+
+if [[ -d "$DATASET_UPLOAD" ]]; then
+  while IFS= read -r resource_path; do
+    [[ -f "$DATASET_UPLOAD/$resource_path" ]] || fail "Kaggle Dataset upload missing resource: $resource_path"
+  done < <(jq -r '.resources[].path' "$DATASET_UPLOAD/dataset-metadata.json")
+fi
 
 echo "PASS: submission artifacts verified"
 echo "ZIP: $ZIP"
