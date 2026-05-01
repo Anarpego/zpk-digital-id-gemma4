@@ -31,5 +31,5 @@ sed "s/KAGGLE_USERNAME/$USERNAME/g" submission/kaggle-dataset-metadata.template.
 echo "Prepared Kaggle Dataset upload folder:"
 echo "$OUT"
 echo ""
-echo "After installing/authenticating the Kaggle CLI, create it with:"
-echo "  kaggle datasets create -p $OUT --dir-mode zip"
+echo "After configuring Kaggle API credentials, create it with uvx:"
+echo "  uvx kaggle datasets create -p $OUT --dir-mode zip"

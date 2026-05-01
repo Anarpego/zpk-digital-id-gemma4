@@ -35,6 +35,7 @@ unzip -l submission/dist/kan-demo-package-20260501T173449Z.zip | rg "\\.env|kan-
 ./scripts/verify_submission.sh
 ./scripts/publish_submission.sh --check
 KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
+uvx kaggle datasets create -p submission/kaggle-dataset-upload --dir-mode zip
 ```
 
 Expected:

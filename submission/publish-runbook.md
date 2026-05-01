@@ -67,10 +67,10 @@ Prepare a dataset upload folder without publishing:
 KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 ```
 
-After installing and authenticating the Kaggle CLI:
+After configuring Kaggle API credentials, run the Kaggle CLI through `uvx`:
 
 ```bash
-kaggle datasets create -p submission/kaggle-dataset-upload --dir-mode zip
+uvx kaggle datasets create -p submission/kaggle-dataset-upload --dir-mode zip
 ```
 
 ## Video Upload
