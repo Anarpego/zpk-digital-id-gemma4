@@ -18,7 +18,7 @@ Use synthetic CUI `1234567890101` for the main flow.
 ## What This Demo Shows
 
 - Offline ZPK identity registration.
-- DID-style document and verifiable-credential-style recovery credential.
+- DID-style document and HMAC-SHA256-signed recovery credential.
 - Selective disclosure claims and 15-minute consent proof.
 - Local Spanish guidance.
 - Preliminary complaint document generation.

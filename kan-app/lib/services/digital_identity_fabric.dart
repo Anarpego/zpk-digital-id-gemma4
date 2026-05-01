@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+
 import '../models/kan_case.dart';
 import 'identity_protection_agent.dart';
 
@@ -52,7 +56,16 @@ class IdentityTrustReport {
 }
 
 class DigitalIdentityFabric {
-  const DigitalIdentityFabric();
+  const DigitalIdentityFabric({
+    this.issuerKeyId = 'zpk-local-issuer-key-2026-05',
+    this.issuerSecret = _demoIssuerSecret,
+  });
+
+  static const _demoIssuerSecret =
+      'zpk-local-demo-issuer-secret-replace-before-production';
+
+  final String issuerKeyId;
+  final String issuerSecret;
 
   IdentityTrustReport evaluate({
     required VerificationResult result,
@@ -63,8 +76,7 @@ class DigitalIdentityFabric {
     final risk = assessment.riskLevel.label;
     final registryState = result.isValidCui ? 'format_verified' : 'blocked';
     final did = 'did:zpk:gt:$pseudonym';
-    final proof =
-        'proof-${_stableToken('$pseudonym:$risk:${scenario.shortCode}')}';
+    final issuedAt = result.checkedAt.toUtc().toIso8601String();
     final recoveryStatus = switch (assessment.riskLevel) {
       IdentityRiskLevel.blocked => 'No se emite credencial hasta corregir CUI.',
       IdentityRiskLevel.low =>
@@ -73,6 +85,33 @@ class DigitalIdentityFabric {
         'Revision recomendada: emitir consentimiento limitado para orientacion.',
       IdentityRiskLevel.high || IdentityRiskLevel.critical =>
         'Recuperacion prioritaria: preparar prueba local y paquete institucional.',
+    };
+
+    final credentialSubject = {
+      'id': did,
+      'risk': risk,
+      'matches': result.matches.length,
+      'scenario': scenario.shortCode,
+      'catalog': result.catalogSource,
+      'issuedAt': issuedAt,
+    };
+    final proofValue = _sign({
+      'credentialSubject': credentialSubject,
+      'issuer': 'did:zpk:gt:local-trust-fabric',
+      'type': ['VerifiableCredential', 'ZpkIdentityRecoveryCredential'],
+    });
+    final verifiableCredential = {
+      'type': ['VerifiableCredential', 'ZpkIdentityRecoveryCredential'],
+      'issuer': 'did:zpk:gt:local-trust-fabric',
+      'credentialSubject': credentialSubject,
+      'proof': {
+        'type': 'HmacSha256Signature2026',
+        'cryptosuite': 'HMAC-SHA-256',
+        'created': issuedAt,
+        'verificationMethod': 'did:zpk:gt:local-trust-fabric#$issuerKeyId',
+        'proofPurpose': 'assertionMethod',
+        'proofValue': proofValue,
+      },
     };
 
     return IdentityTrustReport(
@@ -87,7 +126,7 @@ class DigitalIdentityFabric {
         relyingParty: 'institucion_autorizada_demo',
         scope: 'identity_recovery:$risk:${scenario.shortCode}',
         expiresInMinutes: 15,
-        localProof: proof,
+        localProof: proofValue,
       ),
       didDocument: {
         'id': did,
@@ -100,21 +139,7 @@ class DigitalIdentityFabric {
           },
         ],
       },
-      verifiableCredential: {
-        'type': ['VerifiableCredential', 'ZpkIdentityRecoveryCredential'],
-        'issuer': 'did:zpk:gt:local-trust-fabric',
-        'credentialSubject': {
-          'id': did,
-          'risk': risk,
-          'matches': result.matches.length,
-          'scenario': scenario.shortCode,
-        },
-        'proof': {
-          'type': 'LocalDeterministicProof',
-          'proofPurpose': 'selective_disclosure_demo',
-          'proofValue': proof,
-        },
-      },
+      verifiableCredential: verifiableCredential,
       selectiveDisclosureClaims: [
         'risk=$risk',
         'matches=${result.matches.length}',
@@ -139,32 +164,53 @@ class DigitalIdentityFabric {
         'trust_fabric.pseudonymize(local) -> $pseudonym',
         'trust_fabric.did_document(local) -> $did',
         'trust_fabric.vc_selective_disclosure(local) -> ${result.matches.length}_matches',
-        'trust_fabric.issue_consent(local, 15m) -> ok',
+        'trust_fabric.sign_credential(hmac-sha256) -> ok',
+        'trust_fabric.verify_credential_signature(local) -> ${verifyCredential(verifiableCredential: verifiableCredential) ? 'ok' : 'failed'}',
+        'trust_fabric.issue_consent(local, 15m) -> signed',
         'trust_fabric.revocation_recovery(local) -> ${assessment.riskLevel.label}',
         'trust_fabric.institution_packet(redacted) -> ${result.matches.length}_matches',
       ],
     );
   }
 
+  bool verifyCredential({required Map<String, Object> verifiableCredential}) {
+    final proof = verifiableCredential['proof'] as Map<String, Object>?;
+    final proofValue = proof?['proofValue'] as String?;
+    if (proofValue == null || proofValue.isEmpty) {
+      return false;
+    }
+    return proofValue ==
+        _sign({
+          'credentialSubject': verifiableCredential['credentialSubject'],
+          'issuer': verifiableCredential['issuer'],
+          'type': verifiableCredential['type'],
+        });
+  }
+
   String _stablePseudonym(String cui) {
     if (cui.length != 13) {
       return 'zpk-gt-invalid';
     }
-    return 'zpk-gt-${_stableToken(cui).substring(0, 10)}';
+    return 'zpk-gt-${_stableToken(cui).substring(0, 16)}';
   }
 
   String _stableToken(String input) {
-    final first = _fnv32(input, 0x811c9dc5);
-    final second = _fnv32('zpk:$input', 0x811c9dc5);
-    return '$first$second';
+    return _sign({'purpose': 'zpk-local-pseudonym', 'value': input});
   }
 
-  String _fnv32(String input, int seed) {
-    var hash = seed;
-    for (final unit in input.codeUnits) {
-      hash ^= unit;
-      hash = (hash * 0x01000193) & 0xffffffff;
+  String _sign(Map<String, Object?> payload) {
+    final hmac = Hmac(sha256, utf8.encode(issuerSecret));
+    return hmac.convert(utf8.encode(_canonicalJson(payload))).toString();
+  }
+
+  String _canonicalJson(Object? value) {
+    if (value is Map) {
+      final keys = value.keys.map((key) => key.toString()).toList()..sort();
+      return '{${keys.map((key) => '${jsonEncode(key)}:${_canonicalJson(value[key])}').join(',')}}';
     }
-    return hash.toRadixString(16).padLeft(8, '0');
+    if (value is Iterable) {
+      return '[${value.map(_canonicalJson).join(',')}]';
+    }
+    return jsonEncode(value);
   }
 }

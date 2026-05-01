@@ -53,7 +53,11 @@ void main() {
     );
     expect(
       guidance.toolTrace,
-      contains('trust_fabric.issue_consent(local, 15m) -> ok'),
+      contains('trust_fabric.sign_credential(hmac-sha256) -> ok'),
+    );
+    expect(
+      guidance.toolTrace,
+      contains('trust_fabric.issue_consent(local, 15m) -> signed'),
     );
     expect(
       guidance.toolTrace,

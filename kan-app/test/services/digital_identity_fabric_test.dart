@@ -22,7 +22,13 @@ void main() {
     expect(report.didDocument['id'], startsWith('did:zpk:gt:zpk-gt-'));
     expect(
       report.verifiableCredential.toString(),
-      contains('LocalDeterministicProof'),
+      contains('HmacSha256Signature2026'),
+    );
+    expect(
+      const DigitalIdentityFabric().verifyCredential(
+        verifiableCredential: report.verifiableCredential,
+      ),
+      isTrue,
     );
     expect(
       report.selectiveDisclosureClaims.join('\n'),
@@ -36,7 +42,42 @@ void main() {
     );
     expect(
       report.trace,
-      contains('trust_fabric.issue_consent(local, 15m) -> ok'),
+      contains('trust_fabric.sign_credential(hmac-sha256) -> ok'),
+    );
+    expect(
+      report.trace,
+      contains('trust_fabric.verify_credential_signature(local) -> ok'),
+    );
+    expect(
+      report.trace,
+      contains('trust_fabric.issue_consent(local, 15m) -> signed'),
+    );
+  });
+
+  test('rejects tampered local recovery credentials', () {
+    final result = LocalBreachCatalog(
+      now: DateTime.utc(2026, 5, 1),
+    ).verify('1234567890101');
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+    );
+    final report = const DigitalIdentityFabric().evaluate(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      assessment: assessment,
+    );
+    final tampered = Map<String, Object>.from(report.verifiableCredential);
+    tampered['credentialSubject'] = {
+      ...(tampered['credentialSubject'] as Map<String, Object>),
+      'matches': 0,
+    };
+
+    expect(
+      const DigitalIdentityFabric().verifyCredential(
+        verifiableCredential: tampered,
+      ),
+      isFalse,
     );
   });
 }

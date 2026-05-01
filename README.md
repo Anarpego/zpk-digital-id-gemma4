@@ -8,7 +8,7 @@ This repository is optimized for hackathon evidence, not production deployment. 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: DID-style document, verifiable-credential-style recovery credential, selective disclosure claims, and 15-minute consent proof.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, HMAC-SHA256-signed recovery credential, selective disclosure claims, and 15-minute consent proof.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
 - Unsloth seed data: `unsloth/`
@@ -86,7 +86,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 19 tests
+- `flutter test` passes 20 tests
 - `flutter build apk --debug`
 
 ## Demo Package

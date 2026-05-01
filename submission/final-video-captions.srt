@@ -8,7 +8,7 @@ The demo uses synthetic data only. A citizen enters a test CUI, and ZPK register
 
 3
 00:00:50,000 --> 00:01:20,000
-The local agent checks risk, chooses a privacy route, and creates a DID-style document, a verifiable-credential-style recovery credential, selective disclosure claims, and a 15-minute consent proof.
+The local agent checks risk, chooses a privacy route, and creates a DID-style document, an HMAC-signed recovery credential, selective disclosure claims, and a 15-minute consent proof.
 
 4
 00:01:20,000 --> 00:01:55,000

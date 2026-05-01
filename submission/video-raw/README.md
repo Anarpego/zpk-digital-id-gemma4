@@ -30,4 +30,4 @@ say -v Daniel -r 92 -o submission/video-raw/zpk-final-narration.aiff -f submissi
 Purpose:
 
 - Current narration source for `submission/kan-final-demo-video.mp4`.
-- SHA-256: `07f748d3e35583ab084e8a545c58af718c48b337f9c1417c2942f06ebac93191`.
+- SHA-256: `39abcc9e39676f2e11a052667a4bbf50f33ee048fea7edb3008a81d04e88a7f5`.

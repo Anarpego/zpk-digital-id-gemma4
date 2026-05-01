@@ -10,4 +10,4 @@ Use these files instead:
 - `submission/kan-final-demo-video.mp4`
 - `submission/video-raw/zpk-demo-flow.mp4`
 
-Current story: ZPK Digital ID is a local-first identity wallet for Guatemala. It demonstrates local registration, pseudonymous citizen ID, DID-style document, verifiable-credential-style recovery credential, selective disclosure claims, 15-minute consent proof, CUI risk lookup, Spanish guidance, and a redacted recovery packet.
+Current story: ZPK Digital ID is a local-first identity wallet for Guatemala. It demonstrates local registration, pseudonymous citizen ID, DID-style document, HMAC-SHA256-signed recovery credential, selective disclosure claims, 15-minute consent proof, CUI risk lookup, Spanish guidance, and a redacted recovery packet.

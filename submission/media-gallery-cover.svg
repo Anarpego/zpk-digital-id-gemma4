@@ -22,7 +22,7 @@
     <text x="40" y="70" font-family="Arial" font-size="34" font-weight="800" fill="#111814">Trazas visibles</text>
     <text x="40" y="128" font-family="Courier" font-size="26" fill="#0b3028">did:zpk:gt:... -&gt; local</text>
     <text x="40" y="176" font-family="Courier" font-size="26" fill="#0b3028">selective_disclosure -&gt; ok</text>
-    <text x="40" y="224" font-family="Courier" font-size="26" fill="#0b3028">consent_proof(15m) -&gt; ok</text>
+    <text x="40" y="224" font-family="Courier" font-size="26" fill="#0b3028">hmac_proof(15m) -&gt; signed</text>
     <text x="40" y="272" font-family="Courier" font-size="26" fill="#0b3028">gemma_agent(redacted) -&gt; ok</text>
   </g>
 

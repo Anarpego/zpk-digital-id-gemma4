@@ -35,7 +35,7 @@ Add tests for new behavior. Flutter tests cover routing, reasoner selection, loc
 
 ## Commit & Pull Request Guidelines
 
-This folder is not currently a Git repository, so no local history is available. Use conventional prefixes from `kan.md`: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, or `chore:`.
+Git history uses prefixes: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, and `chore:`. Keep commits focused and mention artifact changes when hashes, videos, APKs, or submission files regenerate.
 
 PRs should include a focused summary, tests run, screenshots for UI changes, linked issue or task, and notes for privacy, security, or LLM-behavior changes.
 

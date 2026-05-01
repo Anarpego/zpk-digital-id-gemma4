@@ -8,7 +8,7 @@ Rendered file:
 - Size: about 4.9 MB.
 - Duration: about 1:40, under the 3-minute Kaggle video limit.
 - Format: portrait MP4, H.264 video with AAC narration audio.
-- SHA-256: `a01f26b7c8ef747415d7bb51280d1fabc82f0f27a6c7749b01494674ded6c5e1`
+- SHA-256: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
 
 Source assets:
 

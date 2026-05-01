@@ -49,9 +49,9 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 ## 4. Hashes To Confirm Uploads
 
 - ZIP: see `submission/dist/kan-demo-package-final.zip.sha256`
-- APK: `e65033655d713cd53f3612565a62efd3b5f5d1af170323a6db0bf634609f97b2`
-- Video: `a01f26b7c8ef747415d7bb51280d1fabc82f0f27a6c7749b01494674ded6c5e1`
-- Cover PNG: `882f32b3e35b8b73fcf7b32dda46f021fe82bfdcad33b44a5a707aa7de265875`
+- APK: `c64029395bc6cff366ea3f4e86e99210daed854b65b760dc76076cc773bad109`
+- Video: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
+- Cover PNG: `15ba1a8f5037973ce6b0c76defdfd05bee438d2f8ddf15393cc75070e4a6f2b6`
 
 ## 5. Prize Claims
 
@@ -72,5 +72,5 @@ Do not claim:
 
 - Successful offline/on-device Gemma 4 generation.
 - Completed Unsloth adapter or RL fine-tune.
-- Real government integration or production-grade cryptography.
+- Real government integration, hardware-backed key custody, or standards certification.
 - Production legal advice.

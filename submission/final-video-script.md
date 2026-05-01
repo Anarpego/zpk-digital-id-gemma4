@@ -25,7 +25,7 @@ The demo uses synthetic data only. A citizen enters a test CUI, and ZPK register
 Visual: `Registro ZPK local`, DID-style credential, selective disclosure claims.
 
 Voiceover:
-The local agent checks risk, chooses a privacy route, and creates a DID-style document, a verifiable-credential-style recovery credential, selective disclosure claims, and a 15-minute consent proof.
+The local agent checks risk, chooses a privacy route, and creates a DID-style document, an HMAC-SHA256-signed recovery credential, selective disclosure claims, and a 15-minute consent proof.
 
 ## 1:20-1:55 Gemma 4 And Routing
 
