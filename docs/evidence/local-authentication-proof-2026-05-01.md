@@ -21,6 +21,8 @@ a relying-party authentication proof, not only registration and recovery.
 - The packet excludes raw CUI.
 - Runtime Android uses the existing `DigitalIdentityFabric.device()` signer,
   so proofs are backed by Android Keystore in the app.
+- Local revocation now blocks new authentication proofs and clears any
+  displayed authentication proof in the app UI.
 - Tests use deterministic Dart HMAC signing only for repeatable verification.
 
 ## Visible Trace
@@ -34,6 +36,7 @@ auth.raw_cui -> omitted
 auth.sign(android-keystore) -> ...
 auth.verify(local) -> ok
 auth.expires(local) -> 5m
+auth.blocked(revocation) -> credential_revoked
 ```
 
 ## Verification
@@ -44,15 +47,18 @@ Commands run from `kan-app`:
 flutter test test/services/local_authentication_service_test.dart test/widget_test.dart
 ```
 
-Result: 4 targeted tests passed.
+Result: 5 targeted tests passed.
 
 Coverage:
 
 - Builds a signed authentication proof without raw CUI.
 - Verifies the signed authentication packet.
 - Rejects a tampered authentication packet.
+- Rejects new authentication proof issuance after local revocation.
 - Widget flow exposes `Probar autenticacion local`, then shows
   `auth.sign(...)` and `auth.verify(local) -> ok`.
+- Widget flow revokes the local credential and then shows
+  `auth.blocked(revocation) -> credential_revoked`.
 
 ## Non-Claims
 

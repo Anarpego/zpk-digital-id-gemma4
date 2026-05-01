@@ -156,7 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
       trustReport: trustReport,
       reason: 'citizen_requested_local_revocation',
     );
-    setState(() => _revocationReceipt = receipt);
+    setState(() {
+      _revocationReceipt = receipt;
+      _authenticationProof = null;
+    });
   }
 
   Future<void> _issueAuthenticationProof() async {
@@ -169,6 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
       result: result,
       scenario: _scenario,
       trustReport: trustReport,
+      revocationReceipt: _revocationReceipt,
     );
     setState(() => _authenticationProof = proof);
   }
@@ -254,6 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               _AuthenticationProofPanel(
                 proof: _authenticationProof,
+                revocationReceipt: _revocationReceipt,
                 onIssue: _issueAuthenticationProof,
               ),
               const SizedBox(height: 12),
@@ -315,9 +320,14 @@ class _EmptyState extends StatelessWidget {
 }
 
 class _AuthenticationProofPanel extends StatelessWidget {
-  const _AuthenticationProofPanel({required this.proof, required this.onIssue});
+  const _AuthenticationProofPanel({
+    required this.proof,
+    required this.revocationReceipt,
+    required this.onIssue,
+  });
 
   final LocalAuthenticationProof? proof;
+  final LocalRevocationReceipt? revocationReceipt;
   final VoidCallback onIssue;
 
   @override
@@ -345,7 +355,19 @@ class _AuthenticationProofPanel extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            if (proof == null) ...[
+            if (revocationReceipt != null) ...[
+              Text(
+                'Credencial revocada: no se emiten nuevas pruebas de autenticacion.',
+                style: text.bodySmall,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Revocacion: ${revocationReceipt!.revocationId}',
+                style: text.bodySmall,
+              ),
+              const Divider(height: 24),
+              const Text('auth.blocked(revocation) -> credential_revoked'),
+            ] else if (proof == null) ...[
               Text(
                 'Emite una prueba firmada para una institucion sin revelar CUI.',
                 style: text.bodySmall,

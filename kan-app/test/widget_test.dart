@@ -53,7 +53,15 @@ void main() {
     );
     await tester.tap(find.text('Revocar credencial local'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('revocation.sign'), findsOneWidget);
+    await _dragUntilFound(
+      tester,
+      find.textContaining('auth.blocked(revocation)'),
+      const Offset(0, 500),
+    );
+    expect(
+      find.textContaining('auth.blocked(revocation) -> credential_revoked'),
+      findsOneWidget,
+    );
     await tester.scrollUntilVisible(
       find.text('Paquete redactado firmado'),
       500,
@@ -129,4 +137,19 @@ Future<void> _pumpUntilFound(WidgetTester tester, Finder finder) async {
       return;
     }
   }
+}
+
+Future<void> _dragUntilFound(
+  WidgetTester tester,
+  Finder finder,
+  Offset offset,
+) async {
+  for (var i = 0; i < 12; i++) {
+    await tester.drag(find.byType(ListView), offset);
+    await tester.pumpAndSettle();
+    if (finder.evaluate().isNotEmpty) {
+      return;
+    }
+  }
+  fail('Expected to find $finder after dragging.');
 }

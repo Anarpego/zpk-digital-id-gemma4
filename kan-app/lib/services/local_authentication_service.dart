@@ -4,6 +4,7 @@ import 'package:crypto/crypto.dart';
 
 import '../models/kan_case.dart';
 import 'digital_identity_fabric.dart';
+import 'revocation_service.dart';
 
 class LocalAuthenticationProof {
   const LocalAuthenticationProof({
@@ -42,8 +43,15 @@ class LocalAuthenticationService {
     required VerificationResult result,
     required CaseScenario scenario,
     required IdentityTrustReport trustReport,
+    LocalRevocationReceipt? revocationReceipt,
     String relyingParty = 'municipalidad-guatemala-demo',
   }) async {
+    if (revocationReceipt != null) {
+      throw StateError(
+        'Local credential ${revocationReceipt.revocationId} is revoked.',
+      );
+    }
+
     final challenge = _challengeFor(
       relyingParty: relyingParty,
       result: result,

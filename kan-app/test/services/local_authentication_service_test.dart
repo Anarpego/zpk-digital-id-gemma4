@@ -4,6 +4,7 @@ import 'package:kan_app/services/digital_identity_fabric.dart';
 import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/local_authentication_service.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
+import 'package:kan_app/services/revocation_service.dart';
 
 void main() {
   test('builds a signed authentication proof without raw CUI', () async {
@@ -70,6 +71,41 @@ void main() {
     expect(
       await const LocalAuthenticationService().verifySharePacket(tampered),
       isFalse,
+    );
+  });
+
+  test('does not issue authentication proof after local revocation', () async {
+    final identityFabric = const DigitalIdentityFabric();
+    final result = LocalBreachCatalog(
+      now: DateTime.utc(2026, 5, 1),
+    ).verify('1234567890101');
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+    );
+    final trustReport = await identityFabric.evaluate(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      assessment: assessment,
+    );
+    final revocationReceipt =
+        await RevocationService(
+          identityFabric: identityFabric,
+        ).revokeLocalCredential(
+          result: result,
+          scenario: CaseScenario.discoveredVictim,
+          trustReport: trustReport,
+          reason: 'test_revocation',
+        );
+
+    await expectLater(
+      const LocalAuthenticationService().buildProof(
+        result: result,
+        scenario: CaseScenario.discoveredVictim,
+        trustReport: trustReport,
+        revocationReceipt: revocationReceipt,
+      ),
+      throwsStateError,
     );
   });
 }
