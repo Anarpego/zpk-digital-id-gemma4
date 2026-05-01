@@ -2,7 +2,7 @@
 
 Target length: under 3:00.
 
-Raw app footage: `submission/video-raw/kan-demo-flow.mp4`.
+Raw app footage: `submission/video-raw/zpk-demo-flow.mp4`.
 Rendered video: `submission/kan-final-demo-video.mp4`.
 Narration text: `submission/final-video-narration.txt`.
 

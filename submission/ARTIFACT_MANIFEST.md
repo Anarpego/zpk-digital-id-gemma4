@@ -9,7 +9,7 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 | Artifact | Path | Purpose | SHA-256 |
 |---|---|---|---|
 | Android APK | `submission/live-demo/kan-debug.apk` | Installable local-mode demo APK | `e65033655d713cd53f3612565a62efd3b5f5d1af170323a6db0bf634609f97b2` |
-| Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `42774441b15dd69af421c2f76d6e59b71203b4c27effb810b0b011da040bce34` |
+| Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `a01f26b7c8ef747415d7bb51280d1fabc82f0f27a6c7749b01494674ded6c5e1` |
 | Media cover | `submission/media-gallery-cover.png` | 1600x900 Kaggle media-gallery image | `882f32b3e35b8b73fcf7b32dda46f021fe82bfdcad33b44a5a707aa7de265875` |
 | Demo package | `submission/dist/kan-demo-package-final.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | See `submission/dist/kan-demo-package-final.zip.sha256` |
 
