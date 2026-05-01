@@ -37,6 +37,8 @@ zip -r "$ZIP" \
   submission/live-demo \
   submission/demo-runbook.md \
   submission/ARTIFACT_MANIFEST.md \
+  submission/KAGGLE_FORM.md \
+  submission/YOUTUBE_DESCRIPTION.md \
   submission/final-kaggle-writeup.md \
   submission/kaggle-writeup-draft.md \
   submission/media-gallery-cover.svg \
