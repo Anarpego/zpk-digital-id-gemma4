@@ -2,6 +2,10 @@
 
 > Draft status: update the model benchmark lines after real Cactus and Gemma 4 testing.
 
+Raw footage available:
+
+- `submission/video-raw/kan-demo-flow.mp4`: silent Android screen recording of the default local-mode flow.
+
 ## 0:00-0:20 Problem
 
 Show a phone in Spanish.

@@ -41,6 +41,7 @@ zip -r "$ZIP" \
   submission/media-gallery-cover.svg \
   submission/prize-claims.md \
   submission/publish-runbook.md \
+  submission/video-raw \
   submission/video-script-draft.md \
   unsloth \
   -x '*.DS_Store' 'unsloth/.venv/*' '*/__pycache__/*' '*.pyc'
