@@ -85,13 +85,42 @@ Build a local downloadable package for Kaggle live-demo evidence:
 
 The script rebuilds the default local-mode APK, copies selected screenshots into `submission/live-demo/`, writes an APK SHA-256 checksum, and creates a ZIP under `submission/dist/`. It does not embed hosted API keys.
 
+Current verified package:
+
+- `submission/dist/kan-demo-package-20260501T173449Z.zip`
+- Verify with `./scripts/verify_submission.sh`
+
+## Submission Handoff
+
+Final copy/paste and upload files live in `submission/`:
+
+- `submission/final-kaggle-writeup.md`: Kaggle writeup, 635 words.
+- `submission/KAGGLE_FORM.md`: final form fields and prize-claim guidance.
+- `submission/YOUTUBE_DESCRIPTION.md`: video upload title, description, and tags.
+- `submission/ARTIFACT_MANIFEST.md`: upload checklist and checksums.
+- `submission/kan-final-demo-video.mp4`: narrated final video under 3 minutes.
+
+After authenticating externally:
+
+```bash
+gh auth login
+./scripts/publish_submission.sh --check
+./scripts/publish_submission.sh
+```
+
+Optional Kaggle Dataset upload staging:
+
+```bash
+KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
+```
+
 ## Important Non-Claims
 
 - The app does not use real breach data.
 - It is not legal advice and does not guarantee legal correctness.
 - Cactus tool-calling is not working yet; local Cactus inference works only with tools disabled.
 - Gemma 4 evidence is currently hosted through the Gemini API, not Cactus.
-- Unsloth artifacts are seed data only; no trained adapter exists yet.
+- Unsloth artifacts include a scaffold and failed one-step Gemma 4 E2B attempt on a 6 GB RTX 4050; no trained adapter exists yet.
 
 ## Python Policy
 
