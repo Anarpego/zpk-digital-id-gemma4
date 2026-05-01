@@ -86,7 +86,7 @@ class MainActivity : FlutterActivity() {
                 val status = generativeModel.checkStatus()
                 result.success(
                     mapOf(
-                        "status" to status.toString(),
+                        "status" to statusName(status),
                         "model" to "mlkit-genai-prompt-aicore",
                     ),
                 )
@@ -143,8 +143,8 @@ class MainActivity : FlutterActivity() {
                     }
                     else -> result.error(
                         "UNKNOWN_STATUS",
-                        "ML Kit GenAI Prompt API returned status $status.",
-                        mapOf("status" to status.toString()),
+                        "ML Kit GenAI Prompt API returned status ${statusName(status)}.",
+                        mapOf("status" to statusName(status)),
                     )
                 }
             } catch (error: Throwable) {
@@ -205,4 +205,13 @@ class MainActivity : FlutterActivity() {
 
     private fun ByteArray.toHex(): String =
         joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+    private fun statusName(status: Int): String =
+        when (status) {
+            FeatureStatus.UNAVAILABLE -> "UNAVAILABLE"
+            FeatureStatus.DOWNLOADABLE -> "DOWNLOADABLE"
+            FeatureStatus.DOWNLOADING -> "DOWNLOADING"
+            FeatureStatus.AVAILABLE -> "AVAILABLE"
+            else -> "UNKNOWN_$status"
+        }
 }

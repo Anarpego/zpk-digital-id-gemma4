@@ -63,6 +63,27 @@ device reports anything other than `AVAILABLE`, the app stops that model path
 and falls back locally. Unit tests verify the successful order
 `status -> generate` and the unavailable order `status` only.
 
+Updated runtime trace after the status-probe normalization:
+
+```text
+reasoner_mode(mlkit-gemma:aicore) -> fallback: Bad state: ML Kit Gemma status is UNAVAILABLE.
+privacy_guard.raw_cui -> absent
+privacy_guard.13_digit_identifier -> absent
+agent_ledger.sign(android-keystore) -> ...
+```
+
+Updated evidence files:
+
+- `docs/evidence/mlkit-gemma-status-probe-2026-05-01.png`
+- `docs/evidence/mlkit-gemma-status-probe-2026-05-01.uiautomator.xml`
+
+SHA-256:
+
+```text
+46347d0137822dc9c6e942063b63b14fbd9efac25487e8447dadea9f6637fd9d  docs/evidence/mlkit-gemma-status-probe-2026-05-01.png
+c18ca4f52a6e08c884839762205050dfb5699efe9353da19bdb134d29b524399  docs/evidence/mlkit-gemma-status-probe-2026-05-01.uiautomator.xml
+```
+
 Screenshot: `docs/evidence/mlkit-gemma-emulator-unavailable-2026-05-01.png`
 
 Screenshot SHA-256:
