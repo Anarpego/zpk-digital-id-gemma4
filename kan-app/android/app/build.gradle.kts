@@ -9,6 +9,10 @@ android {
     namespace = "gt.kan.kan_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+    val releaseKeystore = System.getenv("ZPK_RELEASE_KEYSTORE")
+    val releaseStorePassword = System.getenv("ZPK_RELEASE_STORE_PASSWORD")
+    val releaseKeyAlias = System.getenv("ZPK_RELEASE_KEY_ALIAS")
+    val releaseKeyPassword = System.getenv("ZPK_RELEASE_KEY_PASSWORD")
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -20,21 +24,34 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "gt.kan.kan_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (
+            releaseKeystore != null &&
+            releaseStorePassword != null &&
+            releaseKeyAlias != null &&
+            releaseKeyPassword != null
+        ) {
+            create("release") {
+                storeFile = file(releaseKeystore)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfigs.findByName("release")?.let {
+                signingConfig = it
+            }
         }
     }
 }
