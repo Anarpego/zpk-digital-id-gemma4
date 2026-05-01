@@ -62,6 +62,7 @@ void main() {
       find.textContaining('audit_archive.raw_cui -> omitted'),
       findsOneWidget,
     );
+    expect(find.textContaining('audit_archive.append'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Borrar archivo local'),
       500,

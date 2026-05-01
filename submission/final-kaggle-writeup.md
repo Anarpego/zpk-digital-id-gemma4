@@ -39,15 +39,16 @@ The important change is that Gemma is no longer just a response generator. ZPK b
 - `agent_ledger.sign(android-keystore) -> ...`
 - `audit_archive.redacted_record(sha256) -> ...`
 - `audit_archive.raw_cui -> omitted`
+- `audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed`
 - `audit_archive.clear(...) -> ...`
 
-This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential, signed agent execution ledger, signed redacted recovery packet, selective disclosure claims, short-lived consent proof, signed local revocation receipt, a redacted institutional packet, and a citizen-clearable app-internal redacted audit archive. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
+This local trust fabric simulates the infrastructure a national digital identity system would need: a DID-style document, Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential, signed agent execution ledger, signed redacted recovery packet, selective disclosure claims, short-lived consent proof, signed local revocation receipt, a redacted institutional packet, and a citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore. It is not a claim of government integration. It is an offline testbed showing how Guatemala, and later other Latin American countries, could protect people without centralizing raw identifiers.
 
 ## Local-First Architecture
 
 The APK bundles `assets/breach_catalog.json`, a synthetic offline catalog with no real personal data. `LocalBreachCatalog.loadEmbeddedOrFallback()` loads it on device. The CUI is used only locally to create a pseudonymous ZPK citizen ID and risk assessment. Hosted reasoning receives only redacted facts such as match count, risk level, scenario, and action needs. A code-level `PrivacyGuard` now blocks the active raw CUI or any unredacted 13-digit identifier before hosted Gemma, Cactus local inference, or ML Kit/AICore generation.
 
-The Android shell adds production-style privacy hardening for the demo: `FLAG_SECURE` blocks screenshots and screen recording, app backup/data extraction is disabled, and cleartext traffic is disallowed.
+The Android shell adds production-style privacy hardening for the demo: `FLAG_SECURE` blocks screenshots and screen recording, app backup/data extraction is disabled, cleartext traffic is disallowed, and local audit receipts are encrypted at rest before storage.
 
 After a synthetic match, ZPK generates Spanish guidance and a preliminary complaint document locally. The app can be installed from the demo package and run without a backend.
 

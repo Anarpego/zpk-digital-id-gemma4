@@ -100,6 +100,8 @@ class NativeAuditArchive implements AuditArchive {
     });
     final location = response?['location'] as String? ?? 'native-internal';
     final recordCount = response?['recordCount'] as int? ?? 0;
+    final cryptoSuite = response?['cryptoSuite'] as String? ?? 'AES-GCM-256';
+    final keyStore = response?['keyStore'] as String? ?? 'android-keystore';
 
     return AuditArchiveReceipt(
       recordHash: recordHash,
@@ -109,6 +111,7 @@ class NativeAuditArchive implements AuditArchive {
         'audit_archive.redacted_record(sha256) -> ${recordHash.substring(0, 16)}',
         'audit_archive.raw_cui -> omitted',
         'audit_archive.private_complaint -> omitted',
+        'audit_archive.encrypt($cryptoSuite, $keyStore) -> sealed',
         'audit_archive.append(internal_storage) -> $location',
         'audit_archive.records -> $recordCount',
       ],

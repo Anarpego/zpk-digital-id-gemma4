@@ -3,6 +3,7 @@ package gt.kan.kan_app
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.os.Bundle
+import android.util.Base64
 import android.view.WindowManager
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
@@ -11,6 +12,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 import java.security.KeyStore
+import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.Mac
 import javax.crypto.SecretKey
@@ -22,6 +24,10 @@ import kotlinx.coroutines.launch
 
 class MainActivity : FlutterActivity() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    companion object {
+        private const val AUDIT_ARCHIVE_KEY_ALIAS = "zpk-audit-archive-aes-gcm-2026-05"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setFlags(
@@ -223,16 +229,19 @@ class MainActivity : FlutterActivity() {
                 return
             }
             val safeName = recordHash.take(64).replace(Regex("[^a-fA-F0-9]"), "")
-            val file = File(archiveDir, "$safeName.json")
-            file.writeText(recordJson, Charsets.UTF_8)
+            val sealedRecord = encryptAuditRecord(recordJson)
+            val file = File(archiveDir, "$safeName.sealed.json")
+            file.writeText(sealedRecord, Charsets.UTF_8)
             val recordCount = archiveDir.listFiles { candidate ->
-                candidate.isFile && candidate.name.endsWith(".json")
+                candidate.isFile && candidate.name.endsWith(".sealed.json")
             }?.size ?: 0
 
             result.success(
                 mapOf(
                     "location" to "app-internal:zpk-audit-archive/${file.name}",
                     "recordCount" to recordCount,
+                    "cryptoSuite" to "AES-GCM-256",
+                    "keyStore" to "android-keystore",
                 ),
             )
         } catch (error: Throwable) {
@@ -249,7 +258,8 @@ class MainActivity : FlutterActivity() {
             val archiveDir = File(filesDir, "zpk-audit-archive")
             var deletedCount = 0
             archiveDir.listFiles { candidate ->
-                candidate.isFile && candidate.name.endsWith(".json")
+                candidate.isFile &&
+                    (candidate.name.endsWith(".json") || candidate.name.endsWith(".sealed.json"))
             }?.forEach { file ->
                 if (file.delete()) {
                     deletedCount += 1
@@ -269,6 +279,36 @@ class MainActivity : FlutterActivity() {
                 mapOf("type" to error.javaClass.name),
             )
         }
+    }
+
+    private fun encryptAuditRecord(recordJson: String): String {
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, getOrCreateAuditArchiveKey())
+        val ciphertext = cipher.doFinal(recordJson.toByteArray(Charsets.UTF_8))
+        val iv = Base64.encodeToString(cipher.iv, Base64.NO_WRAP)
+        val encryptedPayload = Base64.encodeToString(ciphertext, Base64.NO_WRAP)
+        return """{"version":1,"cipherSuite":"AES-GCM-256","keyAlias":"$AUDIT_ARCHIVE_KEY_ALIAS","iv":"$iv","ciphertext":"$encryptedPayload"}"""
+    }
+
+    private fun getOrCreateAuditArchiveKey(): SecretKey {
+        val keyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+        keyStore.getKey(AUDIT_ARCHIVE_KEY_ALIAS, null)?.let { return it as SecretKey }
+
+        val generator = KeyGenerator.getInstance(
+            KeyProperties.KEY_ALGORITHM_AES,
+            "AndroidKeyStore",
+        )
+        val spec = KeyGenParameterSpec.Builder(
+            AUDIT_ARCHIVE_KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(256)
+            .build()
+        generator.init(spec)
+        return generator.generateKey()
     }
 
     private fun getOrCreateHmacKey(keyId: String): SecretKey {
