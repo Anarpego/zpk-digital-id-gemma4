@@ -15,7 +15,7 @@ fail() {
 
 if [[ "${1:-}" == "--check" ]]; then
   ./scripts/verify_submission.sh
-  git status --short
+  [[ -z "$(git status --short)" ]] || fail "working tree is not clean"
   git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv" >/dev/null
   git diff --cached --name-only | rg "\\.env$|submission/dist|submission/live-demo/kan-debug|unsloth/.venv|build/" && fail "generated or secret file is staged"
   gh auth status

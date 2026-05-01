@@ -12,9 +12,7 @@ git log --oneline --decorate -3
 Expected:
 
 - Clean working tree.
-- Commits:
-  - `d038d7c feat: add Kan hackathon prototype`
-  - `26026fb` or later docs/update commit, depending on final local edits.
+- Latest commits include the submission verifier, upload copy, final audit, and guarded publish helper.
 
 ## Secret Audit
 
