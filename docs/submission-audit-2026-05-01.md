@@ -2,36 +2,55 @@
 
 Date: 2026-05-01
 
-Objective: make Kan competitive for the Gemma 4 Good Hackathon without spending time on deployment before the mobile demo and evidence are strong.
+Objective: make Kan competitive for the Gemma 4 Good Hackathon, prioritize winning over the original `kan.md` implementation details, do not deploy from this workspace, and verify that the mobile demo, evidence, and submission assets are ready for public upload.
 
-## Success Criteria and Evidence
+## Prompt-To-Artifact Checklist
 
-| Requirement | Current Evidence | Status |
+| Requirement | Evidence | Status |
 |---|---|---|
-| Android-first working demo | `kan-app/`, APK builds, emulator screenshots `kan-smoke.png`, `kan-result.png`, `kan-gemma-hosted-trace.png` | Verified |
-| Offline CUI check | `assets/breach_catalog.json`, `LocalBreachCatalog.loadEmbeddedOrFallback()`, 16 passing tests | Verified |
-| Visible tool/function trace | UI shows local catalog load, local breach lookup, routing, template fill, Gemma API trace | Verified |
-| Gemma 4 usage | `GemmaApiReasoner`, app-mode screenshot with `gemma-4-31b-it`, API smoke docs | Verified for hosted API |
-| Cactus integration | `cactus ^1.3.0`, `CactusReasoner`, local inference screenshot with `functiongemma-270m`, fallback/tool-failure screenshots, model catalog doc | Partial: local inference works with tools disabled |
-| Cactus prize readiness | Successful no-tools Cactus inference exists; tool-calling fails with code `-1`; quality is not demo-ready | Partial |
-| Unsloth prize readiness | Seed dataset, eval cases, uv training scaffold, local dry-run, Linux GPU dry-run, remote CUDA/Unsloth import, and failed one-step Gemma 4 E2B training attempt exist; no adapter or before/after benchmark | Partial |
-| Kaggle writeup under 1,500 words | `submission/final-kaggle-writeup.md`, 635 words, measured claims only | Ready locally |
-| Public video under 3 minutes | final script/captions, narration text, narration audio, and rendered MP4 at `submission/kan-final-demo-video.mp4`; not uploaded publicly yet | Partial |
-| Public code repo | Local Git repository exists; `.env`, APKs, build outputs, and `.venv` are ignored; no public remote yet | Partial |
-| Live demo / downloadable files | `submission/dist/kan-demo-package-20260501T172529Z.zip` exists with APK, checksum, static demo page, screenshots, cover SVG, raw video, Unsloth scaffold/evidence, final writeup, and docs; not public yet | Partial |
-| Media gallery cover image | Draft SVG exists at `submission/media-gallery-cover.svg`; not uploaded | Partial |
+| Working Android demo | `kan-app/`, `submission/live-demo/kan-debug.apk`, `flutter build apk --debug` | Verified locally |
+| Offline/local-first breach check | `kan-app/assets/breach_catalog.json`, `LocalBreachCatalog.loadEmbeddedOrFallback()`, trace screenshot `kan-embedded-catalog-trace.png` | Verified locally |
+| Spanish guidance and complaint draft | Flutter app flow, `LegalTemplateService`, demo screenshots, final video | Verified locally |
+| Visible privacy/tool trace | UI traces for catalog load, lookup, routing, template fill, Gemma API, and Cactus mode | Verified locally |
+| Gemma 4 usage | `GemmaApiReasoner`, `docs/evidence/gemma4-api-smoke-2026-05-01.md`, screenshot `kan-gemma-hosted-trace.png` | Verified for hosted `gemma-4-31b-it` |
+| Cactus integration | `cactus ^1.3.0`, `CactusReasoner`, `docs/evidence/cactus-local-inference-2026-05-01.md` | Partial: local inference works, tool-calling fails |
+| Unsloth readiness | `unsloth/train_lora.py`, dry-run report, CUDA import smoke, `unsloth/outputs/training_attempt_2026-05-01.md` | Partial: no adapter; 6 GB GPU OOM |
+| Training-Free GRPO-style prior | `ReasonerPromptBuilder`, `docs/routing-calibration.md`, writeup adaptation section | Verified as prompt/experience prior |
+| Public writeup under 1,500 words | `submission/final-kaggle-writeup.md`, `wc -w` = 635 | Ready locally |
+| Public video under 3 minutes | `submission/kan-final-demo-video.mp4`, `docs/evidence/final-video-2026-05-01.md` | Ready locally, not uploaded |
+| Public code repository | Git repo with clean status, `.gitignore`, `README.md`, `AGENTS.md`, `LICENSE` | Blocked: no remote and `gh` is not logged in |
+| Public demo files | `submission/dist/kan-demo-package-20260501T172529Z.zip`, static live-demo page, APK, checksums | Ready locally, not uploaded |
+| Media gallery assets | `submission/media-gallery-cover.svg`, final video, screenshots | Ready locally, not uploaded |
+| No secret leakage | `.env` ignored; verifier checks ZIP has `.env.example` and not `.env` | Verified locally |
+| Python best practice | Unsloth uses `uv`/venv paths; no system Python needed for project checks | Verified locally |
+| Latest practical libraries | Flutter deps checked; Unsloth stack installed as latest available on remote venv | Verified locally/remotely |
+| Mac emulator preference | Android evidence captured from Mac-hosted emulator; no emulator currently attached | Verified |
+| Linux resource use | Remote RTX 4050 used for Unsloth dependency/import/training attempt | Verified |
+| Post-quantum note | Mentioned as future trust segment, not a blocker or unsupported claim | Ready as future-facing note |
 
-## Current Local Gates
+## Verification Commands
 
-- `cd kan-app && dart format --set-exit-if-changed lib test`: pass.
-- `cd kan-app && flutter analyze`: pass.
-- `cd kan-app && flutter test`: pass, 16 tests.
-- `cd kan-app && flutter build apk --debug`: pass.
+```bash
+git status --short
+./scripts/verify_submission.sh
+git status --ignored --short | rg "\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv"
+adb devices
+```
 
-## Highest-Impact Next Steps
+Latest observed results:
 
-1. Capture a fresh default-mode emulator screenshot showing `load_breach_catalog(asset:assets/breach_catalog.json) -> ok`.
-2. Improve Cactus output quality or decide to present Cactus as routing/metrics evidence only.
-3. Move Unsloth training to a larger CUDA GPU and produce adapter plus before/after evaluation.
-4. Publish the repo and upload the demo ZIP to a public no-login location.
-5. Record the 3-minute video using only verified claims.
+- Git working tree: clean.
+- Submission verifier: pass.
+- Ignored secrets/generated files: `.env`, `submission/dist/`, generated APK/checksum, and `unsloth/.venv/`.
+- Android devices: none attached.
+
+## Remaining External Blockers
+
+- Run `gh auth login`.
+- Create and push a public repository.
+- Upload `submission/dist/kan-demo-package-20260501T172529Z.zip` to a public no-login URL.
+- Upload `submission/kan-final-demo-video.mp4` to a public video URL.
+- Submit the Kaggle form using `submission/KAGGLE_FORM.md`, `submission/final-kaggle-writeup.md`, and `submission/YOUTUBE_DESCRIPTION.md`.
+- Use `submission/prize-claims.md`: claim Main Track and Digital Equity; claim Cactus only cautiously; do not claim Unsloth unless a larger GPU produces an adapter and before/after benchmark.
+
+Conclusion: the local submission package is ready, but the competition submission is not complete until the public repo, public demo URL, public video URL, and Kaggle form are created.
