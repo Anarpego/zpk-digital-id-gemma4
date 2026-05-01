@@ -9,6 +9,7 @@ import com.google.mlkit.genai.prompt.Generation
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
 import java.security.KeyStore
 import javax.crypto.KeyGenerator
 import javax.crypto.Mac
@@ -67,6 +68,28 @@ class MainActivity : FlutterActivity() {
                         )
                     } else {
                         signIdentityPayload(keyId, payload, result)
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "gt.kan.kan_app/audit_archive",
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "append" -> {
+                    val recordJson = call.argument<String>("recordJson") ?: ""
+                    val recordHash = call.argument<String>("recordHash")?.trim() ?: ""
+                    if (recordJson.isEmpty() || recordHash.length < 16) {
+                        result.error(
+                            "INVALID_AUDIT_RECORD",
+                            "recordJson and recordHash are required.",
+                            null,
+                        )
+                    } else {
+                        appendAuditRecord(recordJson, recordHash, result)
                     }
                 }
                 else -> result.notImplemented()
@@ -177,6 +200,43 @@ class MainActivity : FlutterActivity() {
         } catch (error: Throwable) {
             result.error(
                 "KEYSTORE_SIGN_ERROR",
+                error.message ?: error.javaClass.simpleName,
+                mapOf("type" to error.javaClass.name),
+            )
+        }
+    }
+
+    private fun appendAuditRecord(
+        recordJson: String,
+        recordHash: String,
+        result: MethodChannel.Result,
+    ) {
+        try {
+            val archiveDir = File(filesDir, "zpk-audit-archive")
+            if (!archiveDir.exists() && !archiveDir.mkdirs()) {
+                result.error(
+                    "AUDIT_ARCHIVE_ERROR",
+                    "Could not create audit archive directory.",
+                    null,
+                )
+                return
+            }
+            val safeName = recordHash.take(64).replace(Regex("[^a-fA-F0-9]"), "")
+            val file = File(archiveDir, "$safeName.json")
+            file.writeText(recordJson, Charsets.UTF_8)
+            val recordCount = archiveDir.listFiles { candidate ->
+                candidate.isFile && candidate.name.endsWith(".json")
+            }?.size ?: 0
+
+            result.success(
+                mapOf(
+                    "location" to "app-internal:zpk-audit-archive/${file.name}",
+                    "recordCount" to recordCount,
+                ),
+            )
+        } catch (error: Throwable) {
+            result.error(
+                "AUDIT_ARCHIVE_ERROR",
                 error.message ?: error.javaClass.simpleName,
                 mapOf("type" to error.javaClass.name),
             )

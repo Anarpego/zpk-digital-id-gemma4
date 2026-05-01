@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'config/app_config.dart';
 import 'features/demo/home_screen.dart';
+import 'services/audit_archive.dart';
 import 'services/digital_identity_fabric.dart';
 import 'services/reasoner_factory.dart';
 
@@ -12,7 +13,12 @@ void main() {
     identityFabric: identityFabric,
   ).build(config);
   runApp(
-    KanApp(config: config, reasoner: reasoner, identityFabric: identityFabric),
+    KanApp(
+      config: config,
+      reasoner: reasoner,
+      identityFabric: identityFabric,
+      auditArchive: const NativeAuditArchive(),
+    ),
   );
 }
 
@@ -22,11 +28,13 @@ class KanApp extends StatelessWidget {
     AppConfig? config,
     this.reasoner,
     this.identityFabric,
+    this.auditArchive,
   }) : config = config ?? const AppConfig.fromEnvironment();
 
   final AppConfig config;
   final Object? reasoner;
   final DigitalIdentityFabric? identityFabric;
+  final AuditArchive? auditArchive;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +55,7 @@ class KanApp extends StatelessWidget {
         reasoner: reasoner,
         reasonerLabel: config.label,
         identityFabric: identityFabric,
+        auditArchive: auditArchive,
       ),
     );
   }

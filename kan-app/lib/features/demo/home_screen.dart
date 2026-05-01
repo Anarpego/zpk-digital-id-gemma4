@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/kan_case.dart';
+import '../../services/audit_archive.dart';
 import '../../services/digital_identity_fabric.dart';
 import '../../services/identity_protection_agent.dart';
 import '../../services/kan_reasoner.dart';
@@ -15,11 +16,13 @@ class HomeScreen extends StatefulWidget {
     Object? reasoner,
     this.reasonerLabel = 'Mock local',
     this.identityFabric,
+    this.auditArchive,
   }) : reasoner = reasoner is KanReasoner ? reasoner : const MockReasoner();
 
   final KanReasoner reasoner;
   final String reasonerLabel;
   final DigitalIdentityFabric? identityFabric;
+  final AuditArchive? auditArchive;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -31,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _agent = const IdentityProtectionAgent();
   late final DigitalIdentityFabric _trustFabric;
   late final RecoveryPacketService _packetService;
+  late final AuditArchiveService _auditArchive;
   late final Future<LocalBreachCatalog> _catalog;
 
   CaseScenario _scenario = CaseScenario.discoveredVictim;
@@ -38,7 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
   ReasonedGuidance? _guidance;
   IdentityTrustReport? _trustReport;
   RecoveryPacket? _recoveryPacket;
+  AuditArchiveReceipt? _auditReceipt;
   String? _complaint;
+  String? _auditError;
   bool _isVerifying = false;
 
   @override
@@ -46,6 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _trustFabric = widget.identityFabric ?? const DigitalIdentityFabric();
     _packetService = RecoveryPacketService(identityFabric: _trustFabric);
+    _auditArchive = AuditArchiveService(
+      archive: widget.auditArchive ?? MemoryAuditArchive(),
+    );
     _catalog = LocalBreachCatalog.loadEmbeddedOrFallback();
   }
 
@@ -80,13 +89,30 @@ class _HomeScreenState extends State<HomeScreen> {
             trustReport: trustReport,
             privateLocalComplaint: complaint,
           );
+    AuditArchiveReceipt? auditReceipt;
+    String? auditError;
+    if (recoveryPacket != null) {
+      try {
+        auditReceipt = await _auditArchive.appendRecoveryAudit(
+          result: result,
+          scenario: _scenario,
+          guidance: guidance,
+          trustReport: trustReport,
+          recoveryPacket: recoveryPacket,
+        );
+      } catch (error) {
+        auditError = error.toString();
+      }
+    }
 
     setState(() {
       _result = result;
       _guidance = guidance;
       _trustReport = trustReport;
       _recoveryPacket = recoveryPacket;
+      _auditReceipt = auditReceipt;
       _complaint = complaint;
+      _auditError = auditError;
       _isVerifying = false;
     });
   }
@@ -172,6 +198,13 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               if (_recoveryPacket != null) ...[
                 _RecoveryPacketPanel(packet: _recoveryPacket!),
+                const SizedBox(height: 12),
+              ],
+              if (_auditReceipt != null) ...[
+                _AuditArchivePanel(receipt: _auditReceipt!),
+                const SizedBox(height: 12),
+              ] else if (_auditError != null) ...[
+                _AuditArchiveErrorPanel(error: _auditError!),
                 const SizedBox(height: 12),
               ],
               if (_complaint != null) _TemplatePreview(text: _complaint!),
@@ -478,6 +511,81 @@ class _RecoveryPacketPanel extends StatelessWidget {
             const Divider(height: 24),
             for (final trace in packet.trace)
               Text(trace, style: text.bodySmall),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AuditArchivePanel extends StatelessWidget {
+  const _AuditArchivePanel({required this.receipt});
+
+  final AuditArchiveReceipt receipt;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Theme.of(context).textTheme;
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Archivo de auditoria local',
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.inventory_2_outlined),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text('Hash: ${receipt.recordHash.substring(0, 16)}'),
+            Text('Ubicacion: ${receipt.location}', style: text.bodySmall),
+            Text('Registros: ${receipt.recordCount}', style: text.bodySmall),
+            const Divider(height: 24),
+            for (final trace in receipt.trace)
+              Text(trace, style: text.bodySmall),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AuditArchiveErrorPanel extends StatelessWidget {
+  const _AuditArchiveErrorPanel({required this.error});
+
+  final String error;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme;
+
+    return Card(
+      elevation: 0,
+      color: color.errorContainer,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.error_outline),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'No se pudo guardar el recibo de auditoria local: $error',
+              ),
+            ),
           ],
         ),
       ),

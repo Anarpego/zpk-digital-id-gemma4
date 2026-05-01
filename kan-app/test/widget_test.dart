@@ -44,6 +44,16 @@ void main() {
     );
     expect(find.text('Paquete redactado firmado'), findsOneWidget);
     expect(find.textContaining('recovery_packet.sign'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Archivo de auditoria local'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Archivo de auditoria local'), findsOneWidget);
+    expect(
+      find.textContaining('audit_archive.raw_cui -> omitted'),
+      findsOneWidget,
+    );
     await tester.pumpWidget(const SizedBox.shrink());
   });
 
