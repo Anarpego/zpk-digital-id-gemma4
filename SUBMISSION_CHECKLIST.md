@@ -40,6 +40,8 @@
   - `submission/kaggle-writeup-draft.md` (699 words, under 1,500)
   - `submission/final-kaggle-writeup.md` (635 words, under 1,500)
   - `submission/video-script-draft.md`
+  - `submission/final-video-script.md`
+  - `submission/final-video-captions.srt`
   - `submission/demo-runbook.md`
   - `submission/media-gallery-cover.svg`
   - `submission/prize-claims.md`
@@ -55,9 +57,10 @@
   - `LICENSE`
   - `scripts/package_demo.sh`
 - Local downloadable demo package exists:
-  - `submission/dist/kan-demo-package-20260501T161717Z.zip`
+  - `submission/dist/kan-demo-package-20260501T162034Z.zip`
   - `submission/live-demo/kan-debug.apk`
   - `submission/live-demo/kan-debug.apk.sha256`
+  - `submission/live-demo/index.html`
 - Unsloth seed artifacts exist but are not trained:
   - `unsloth/kan_legal_spanish_sft.jsonl`
   - `unsloth/eval_cases.jsonl`
@@ -81,7 +84,7 @@
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
-- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T161717Z.zip`.
+- `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-20260501T162034Z.zip`.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 - Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
 

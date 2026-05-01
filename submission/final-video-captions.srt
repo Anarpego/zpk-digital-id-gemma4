@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:18,000
+When personal data leaks, many citizens are left with three questions: am I affected, what does it mean, and what do I do today? Kan is a local-first Android assistant for that moment.
+
+2
+00:00:18,000 --> 00:00:50,000
+The demo uses synthetic data only. Kan loads an embedded breach catalog on the device. The CUI is checked locally, not sent to a server. When there is a match, the user sees plain Spanish instead of technical breach jargon.
+
+3
+00:00:50,000 --> 00:01:20,000
+Kan does not stop at a chatbot answer. It creates next steps and a preliminary complaint draft the citizen can review, print, or share with someone they trust.
+
+4
+00:01:20,000 --> 00:01:55,000
+For richer reasoning, Kan has a hosted Gemma 4 mode verified with gemma-4-31b-it. The routing trace records which path ran and whether personal data was sent. By default, sensitive checks stay local.
+
+5
+00:01:55,000 --> 00:02:20,000
+The app also integrates Cactus for local model routing. Current Cactus evidence shows local inference metrics on Android, while tool-calling remains a known limitation. For adaptation, Kan includes a Training-Free GRPO-style experience prior and an Unsloth fine-tuning scaffold for Guatemalan legal Spanish.
+
+6
+00:02:20,000 --> 00:02:50,000
+Kan targets Digital Equity and Safety. It is Spanish-first, Android-first, offline-first, and designed so privacy is visible. The goal is simple: help a citizen move from fear to a concrete next action.

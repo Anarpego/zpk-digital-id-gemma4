@@ -2,6 +2,8 @@
 
 This package is intended for Kaggle live-demo/download evidence. It contains a debug Android APK built in default local mode, selected screenshots, and documentation links.
 
+Open `index.html` for a simple static demo landing page.
+
 ## Install
 
 Use an Android emulator or connected Android device:

@@ -41,6 +41,8 @@ zip -r "$ZIP" \
   submission/media-gallery-cover.svg \
   submission/prize-claims.md \
   submission/publish-runbook.md \
+  submission/final-video-captions.srt \
+  submission/final-video-script.md \
   submission/video-raw \
   submission/video-script-draft.md \
   unsloth \
