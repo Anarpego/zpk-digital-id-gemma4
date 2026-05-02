@@ -27,6 +27,8 @@ Local checks:
 - `submission/dist/kan-demo-package-final.zip.sha256` contains the current ZIP checksum.
 - The archive includes `.env.example` but does not include `.env`.
 - The APK is the default local-mode debug build; it does not embed `KAN_GEMINI_API_KEY`.
+- `./scripts/verify_submission.sh` scans the APK for Gemini key markers and
+  scans the ZIP for Gemini API key patterns before reporting pass.
 - The video duration is under 180 seconds.
 - The media cover PNG is 1600x900.
 

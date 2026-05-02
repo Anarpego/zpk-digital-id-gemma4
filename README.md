@@ -104,7 +104,7 @@ Build a local downloadable package for Kaggle live-demo evidence:
 ./scripts/package_demo.sh
 ```
 
-The script rebuilds the default local-mode APK, copies selected screenshots into `submission/live-demo/`, writes an APK SHA-256 checksum, and creates a ZIP under `submission/dist/`. It does not embed hosted API keys.
+The script rebuilds the default local-mode APK, copies selected screenshots into `submission/live-demo/`, writes an APK SHA-256 checksum, and creates a ZIP under `submission/dist/`. The submission verifier checks that the APK does not contain hosted Gemini key markers and that the ZIP does not contain `.env` or Gemini API key patterns.
 
 Current verified package:
 

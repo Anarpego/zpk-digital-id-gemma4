@@ -109,6 +109,12 @@ fi
 if grep -q 'docs/evidence/zpk-android-keystore-trace-2026-05-01.uiautomator.xml$' "$zip_listing"; then
   fail "ZIP contains stale Android Keystore UIAutomator trace"
 fi
+if strings "$APK" | grep -Eiq 'AIza[0-9A-Za-z_-]{20,}|KAN_GEMINI_API_KEY|GEMINI_API_KEY|x-goog-api-key'; then
+  fail "APK appears to contain an embedded Gemini API key or key marker"
+fi
+if unzip -p "$ZIP" | strings | grep -Eq 'AIza[0-9A-Za-z_-]{20,}'; then
+  fail "ZIP appears to contain a Gemini API key"
+fi
 
 for required in \
   'SUBMIT_NOW.md' \

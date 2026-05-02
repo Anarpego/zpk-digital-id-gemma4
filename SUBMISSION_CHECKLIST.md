@@ -116,7 +116,7 @@
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
 - `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-final.zip`.
-- `./scripts/verify_submission.sh`: pass; verified APK/video checksums, ZIP contents, no `.env`, and writeup length.
+- `./scripts/verify_submission.sh`: pass; verified APK/video checksums, ZIP contents, no `.env`, no embedded Gemini API key pattern, and writeup length.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 - Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
 - Remote Linux GPU Unsloth dependency install and import smoke in `/tmp/kan-unsloth-venv`: pass; CUDA available.
@@ -152,7 +152,7 @@ Prompt-to-artifact checklist:
 | Media gallery cover | `submission/media-gallery-cover.png`, 1600x900 PNG rendered from SVG | Ready locally |
 | Writeup | `submission/final-kaggle-writeup.md`, 695 words | Ready locally |
 | Live demo/download | `submission/dist/kan-demo-package-final.zip` plus `.sha256` | Ready locally, not uploaded |
-| No secrets | `.env` ignored; verifier checks ZIP excludes `.env` | Verified |
+| No secrets | `.env` ignored; verifier checks ZIP excludes `.env`, APK excludes Gemini key markers, and ZIP excludes Gemini API key patterns | Verified |
 
 Current blocker: upload/publish actions require user-owned accounts (`gh auth login`, Kaggle submission, YouTube or Dataset upload). The local repository and artifacts are ready, but the competition submission is not complete until those URLs are created and pasted into Kaggle.
 
