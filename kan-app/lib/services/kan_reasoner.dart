@@ -91,6 +91,18 @@ class ReasonerPromptBuilder {
               '${match.slug}: ${match.name} (${match.exposedFields.join(', ')})',
         )
         .join('\n');
+    final selectiveClaims = trustReport.selectiveDisclosureClaims.map((claim) {
+      if (claim.startsWith('citizen=')) {
+        return 'citizen=local_pseudonym_available';
+      }
+      return claim;
+    });
+    final institutionPacket = trustReport.institutionPacket.map((item) {
+      if (item.startsWith('Pseudonimo ciudadano:')) {
+        return 'Pseudonimo ciudadano: emitido_localmente';
+      }
+      return item;
+    });
 
     return '''
 Eres ZPK Digital ID, un agente ciudadano para registro, autenticacion y
@@ -106,16 +118,16 @@ ${assessment.toPromptBlock()}
 
 Infraestructura local de identidad:
 - emisor_demo: ${trustReport.credential.issuer}
-- pseudonimo_ciudadano: ${trustReport.credential.pseudonymousId}
+- pseudonimo_ciudadano: emitido_localmente
 - nivel_aseguramiento: ${trustReport.credential.assuranceLevel}
 - consentimiento: ${trustReport.consentGrant.scope}
-- prueba_local: ${trustReport.consentGrant.localProof}
-- did_local: ${trustReport.didDocument['id']}
+- prueba_local: firmada_en_dispositivo
+- did_local: did:zpk:gt:<redacted-local-id>
 - credencial_verificable_demo: ${trustReport.verifiableCredential['type']}
-- divulgacion_selectiva: ${trustReport.selectiveDisclosureClaims.join(', ')}
+- divulgacion_selectiva: ${selectiveClaims.join(', ')}
 - recuperacion: ${trustReport.recoveryStatus}
 - paquete_institucional:
-${trustReport.institutionPacket.map((item) => '  - $item').join('\n')}
+${institutionPacket.map((item) => '  - $item').join('\n')}
 
 Caso:
 - flujo: ${scenario.label}

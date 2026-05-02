@@ -10,6 +10,9 @@ or ML Kit/AICore on-device Gemma.
 
 - `PrivacyGuard` blocks prompts containing the active raw CUI.
 - It also blocks any unredacted 13-digit identifier pattern before generation.
+- `ReasonerPromptBuilder` redacts stable local pseudonyms, DID fragments, and
+  local proof values before hosted Gemma, Cactus, or ML Kit/AICore can receive
+  a prompt.
 - Hosted Gemma, Cactus local, and ML Kit/AICore reasoners now call the guard
   before invoking their model backend.
 - The default offline demo includes visible guard traces:
@@ -26,6 +29,10 @@ Commands run from `kan-app`:
 - `flutter test test/services/privacy_guard_test.dart
   test/services/reasoner_prompt_builder_test.dart
   test/services/gemma_api_reasoner_test.dart test/widget_test.dart`: passed.
+- `flutter test test/services/reasoner_prompt_builder_test.dart
+  test/services/mlkit_gemma_reasoner_test.dart
+  test/services/gemma_api_reasoner_test.dart`: passed after redacting local
+  proof material from model prompts.
 - `flutter analyze`: passed with no issues.
 - `flutter test`: 43 tests passed.
 

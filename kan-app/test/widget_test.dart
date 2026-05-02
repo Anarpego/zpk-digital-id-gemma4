@@ -31,6 +31,10 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('agent_ledger.sign'), findsOneWidget);
+    expect(
+      find.textContaining('agent_ledger.verify(local) -> ok'),
+      findsOneWidget,
+    );
     await tester.drag(find.byType(ListView), const Offset(0, -600));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(
