@@ -75,6 +75,10 @@ void main() {
     );
     expect(find.text('Paquete redactado firmado'), findsOneWidget);
     expect(find.textContaining('recovery_packet.sign'), findsOneWidget);
+    expect(
+      find.textContaining('recovery_packet.verify(local) -> ok'),
+      findsOneWidget,
+    );
     await tester.scrollUntilVisible(
       find.text('Archivo de auditoria local'),
       500,

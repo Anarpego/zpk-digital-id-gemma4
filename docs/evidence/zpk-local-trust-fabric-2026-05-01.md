@@ -10,7 +10,7 @@ This app now demonstrates ZPK Digital ID as a local-first identity wallet, not o
 - DID-style document: `did:zpk:gt:zpk-gt-...`
 - Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential: `ZpkIdentityRecoveryCredential`
 - Signed and locally verified SHA-256 agent execution ledger: local tool calls, credential issue, consent, and reasoner route
-- Signed redacted recovery packet: private complaint remains local, institutional packet excludes raw CUI
+- Signed and locally verified redacted recovery packet: private complaint remains local, institutional packet excludes raw CUI
 - Selective disclosure claims: risk, match count, scenario, pseudonymous citizen ID
 - Short-lived signed consent proof: 15 minutes
 - Redacted institutional packet: no raw CUI
@@ -32,9 +32,11 @@ trust_fabric.issue_consent(local, 15m) -> signed
 agent_ledger.hash_chain(sha256) -> ...
 agent_ledger.sign(android-keystore) -> ...
 agent_ledger.verify(local) -> ok
+recovery_packet.sign(android-keystore) -> ...
+recovery_packet.verify(local) -> ok
 trust_fabric.institution_packet(redacted) -> ...
 ```
 
 ## Non-Claims
 
-This is not a production government identity system or real public-sector integration. The app runtime now signs with Android Keystore, and tests verify ledger tamper rejection with a deterministic local signer. A production deployment would still need institution-backed key governance, attestation policy, standards conformance testing, audits, and operations.
+This is not a production government identity system or real public-sector integration. The app runtime now signs with Android Keystore, and tests verify ledger and recovery-packet tamper rejection with a deterministic local signer. A production deployment would still need institution-backed key governance, attestation policy, standards conformance testing, audits, and operations.

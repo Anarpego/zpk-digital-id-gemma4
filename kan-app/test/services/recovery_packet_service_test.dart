@@ -51,6 +51,53 @@ void main() {
         packet.trace,
         contains(startsWith('recovery_packet.sign(dart-test-hmac) -> ')),
       );
+      expect(packet.trace, contains('recovery_packet.verify(local) -> ok'));
+      expect(
+        await RecoveryPacketService(identityFabric: fabric).verifyPacket(
+          redactedSharePacket: packet.redactedSharePacket,
+          redactedPacketHash: packet.redactedPacketHash,
+          signature: packet.signature,
+        ),
+        isTrue,
+      );
     },
   );
+
+  test('rejects tampered redacted recovery packets', () async {
+    final result = LocalBreachCatalog(
+      now: DateTime.utc(2026, 5, 1),
+    ).verify('1234567890101');
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+    );
+    final fabric = const DigitalIdentityFabric();
+    final trustReport = await fabric.evaluate(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      assessment: assessment,
+    );
+    final complaint = const LegalTemplateService().buildComplaint(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+    );
+    final service = RecoveryPacketService(identityFabric: fabric);
+    final packet = await service.build(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      trustReport: trustReport,
+      privateLocalComplaint: complaint,
+    );
+    final tampered = Map<String, Object>.from(packet.redactedSharePacket)
+      ..['localMatches'] = 0;
+
+    expect(
+      await service.verifyPacket(
+        redactedSharePacket: tampered,
+        redactedPacketHash: packet.redactedPacketHash,
+        signature: packet.signature,
+      ),
+      isFalse,
+    );
+  });
 }

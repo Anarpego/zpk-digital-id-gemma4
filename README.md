@@ -8,7 +8,7 @@ This repository is optimized for a public hackathon submission and reproducible 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed and locally verified agent ledger, Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof, signed redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, 15-minute consent proof, and validated JSON agent-response contracts for model outputs.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed and locally verified agent ledger, Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof, signed and locally verified redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, 15-minute consent proof, and validated JSON agent-response contracts for model outputs.
 - Local privacy controls: raw CUI prompt guard, model-prompt redaction of stable local IDs and proof material, encrypted app-internal audit archive, citizen archive deletion, `FLAG_SECURE`, disabled Android backup, and cleartext traffic disabled.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
@@ -93,7 +93,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 43 tests
+- `flutter test` passes 44 tests
 - `flutter build apk --debug`
 
 ## Evidence Package

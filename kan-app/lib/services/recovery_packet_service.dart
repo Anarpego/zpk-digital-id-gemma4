@@ -77,8 +77,34 @@ class RecoveryPacketService {
         'recovery_packet.redact(raw_cui) -> retained_on_device',
         'recovery_packet.hash(sha256) -> ${packetHash.substring(0, 16)}',
         'recovery_packet.sign(${signature.keyStore}) -> ${signature.proofValue.substring(0, 16)}',
+        'recovery_packet.verify(local) -> ${await verifyPacket(redactedSharePacket: redactedSharePacket, redactedPacketHash: packetHash, signature: signature.proofValue) ? 'ok' : 'failed'}',
       ],
     );
+  }
+
+  Future<bool> verifyPacket({
+    required Map<String, Object> redactedSharePacket,
+    required String redactedPacketHash,
+    required String signature,
+  }) async {
+    if (redactedSharePacket['packetType'] != 'ZpkIdentityRecoverySharePacket') {
+      return false;
+    }
+    final canonicalPacket = _canonicalJson(redactedSharePacket);
+    final expectedHash = sha256
+        .convert(utf8.encode(canonicalPacket))
+        .toString();
+    if (redactedPacketHash != expectedHash) {
+      return false;
+    }
+    final expectedSignature = await identityFabric.signCanonicalPayload(
+      _canonicalJson({
+        'purpose': 'zpk-redacted-recovery-packet',
+        'issuer': identityFabric.issuerKeyId,
+        'packet': redactedSharePacket,
+      }),
+    );
+    return expectedSignature.proofValue == signature;
   }
 
   String _canonicalJson(Object? value) {

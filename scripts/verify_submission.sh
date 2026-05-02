@@ -85,6 +85,7 @@ for trace in \
   'agent_contract.safety_review(raw_cui=false) -> ok' \
   'audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed' \
   'privacy_guard.raw_cui -> absent' \
+  'recovery_packet.verify(local) -> ok' \
   'reasoner_mode(mlkit-gemma:aicore) -> fallback'; do
   grep -Fq "$trace" "$WRITEUP" "$ROOT/docs/evidence"/*.md || fail "missing evidence trace: $trace"
 done
