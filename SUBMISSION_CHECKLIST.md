@@ -104,12 +104,13 @@
 
 - `cd kan-app && dart format --set-exit-if-changed lib test`: pass.
 - `cd kan-app && flutter analyze`: pass.
-- `cd kan-app && flutter test`: pass, 17 tests.
+- `cd kan-app && flutter test`: pass, 40 tests.
 - `cd kan-app && flutter build apk --debug`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m-pro --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=5`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m --dart-define=KAN_CACTUS_ENABLE_TOOLS=false --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=180`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=gemma-hosted --dart-define=KAN_GEMINI_MODEL=gemma-4-31b-it`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=mlkit-gemma --dart-define=KAN_MLKIT_TIMEOUT_SECONDS=120`: pass.
+- `./scripts/verify_release_build.sh`: pass; release APK builds and is intentionally unsigned without `ZPK_RELEASE_*` credentials.
 - `/bin/zsh -lc 'set -a; source ../.env; set +a; flutter build apk --debug --dart-define=KAN_REASONER=gemma-hosted --dart-define=KAN_GEMINI_MODEL=gemma-4-31b-it --dart-define=KAN_GEMINI_API_KEY="$GEMINI_API_KEY"'`: pass for local testing only; do not publish an APK with an embedded API key.
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.

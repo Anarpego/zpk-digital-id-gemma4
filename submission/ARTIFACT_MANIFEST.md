@@ -36,6 +36,7 @@ shasum -a 256 submission/live-demo/kan-debug.apk submission/kan-final-demo-video
 shasum -a 256 -c submission/dist/kan-demo-package-final.zip.sha256
 unzip -l submission/dist/kan-demo-package-final.zip | rg "\\.env|kan-final-demo-video|training_attempt|kan-debug.apk"
 ./scripts/verify_submission.sh
+./scripts/verify_release_build.sh
 ./scripts/publish_submission.sh --check
 KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 uvx kaggle datasets create -p submission/kaggle-dataset-upload --dir-mode zip
@@ -48,6 +49,8 @@ Expected:
 - The archive contains `.env.example` but not `.env`.
 - The video is under 180 seconds.
 - The media cover is 1600x900.
+- Release builds do not silently use Android debug signing; without
+  `ZPK_RELEASE_*` credentials the release APK is intentionally unsigned.
 - `verify_submission.sh` also checks that the public copy and ZIP include
   the signed local authentication proof, encrypted audit archive, hosted
   Gemma 4 evidence, and ML Kit/AICore fail-closed caveat without stale

@@ -109,6 +109,7 @@ for required in \
   'SUBMIT_NOW.md' \
   'scripts/prepare_kaggle_dataset.sh' \
   'scripts/publish_submission.sh' \
+  'scripts/verify_release_build.sh' \
   'scripts/verify_submission.sh' \
   'submission/ARTIFACT_MANIFEST.md' \
   'submission/GITHUB_RELEASE_NOTES.md' \

@@ -19,6 +19,11 @@ If those variables are missing, the Gradle release build is not signed with the
 debug key. The Kaggle package continues to ship a clearly named debug APK for
 local judging evidence.
 
+The repeatable gate is `./scripts/verify_release_build.sh`. It builds
+`app-release.apk`, verifies the signature state with Android SDK `apksigner`,
+fails if a release APK unexpectedly verifies without `ZPK_RELEASE_*`
+credentials, and fails if a signed release uses the Android debug certificate.
+
 ## Non-Claims
 
 No production signing certificate is committed or generated in this repository.
@@ -35,6 +40,10 @@ Commands run on 2026-05-01:
 - `./scripts/package_demo.sh`: rebuilt `submission/live-demo/kan-debug.apk`
   and `submission/dist/kan-demo-package-final.zip`.
 - `./scripts/verify_submission.sh`: passed.
+- `./scripts/verify_release_build.sh`: passed, produced intentionally unsigned
+  release APK without `ZPK_RELEASE_*` credentials.
+- Release APK SHA-256:
+  `a1fa569db842d60a665ad7f3e34ba619ce98ad33a66ad39582fc310888f05d2b`.
 - `aapt2 dump badging submission/live-demo/kan-debug.apk`: confirmed
   `application-label:'ZPK Digital ID'`.
 - `aapt2 dump xmltree --file AndroidManifest.xml
