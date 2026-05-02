@@ -66,7 +66,7 @@ if grep -R -Eiq 'MockReasoner|ReasonerMode\.mock|mock_reasoner|mock-local' "$ROO
 fi
 
 for claim in \
-  'verifier-enforced allowlisted expiring local authentication proof' \
+  'Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof' \
   'citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore' \
   'ML Kit/AICore status probing plus model download/warmup before generation' \
   'validated JSON agent-response contracts' \
@@ -78,6 +78,7 @@ done
 for trace in \
   'auth.verify(local) -> ok' \
   'auth.relying_party(local_allowlist) -> approved' \
+  'auth.device_presence(' \
   'auth.valid_until(local) ->' \
   'auth.blocked(revocation) -> credential_revoked' \
   'agent_contract.schema(json) -> ok' \
@@ -159,7 +160,7 @@ if [[ -d "$DATASET_UPLOAD" ]]; then
     [[ -f "$DATASET_UPLOAD/$resource_path" ]] || fail "Kaggle Dataset upload missing resource: $resource_path"
   done < <(jq -r '.resources[].path' "$DATASET_UPLOAD/dataset-metadata.json")
 
-  grep -Fq 'verifier-enforced allowlisted expiring local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
+  grep -Fq 'Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
     || fail "Kaggle Dataset upload form missing authentication proof claim"
   grep -Fq 'auth.verify(local) -> ok' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
     || fail "Kaggle Dataset upload writeup missing authentication trace"

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kan_app/models/kan_case.dart';
+import 'package:kan_app/services/device_presence_gate.dart';
 import 'package:kan_app/services/digital_identity_fabric.dart';
 import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/local_authentication_service.dart';
@@ -23,6 +24,7 @@ void main() {
 
     final service = LocalAuthenticationService(
       fixedNow: DateTime.utc(2026, 5, 1, 12),
+      devicePresenceGate: const BypassDevicePresenceGate(),
     );
     final proof = await service.buildProof(
       result: result,
@@ -36,6 +38,7 @@ void main() {
     expect(proof.issuedAt, DateTime.utc(2026, 5, 1, 12));
     expect(proof.expiresAt, DateTime.utc(2026, 5, 1, 12, 5));
     expect(proof.sharePacket.toString(), isNot(contains(result.cui)));
+    expect(proof.sharePacket.toString(), contains('devicePresence'));
     expect(
       proof.trace,
       contains('auth.relying_party(local_allowlist) -> approved'),
@@ -47,6 +50,10 @@ void main() {
       ),
     );
     expect(proof.trace, contains('auth.raw_cui -> omitted'));
+    expect(
+      proof.trace,
+      contains('auth.device_presence(dart-test-bypass) -> verified'),
+    );
     expect(
       proof.trace,
       contains('auth.selective_disclosure(local) -> 4_claims'),
@@ -74,16 +81,21 @@ void main() {
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
     );
-    final proof = await const LocalAuthenticationService().buildProof(
-      result: result,
-      scenario: CaseScenario.discoveredVictim,
-      trustReport: trustReport,
-    );
+    final proof =
+        await const LocalAuthenticationService(
+          devicePresenceGate: BypassDevicePresenceGate(),
+        ).buildProof(
+          result: result,
+          scenario: CaseScenario.discoveredVictim,
+          trustReport: trustReport,
+        );
     final tampered = Map<String, Object>.from(proof.sharePacket)
       ..['expiresInMinutes'] = 60;
 
     expect(
-      await const LocalAuthenticationService().verifySharePacket(tampered),
+      await const LocalAuthenticationService(
+        devicePresenceGate: BypassDevicePresenceGate(),
+      ).verifySharePacket(tampered),
       isFalse,
     );
   });
@@ -105,7 +117,9 @@ void main() {
       );
 
       await expectLater(
-        const LocalAuthenticationService().buildProof(
+        const LocalAuthenticationService(
+          devicePresenceGate: BypassDevicePresenceGate(),
+        ).buildProof(
           result: result,
           scenario: CaseScenario.discoveredVictim,
           trustReport: trustReport,
@@ -115,6 +129,32 @@ void main() {
       );
     },
   );
+
+  test('does not issue authentication proof without device presence', () async {
+    final result = LocalBreachCatalog(
+      now: DateTime.utc(2026, 5, 1),
+    ).verify('1234567890101');
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+    );
+    final trustReport = await const DigitalIdentityFabric().evaluate(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      assessment: assessment,
+    );
+
+    await expectLater(
+      const LocalAuthenticationService(
+        devicePresenceGate: _DeniedDevicePresenceGate(),
+      ).buildProof(
+        result: result,
+        scenario: CaseScenario.discoveredVictim,
+        trustReport: trustReport,
+      ),
+      throwsStateError,
+    );
+  });
 
   test('does not verify signed proof for untrusted relying party', () async {
     final result = LocalBreachCatalog(
@@ -131,6 +171,7 @@ void main() {
     );
     final permissiveService = LocalAuthenticationService(
       fixedNow: DateTime.utc(2026, 5, 1, 12),
+      devicePresenceGate: const BypassDevicePresenceGate(),
       relyingPartyPolicy: const RelyingPartyPolicy(
         allowedParties: {
           'unknown-institution-demo': ['identity_recovery'],
@@ -147,6 +188,7 @@ void main() {
     expect(
       await LocalAuthenticationService(
         fixedNow: DateTime.utc(2026, 5, 1, 12),
+        devicePresenceGate: const BypassDevicePresenceGate(),
       ).verifySharePacket(proof.sharePacket),
       isFalse,
     );
@@ -168,6 +210,7 @@ void main() {
     final proof =
         await LocalAuthenticationService(
           fixedNow: DateTime.utc(2026, 5, 1, 12),
+          devicePresenceGate: const BypassDevicePresenceGate(),
         ).buildProof(
           result: result,
           scenario: CaseScenario.discoveredVictim,
@@ -177,6 +220,7 @@ void main() {
     expect(
       await LocalAuthenticationService(
         fixedNow: DateTime.utc(2026, 5, 1, 12, 6),
+        devicePresenceGate: const BypassDevicePresenceGate(),
       ).verifySharePacket(proof.sharePacket),
       isFalse,
     );
@@ -207,7 +251,9 @@ void main() {
         );
 
     await expectLater(
-      const LocalAuthenticationService().buildProof(
+      const LocalAuthenticationService(
+        devicePresenceGate: BypassDevicePresenceGate(),
+      ).buildProof(
         result: result,
         scenario: CaseScenario.discoveredVictim,
         trustReport: trustReport,
@@ -216,4 +262,16 @@ void main() {
       throwsStateError,
     );
   });
+}
+
+class _DeniedDevicePresenceGate implements DevicePresenceGate {
+  const _DeniedDevicePresenceGate();
+
+  @override
+  Future<DevicePresenceResult> verify({required String reason}) async =>
+      const DevicePresenceResult(
+        verified: false,
+        method: 'dart-test-denied',
+        trace: ['auth.device_presence(dart-test-denied) -> denied'],
+      );
 }

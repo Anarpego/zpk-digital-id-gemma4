@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
 import '../models/kan_case.dart';
+import 'device_presence_gate.dart';
 import 'digital_identity_fabric.dart';
 import 'revocation_service.dart';
 
@@ -56,11 +57,13 @@ class LocalAuthenticationService {
   const LocalAuthenticationService({
     this.identityFabric = const DigitalIdentityFabric(),
     this.relyingPartyPolicy = const RelyingPartyPolicy(),
+    this.devicePresenceGate = const PlatformDevicePresenceGate(),
     this.fixedNow,
   });
 
   final DigitalIdentityFabric identityFabric;
   final RelyingPartyPolicy relyingPartyPolicy;
+  final DevicePresenceGate devicePresenceGate;
   final DateTime? fixedNow;
 
   Future<LocalAuthenticationProof> buildProof({
@@ -78,6 +81,12 @@ class LocalAuthenticationService {
     final allowedScopes = relyingPartyPolicy.scopesFor(relyingParty);
     if (allowedScopes.isEmpty) {
       throw StateError('Relying party $relyingParty is not allowed.');
+    }
+    final devicePresence = await devicePresenceGate.verify(
+      reason: 'Autorice prueba local ZPK para $relyingParty',
+    );
+    if (!devicePresence.verified) {
+      throw StateError('Device presence was not verified.');
     }
 
     final issuedAt = _now();
@@ -102,6 +111,10 @@ class LocalAuthenticationService {
       'did': trustReport.didDocument['id']!,
       'allowedScopes': allowedScopes,
       'requestedClaims': requestedClaims,
+      'devicePresence': {
+        'method': devicePresence.method,
+        'verifiedAt': issuedAt.toIso8601String(),
+      },
       'issuedAt': issuedAt.toIso8601String(),
       'expiresAt': expiresAt.toIso8601String(),
       'expiresInMinutes': 5,
@@ -142,6 +155,7 @@ class LocalAuthenticationService {
       trace: [
         'auth.relying_party(local_allowlist) -> approved',
         'auth.scopes(local_policy) -> ${allowedScopes.join('+')}',
+        ...devicePresence.trace,
         'auth.challenge(local) -> ${payloadHash.substring(0, 16)}',
         'auth.selective_disclosure(local) -> ${requestedClaims.length}_claims',
         'auth.raw_cui -> omitted',

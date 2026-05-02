@@ -36,14 +36,14 @@ rotation procedures.
 Commands run on 2026-05-01:
 
 - `flutter analyze` from `kan-app`: passed with no issues.
-- `flutter test` from `kan-app`: 40 tests passed.
+- `flutter test` from `kan-app`: 41 tests passed.
 - `./scripts/package_demo.sh`: rebuilt `submission/live-demo/kan-debug.apk`
   and `submission/dist/kan-demo-package-final.zip`.
 - `./scripts/verify_submission.sh`: passed.
 - `./scripts/verify_release_build.sh`: passed, produced intentionally unsigned
   release APK without `ZPK_RELEASE_*` credentials.
 - Release APK SHA-256:
-  `a1fa569db842d60a665ad7f3e34ba619ce98ad33a66ad39582fc310888f05d2b`.
+  `506232ba0316c17f3a9d5bb314e03abc060ee6bf54711710e5b44cfff121547b`.
 - `aapt2 dump badging submission/live-demo/kan-debug.apk`: confirmed
   `application-label:'ZPK Digital ID'`.
 - `aapt2 dump xmltree --file AndroidManifest.xml

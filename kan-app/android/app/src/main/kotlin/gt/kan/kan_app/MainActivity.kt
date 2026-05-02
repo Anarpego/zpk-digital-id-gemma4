@@ -1,5 +1,8 @@
 package gt.kan.kan_app
 
+import android.app.Activity
+import android.app.KeyguardManager
+import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.os.Bundle
@@ -26,9 +29,11 @@ import kotlinx.coroutines.launch
 
 class MainActivity : FlutterActivity() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private var deviceAuthResult: MethodChannel.Result? = null
 
     companion object {
         private const val AUDIT_ARCHIVE_KEY_ALIAS = "zpk-audit-archive-aes-gcm-2026-05"
+        private const val DEVICE_AUTH_REQUEST_CODE = 7301
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +91,20 @@ class MainActivity : FlutterActivity() {
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
+            "gt.kan.kan_app/device_auth",
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "confirm" -> {
+                    val reason = call.argument<String>("reason")?.trim()
+                        ?: "Autorice la prueba local de ZPK Digital ID"
+                    confirmDevicePresence(reason, result)
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
             "gt.kan.kan_app/audit_archive",
         ).setMethodCallHandler { call, result ->
             when (call.method) {
@@ -111,6 +130,58 @@ class MainActivity : FlutterActivity() {
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         scope.cancel()
         super.cleanUpFlutterEngine(flutterEngine)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
+        if (requestCode == DEVICE_AUTH_REQUEST_CODE) {
+            val pendingResult = deviceAuthResult
+            deviceAuthResult = null
+            if (pendingResult != null) {
+                val verified = resultCode == Activity.RESULT_OK
+                pendingResult.success(
+                    mapOf(
+                        "verified" to verified,
+                        "method" to "android-keyguard",
+                    ),
+                )
+            }
+            return
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun confirmDevicePresence(reason: String, result: MethodChannel.Result) {
+        if (deviceAuthResult != null) {
+            result.error(
+                "DEVICE_AUTH_IN_PROGRESS",
+                "A device authentication request is already active.",
+                null,
+            )
+            return
+        }
+        val keyguard = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if (!keyguard.isDeviceSecure) {
+            result.error(
+                "DEVICE_NOT_SECURE",
+                "Configure Android screen lock before issuing authentication proofs.",
+                mapOf("method" to "android-keyguard"),
+            )
+            return
+        }
+        val intent = keyguard.createConfirmDeviceCredentialIntent(
+            "ZPK Digital ID",
+            reason,
+        )
+        if (intent == null) {
+            result.error(
+                "DEVICE_AUTH_UNAVAILABLE",
+                "Android device credential confirmation is unavailable.",
+                mapOf("method" to "android-keyguard"),
+            )
+            return
+        }
+        deviceAuthResult = result
+        startActivityForResult(intent, DEVICE_AUTH_REQUEST_CODE)
     }
 
     private fun checkOnDeviceStatus(result: MethodChannel.Result) {

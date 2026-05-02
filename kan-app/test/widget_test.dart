@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kan_app/services/device_presence_gate.dart';
+import 'package:kan_app/services/local_authentication_service.dart';
 
 import 'package:kan_app/main.dart';
 
 void main() {
   testWidgets('offline demo verifies exposed synthetic CUI', (tester) async {
-    await tester.pumpWidget(const KanApp());
+    await tester.pumpWidget(const _TestKanApp());
 
     expect(find.text('ZPK Digital ID'), findsOneWidget);
     expect(find.text('Wallet local'), findsOneWidget);
@@ -102,7 +104,7 @@ void main() {
   testWidgets('invalid CUI stays local and does not generate document', (
     tester,
   ) async {
-    await tester.pumpWidget(const KanApp());
+    await tester.pumpWidget(const _TestKanApp());
 
     await tester.enterText(find.byType(TextField), '123');
     await tester.pump();
@@ -128,6 +130,17 @@ void main() {
     );
     expect(find.text('Denuncia lista'), findsNothing);
   });
+}
+
+class _TestKanApp extends StatelessWidget {
+  const _TestKanApp();
+
+  @override
+  Widget build(BuildContext context) => const KanApp(
+    authenticationService: LocalAuthenticationService(
+      devicePresenceGate: BypassDevicePresenceGate(),
+    ),
+  );
 }
 
 Future<void> _pumpUntilFound(WidgetTester tester, Finder finder) async {

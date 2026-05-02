@@ -19,6 +19,7 @@ class HomeScreen extends StatefulWidget {
     this.reasonerLabel = 'Local deterministic',
     this.identityFabric,
     this.auditArchive,
+    this.authenticationService,
   }) : reasoner = reasoner is KanReasoner
            ? reasoner
            : const LocalDeterministicReasoner();
@@ -27,6 +28,7 @@ class HomeScreen extends StatefulWidget {
   final String reasonerLabel;
   final DigitalIdentityFabric? identityFabric;
   final AuditArchive? auditArchive;
+  final LocalAuthenticationService? authenticationService;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -62,9 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
     _trustFabric = widget.identityFabric ?? const DigitalIdentityFabric();
     _packetService = RecoveryPacketService(identityFabric: _trustFabric);
     _revocationService = RevocationService(identityFabric: _trustFabric);
-    _authenticationService = LocalAuthenticationService(
-      identityFabric: _trustFabric,
-    );
+    _authenticationService =
+        widget.authenticationService ??
+        LocalAuthenticationService(identityFabric: _trustFabric);
     _auditArchive = AuditArchiveService(
       archive: widget.auditArchive ?? MemoryAuditArchive(),
     );

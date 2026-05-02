@@ -12,6 +12,9 @@ a relying-party authentication proof, not only registration and recovery.
   `municipalidad-guatemala-demo`.
 - Relying parties are checked against a local allowlist before proof issuance
   and again during proof verification.
+- Proof issuance now requires Android device-presence confirmation through
+  `KeyguardManager.createConfirmDeviceCredentialIntent`; tests use an explicit
+  bypass gate only for deterministic automation.
 - The authentication packet includes only redacted/selective claims:
   - citizen pseudonym
   - DID-style identifier
@@ -20,6 +23,7 @@ a relying-party authentication proof, not only registration and recovery.
   - challenge
   - risk assurance
   - scenario
+  - device-presence method and timestamp
   - local match count
   - issued and expiry timestamps
 - The packet excludes raw CUI.
@@ -38,6 +42,7 @@ The app now shows:
 auth.challenge(local) -> ...
 auth.relying_party(local_allowlist) -> approved
 auth.scopes(local_policy) -> identity_recovery+citizen_support
+auth.device_presence(android-keyguard) -> verified
 auth.selective_disclosure(local) -> 4_claims
 auth.raw_cui -> omitted
 auth.sign(android-keystore) -> ...
@@ -55,7 +60,7 @@ Commands run from `kan-app`:
 flutter test test/services/local_authentication_service_test.dart test/widget_test.dart
 ```
 
-Result: 8 targeted tests passed.
+Result: 9 targeted tests passed.
 
 Coverage:
 
@@ -63,6 +68,7 @@ Coverage:
 - Verifies the signed authentication packet.
 - Rejects a tampered authentication packet.
 - Rejects authentication proof issuance to an unknown relying party.
+- Rejects authentication proof issuance when device presence is denied.
 - Rejects a signed authentication proof for an untrusted relying party during
   verifier-side policy validation.
 - Rejects an expired authentication packet.
@@ -74,6 +80,7 @@ Coverage:
 
 ## Non-Claims
 
-This is a local authentication proof and verifier simulation. It is not yet a
-W3C VC conformance suite, remote attestation, government relying-party
-integration, or production certificate authority.
+This is a local authentication proof and verifier simulation with Android
+device-presence gating. It is not yet a W3C VC conformance suite, remote
+attestation, government relying-party integration, or production certificate
+authority.
