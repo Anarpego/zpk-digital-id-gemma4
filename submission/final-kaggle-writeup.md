@@ -73,4 +73,4 @@ ZPK targets Digital Equity & Inclusivity because it turns identity safety into a
 
 ## Reproducibility
 
-The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 42 tests, and `flutter build apk --debug`.
+The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 43 tests, and `flutter build apk --debug`.

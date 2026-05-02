@@ -46,6 +46,61 @@ void main() {
       ledger.trace,
       contains(startsWith('agent_ledger.sign(dart-test-hmac) -> ')),
     );
+    expect(ledger.trace, contains('agent_ledger.verify(local) -> ok'));
     expect(ledger.trace, contains('agent_ledger.entries -> 10'));
+    expect(
+      await AgentExecutionLedgerService(identityFabric: fabric).verify(ledger),
+      isTrue,
+    );
+  });
+
+  test('rejects tampered agent ledger hash chains', () async {
+    final result = LocalBreachCatalog(
+      now: DateTime.utc(2026, 5, 1),
+    ).verify('1234567890101');
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+    );
+    final fabric = const DigitalIdentityFabric();
+    final trustReport = await fabric.evaluate(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      assessment: assessment,
+    );
+
+    final ledger = await AgentExecutionLedgerService(identityFabric: fabric)
+        .build(
+          assessment: assessment,
+          trustReport: trustReport,
+          result: result,
+          scenario: CaseScenario.discoveredVictim,
+          reasonerLabel: 'local-deterministic',
+          usedLocalOnly: true,
+        );
+    final tamperedEntries = [...ledger.entries];
+    final first = tamperedEntries.first;
+    tamperedEntries[0] = AgentLedgerEntry(
+      sequence: first.sequence,
+      action: 'tampered_action',
+      inputDigest: first.inputDigest,
+      outputDigest: first.outputDigest,
+      previousHash: first.previousHash,
+      entryHash: first.entryHash,
+    );
+    final tampered = AgentExecutionLedger(
+      entries: tamperedEntries,
+      rootHash: ledger.rootHash,
+      proofValue: ledger.proofValue,
+      keyStore: ledger.keyStore,
+      trace: ledger.trace,
+    );
+
+    expect(
+      await AgentExecutionLedgerService(
+        identityFabric: fabric,
+      ).verify(tampered),
+      isFalse,
+    );
   });
 }

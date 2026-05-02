@@ -8,7 +8,7 @@ This repository is optimized for a public hackathon submission and reproducible 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof, signed redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, 15-minute consent proof, and validated JSON agent-response contracts for model outputs.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed and locally verified agent ledger, Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof, signed redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, 15-minute consent proof, and validated JSON agent-response contracts for model outputs.
 - Local privacy controls: raw CUI prompt guard, encrypted app-internal audit archive, citizen archive deletion, `FLAG_SECURE`, disabled Android backup, and cleartext traffic disabled.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
@@ -93,7 +93,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 42 tests
+- `flutter test` passes 43 tests
 - `flutter build apk --debug`
 
 ## Evidence Package
@@ -146,7 +146,7 @@ KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 - ML Kit/AICore mode is integrated and builds, but the Mac emulator reports the on-device GenAI feature as unavailable; do not claim verified offline Gemma 4 generation yet.
 - Unsloth artifacts include a scaffold and failed one-step Gemma 4 E2B attempt on a 6 GB RTX 4050; no trained adapter exists yet.
 - Runtime app signing uses Android Keystore through `DigitalIdentityFabric.device()`; deterministic Dart HMAC signing is used only for tests.
-- Each recovery run emits a signed SHA-256 hash-chain agent ledger so tool calls, credential issuance, consent, and reasoner routing are auditable without storing raw CUI.
+- Each recovery run emits a signed and locally verified SHA-256 hash-chain agent ledger so tool calls, credential issuance, consent, and reasoner routing are auditable without storing raw CUI.
 - Recovery packets are split into a private local complaint with full CUI and a signed redacted share packet for institutions.
 - App-internal audit receipts are sealed with AES-GCM using an Android Keystore key before storage.
 - Android hardening blocks screenshots/screen recording, disables app backup/data extraction, and disallows cleartext traffic.

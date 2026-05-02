@@ -121,17 +121,66 @@ class AgentExecutionLedgerService {
       }),
     );
 
-    return AgentExecutionLedger(
+    final ledger = AgentExecutionLedger(
       entries: entries,
       rootHash: rootHash,
       proofValue: signature.proofValue,
       keyStore: signature.keyStore,
+      trace: const [],
+    );
+    final verified = await verify(ledger);
+
+    return AgentExecutionLedger(
+      entries: ledger.entries,
+      rootHash: ledger.rootHash,
+      proofValue: ledger.proofValue,
+      keyStore: ledger.keyStore,
       trace: [
         'agent_ledger.hash_chain(sha256) -> ${rootHash.substring(0, 16)}',
         'agent_ledger.sign(${signature.keyStore}) -> ${signature.proofValue.substring(0, 16)}',
+        'agent_ledger.verify(local) -> ${verified ? 'ok' : 'failed'}',
         'agent_ledger.entries -> ${entries.length}',
       ],
     );
+  }
+
+  Future<bool> verify(AgentExecutionLedger ledger) async {
+    if (ledger.entries.isEmpty) {
+      return false;
+    }
+
+    var previousHash = '0' * 64;
+    for (final entry in ledger.entries) {
+      if (entry.previousHash != previousHash) {
+        return false;
+      }
+      final entryPayload = {
+        'sequence': entry.sequence,
+        'action': entry.action,
+        'inputDigest': entry.inputDigest,
+        'outputDigest': entry.outputDigest,
+        'previousHash': entry.previousHash,
+      };
+      final expectedEntryHash = _digest(_canonicalJson(entryPayload));
+      if (entry.entryHash != expectedEntryHash) {
+        return false;
+      }
+      previousHash = entry.entryHash;
+    }
+
+    if (ledger.rootHash != previousHash) {
+      return false;
+    }
+
+    final signature = await identityFabric.signCanonicalPayload(
+      _canonicalJson({
+        'purpose': 'zpk-agent-execution-ledger',
+        'issuer': identityFabric.issuerKeyId,
+        'rootHash': ledger.rootHash,
+        'entries': ledger.entries.map((entry) => entry.toJson()).toList(),
+      }),
+    );
+    return signature.proofValue == ledger.proofValue;
   }
 
   String _digest(String value) {
