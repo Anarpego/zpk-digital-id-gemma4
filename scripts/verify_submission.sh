@@ -55,7 +55,7 @@ shasum -a 256 -c "$APK.sha256" >/dev/null || fail "APK checksum mismatch"
 writeup_words="$(wc -w < "$WRITEUP" | tr -d ' ')"
 [[ "$writeup_words" -le 1500 ]] || fail "writeup is over 1500 words: $writeup_words"
 
-for public_copy in "$ROOT/README.md" "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.md" "$ROOT/SUBMISSION_CHECKLIST.md" "$ROOT/docs/routing-calibration.md" "$ROOT/submission/demo-runbook.md"; do
+for public_copy in "$ROOT/README.md" "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.md" "$ROOT/SUBMISSION_CHECKLIST.md" "$ROOT/docs/routing-calibration.md" "$ROOT/submission/demo-runbook.md" "$ROOT/kan-app/pubspec.yaml"; do
   if grep -Eiq 'TODO_PUBLIC|placeholder|working social-impact prototype|working prototype|current prototype|\bmock mode\b|deterministic mock|Mock local' "$public_copy"; then
     fail "public copy contains stale placeholder/prototype claim: $public_copy"
   fi
