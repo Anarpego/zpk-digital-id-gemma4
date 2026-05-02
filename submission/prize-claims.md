@@ -64,7 +64,7 @@ Current status is seed data, scaffold, verified CUDA/Unsloth imports, and a fail
 
 ### On-Device Gemma 4
 
-Do not claim successful on-device Gemma 4 generation. The Android ML Kit/AICore path now compiles and runs, but the available `Medium_Phone_API_36.1` emulator returns `UNAVAILABLE`. Claim only the integration/fallback evidence unless a supported AICore device produces a successful local generation trace.
+Do not claim successful on-device Gemma 4 generation. The Android ML Kit/AICore path now compiles and runs, handles status probing, model download, and warmup on supported devices, but the available `Medium_Phone_API_36.1` emulator returns `UNAVAILABLE`. Claim only the integration/fallback evidence unless a supported AICore device produces a successful local generation trace.
 
 ### Offline Gemma 4
 

@@ -11,6 +11,9 @@ Device: Mac-hosted Android emulator `Medium_Phone_API_36.1`.
 - Added Android MethodChannel `gt.kan.kan_app/mlkit_gemma`.
 - Added a native `status` probe so unsupported devices fail before generation
   and supported devices can show an explicit `AVAILABLE` trace.
+- Added native `download` and `warmup` calls so a supported device that reports
+  `DOWNLOADABLE` can fetch the on-device model, re-probe status, warm the
+  runtime, and then generate locally.
 - Added ML Kit dependency `com.google.mlkit:genai-prompt:1.0.0-beta1`.
 - Raised Android `minSdk` to `26`, matching the Prompt API requirement.
 
@@ -38,7 +41,7 @@ Results:
 
 - `dart format --set-exit-if-changed lib test`: pass.
 - `flutter analyze`: pass, no issues found.
-- `flutter test`: pass, 27 tests.
+- `flutter test`: pass, 37 tests.
 - `flutter build apk --debug ...`: pass, generated `build/app/outputs/flutter-apk/app-debug.apk`.
 
 ## Emulator Runtime Result
@@ -59,9 +62,13 @@ PlatformException(UNAVAILABLE, ML Kit GenAI Prompt API is unavailable on this de
 The app then fell back to deterministic local guidance and preserved the trace in the UI.
 
 Current code now probes `mlkit_gemma.status` before a generation request. If a
-device reports anything other than `AVAILABLE`, the app stops that model path
-and falls back locally. Unit tests verify the successful order
-`status -> generate` and the unavailable order `status` only.
+supported device reports `DOWNLOADABLE`, the app calls `mlkit_gemma.download`,
+re-probes status, warms the runtime, and then generates locally. If a device
+reports anything other than `AVAILABLE` after setup, the app stops that model
+path and falls back locally. Unit tests verify the successful order
+`status -> warmup -> generate`, the downloadable order
+`status -> download -> status -> warmup -> generate`, and the unavailable order
+`status` only.
 
 Updated runtime trace after the status-probe normalization:
 

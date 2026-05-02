@@ -72,7 +72,7 @@ flutter run \
   --dart-define=KAN_MLKIT_TIMEOUT_SECONDS=120
 ```
 
-This mode uses Android ML Kit Prompt API. It needs a supported AICore device for actual on-device Gemma/Gemini Nano generation; the available emulator reports `UNAVAILABLE` and the app falls back locally with a visible trace.
+This mode uses Android ML Kit Prompt API. It needs a supported AICore device for actual on-device Gemma/Gemini Nano generation; the available emulator reports `UNAVAILABLE` and the app falls back locally with a visible trace. On supported devices the app now handles `DOWNLOADABLE` by requesting the model download, re-probing status, warming the runtime, and then generating locally.
 
 ## Offline Agentic Flow
 
@@ -93,7 +93,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 36 tests
+- `flutter test` passes 37 tests
 - `flutter build apk --debug`
 
 ## Evidence Package

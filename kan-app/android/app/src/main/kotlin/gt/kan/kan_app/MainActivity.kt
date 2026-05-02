@@ -5,6 +5,7 @@ import android.security.keystore.KeyProperties
 import android.os.Bundle
 import android.util.Base64
 import android.view.WindowManager
+import com.google.mlkit.genai.common.DownloadStatus
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
 import io.flutter.embedding.android.FlutterActivity
@@ -20,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainActivity : FlutterActivity() {
@@ -46,6 +48,8 @@ class MainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "status" -> checkOnDeviceStatus(result)
+                "download" -> downloadOnDeviceModel(result)
+                "warmup" -> warmupOnDeviceModel(result)
                 "generate" -> {
                     val prompt = call.argument<String>("prompt")?.trim()
                     if (prompt.isNullOrEmpty()) {
@@ -123,6 +127,53 @@ class MainActivity : FlutterActivity() {
             } catch (error: Throwable) {
                 result.error(
                     "MLKIT_GEMMA_STATUS_ERROR",
+                    error.message ?: error.javaClass.simpleName,
+                    mapOf("type" to error.javaClass.name),
+                )
+            }
+        }
+    }
+
+    private fun downloadOnDeviceModel(result: MethodChannel.Result) {
+        scope.launch {
+            try {
+                val generativeModel = Generation.getClient()
+                val events = mutableListOf<Map<String, Any>>()
+                generativeModel.download().collect { status ->
+                    events.add(downloadStatusMap(status))
+                }
+                val status = generativeModel.checkStatus()
+                result.success(
+                    mapOf(
+                        "status" to statusName(status),
+                        "model" to "mlkit-genai-prompt-aicore",
+                        "events" to events,
+                    ),
+                )
+            } catch (error: Throwable) {
+                result.error(
+                    "MLKIT_GEMMA_DOWNLOAD_ERROR",
+                    error.message ?: error.javaClass.simpleName,
+                    mapOf("type" to error.javaClass.name),
+                )
+            }
+        }
+    }
+
+    private fun warmupOnDeviceModel(result: MethodChannel.Result) {
+        scope.launch {
+            try {
+                val generativeModel = Generation.getClient()
+                generativeModel.warmup()
+                result.success(
+                    mapOf(
+                        "status" to "READY",
+                        "model" to "mlkit-genai-prompt-aicore",
+                    ),
+                )
+            } catch (error: Throwable) {
+                result.error(
+                    "MLKIT_GEMMA_WARMUP_ERROR",
                     error.message ?: error.javaClass.simpleName,
                     mapOf("type" to error.javaClass.name),
                 )
@@ -341,5 +392,22 @@ class MainActivity : FlutterActivity() {
             FeatureStatus.DOWNLOADING -> "DOWNLOADING"
             FeatureStatus.AVAILABLE -> "AVAILABLE"
             else -> "UNKNOWN_$status"
+        }
+
+    private fun downloadStatusMap(status: DownloadStatus): Map<String, Any> =
+        when (status) {
+            is DownloadStatus.DownloadStarted -> mapOf(
+                "event" to "started",
+                "bytesToDownload" to status.bytesToDownload,
+            )
+            is DownloadStatus.DownloadProgress -> mapOf(
+                "event" to "progress",
+                "totalBytesDownloaded" to status.totalBytesDownloaded,
+            )
+            is DownloadStatus.DownloadCompleted -> mapOf("event" to "completed")
+            is DownloadStatus.DownloadFailed -> mapOf(
+                "event" to "failed",
+                "error" to (status.e.message ?: status.e.javaClass.simpleName),
+            )
         }
 }

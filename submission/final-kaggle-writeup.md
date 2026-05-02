@@ -17,7 +17,7 @@ ZPK combines local-first privacy with verified Gemma 4 reasoning. The app has fo
 
 The hosted Gemma 4 path is verified in the Android app. The trace shows `gemma_api.generateContent(gemma-4-31b-it) -> ok` and token accounting. The separate smoke test returned model version `gemma-4-31b-it`.
 
-The ML Kit/AICore path compiles and runs on the Mac Android emulator, but the emulator reports the GenAI feature as `UNAVAILABLE`. ZPK now probes on-device status before generation, records that failure, and falls back locally, so I do not claim verified offline Gemma 4 generation without a supported AICore device.
+The ML Kit/AICore path compiles and runs on the Mac Android emulator, but the emulator reports the GenAI feature as `UNAVAILABLE`. ZPK now probes on-device status before generation, requests model download on `DOWNLOADABLE`, warms the runtime before local generation, records failures, and falls back locally, so I do not claim verified offline Gemma 4 generation without a supported AICore device.
 
 ## Agentic Identity Flow
 
@@ -70,4 +70,4 @@ ZPK targets Digital Equity & Inclusivity because it turns identity safety into a
 
 ## Reproducibility
 
-The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 36 tests, and `flutter build apk --debug`.
+The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 37 tests, and `flutter build apk --debug`.

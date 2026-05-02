@@ -41,12 +41,33 @@ class MlKitGemmaReasoner implements KanReasoner {
     final statusProbe = await _channel.invokeMapMethod<String, Object?>(
       'status',
     );
-    final probedStatus = statusProbe?['status'] as String? ?? 'UNKNOWN';
-    final probedModel =
+    var probedStatus = statusProbe?['status'] as String? ?? 'UNKNOWN';
+    var probedModel =
         statusProbe?['model'] as String? ?? 'mlkit-genai-prompt-aicore';
+    final setupTrace = <String>[
+      'mlkit_gemma.status_probe($probedModel) -> $probedStatus',
+    ];
+    if (probedStatus == 'DOWNLOADABLE') {
+      final download = await _channel.invokeMapMethod<String, Object?>(
+        'download',
+      );
+      final downloadStatus = download?['status'] as String? ?? 'UNKNOWN';
+      setupTrace.add('mlkit_gemma.download($probedModel) -> $downloadStatus');
+      final reprobe = await _channel.invokeMapMethod<String, Object?>('status');
+      probedStatus = reprobe?['status'] as String? ?? downloadStatus;
+      probedModel =
+          reprobe?['model'] as String? ??
+          download?['model'] as String? ??
+          probedModel;
+      setupTrace.add('mlkit_gemma.status_probe($probedModel) -> $probedStatus');
+    }
     if (probedStatus != 'AVAILABLE') {
       throw StateError('ML Kit Gemma status is $probedStatus.');
     }
+    final warmup = await _channel.invokeMapMethod<String, Object?>('warmup');
+    setupTrace.add(
+      'mlkit_gemma.warmup($probedModel) -> ${warmup?['status'] ?? 'UNKNOWN'}',
+    );
 
     final prompt = await _promptBuilder.build(
       result: result,
@@ -89,7 +110,7 @@ class MlKitGemmaReasoner implements KanReasoner {
         ...assessment.toolTrace,
         ...trustReport.trace,
         ...privacyReport.trace,
-        'mlkit_gemma.status_probe($probedModel) -> $probedStatus',
+        ...setupTrace,
         'gemma_agent.prompt(redacted_facts) -> ok',
         'mlkit_gemma.status -> $status',
         'mlkit_gemma.generateContent($model) -> ok',

@@ -68,6 +68,7 @@ fi
 for claim in \
   'verifier-enforced allowlisted expiring local authentication proof' \
   'citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore' \
+  'ML Kit/AICore status probing plus model download/warmup before generation' \
   'hosted Gemma 4 mode verified with `gemma-4-31b-it`' \
   'fails closed on the Mac emulator'; do
   grep -Fq "$claim" "$KAGGLE_FORM" || fail "Kaggle form missing claim: $claim"
