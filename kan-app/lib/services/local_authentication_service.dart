@@ -156,12 +156,31 @@ class LocalAuthenticationService {
   Future<bool> verifySharePacket(Map<String, Object> sharePacket) async {
     final proof = sharePacket['proof'] as Map<String, Object>?;
     final proofValue = proof?['proofValue'] as String?;
-    if (proofValue == null || proofValue.isEmpty) {
+    final proofPurpose = proof?['proofPurpose'] as String?;
+    if (proofValue == null ||
+        proofValue.isEmpty ||
+        proofPurpose != 'authentication') {
       return false;
     }
 
     final unsignedPacket = Map<String, Object>.from(sharePacket)
       ..remove('proof');
+    if (unsignedPacket['type'] != 'ZpkLocalAuthenticationProof') {
+      return false;
+    }
+    final relyingParty = unsignedPacket['relyingParty'] as String?;
+    if (relyingParty == null || relyingParty.isEmpty) {
+      return false;
+    }
+    final allowedScopes = relyingPartyPolicy.scopesFor(relyingParty);
+    if (allowedScopes.isEmpty) {
+      return false;
+    }
+    final packetScopes = unsignedPacket['allowedScopes'];
+    if (packetScopes is! Iterable ||
+        !_sameStringList(packetScopes, allowedScopes)) {
+      return false;
+    }
     final expiresAt = DateTime.tryParse(
       unsignedPacket['expiresAt']?.toString() ?? '',
     );
@@ -172,6 +191,19 @@ class LocalAuthenticationService {
       _canonicalJson(unsignedPacket),
     );
     return expected.proofValue == proofValue;
+  }
+
+  bool _sameStringList(Iterable<Object?> first, List<String> second) {
+    final firstList = first.map((item) => item.toString()).toList();
+    if (firstList.length != second.length) {
+      return false;
+    }
+    for (var index = 0; index < firstList.length; index += 1) {
+      if (firstList[index] != second[index]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   String _challengeFor({

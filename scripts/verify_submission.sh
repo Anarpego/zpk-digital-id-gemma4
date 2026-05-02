@@ -62,7 +62,7 @@ for public_copy in "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.m
 done
 
 for claim in \
-  'allowlisted expiring signed local authentication proof' \
+  'verifier-enforced allowlisted expiring local authentication proof' \
   'citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore' \
   'hosted Gemma 4 mode verified with `gemma-4-31b-it`' \
   'fails closed on the Mac emulator'; do
@@ -150,7 +150,7 @@ if [[ -d "$DATASET_UPLOAD" ]]; then
     [[ -f "$DATASET_UPLOAD/$resource_path" ]] || fail "Kaggle Dataset upload missing resource: $resource_path"
   done < <(jq -r '.resources[].path' "$DATASET_UPLOAD/dataset-metadata.json")
 
-  grep -Fq 'allowlisted expiring signed local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
+  grep -Fq 'verifier-enforced allowlisted expiring local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
     || fail "Kaggle Dataset upload form missing authentication proof claim"
   grep -Fq 'auth.verify(local) -> ok' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
     || fail "Kaggle Dataset upload writeup missing authentication trace"

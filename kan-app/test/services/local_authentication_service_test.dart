@@ -116,6 +116,42 @@ void main() {
     },
   );
 
+  test('does not verify signed proof for untrusted relying party', () async {
+    final result = LocalBreachCatalog(
+      now: DateTime.utc(2026, 5, 1),
+    ).verify('1234567890101');
+    final assessment = const IdentityProtectionAgent().assess(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+    );
+    final trustReport = await const DigitalIdentityFabric().evaluate(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      assessment: assessment,
+    );
+    final permissiveService = LocalAuthenticationService(
+      fixedNow: DateTime.utc(2026, 5, 1, 12),
+      relyingPartyPolicy: const RelyingPartyPolicy(
+        allowedParties: {
+          'unknown-institution-demo': ['identity_recovery'],
+        },
+      ),
+    );
+    final proof = await permissiveService.buildProof(
+      result: result,
+      scenario: CaseScenario.discoveredVictim,
+      trustReport: trustReport,
+      relyingParty: 'unknown-institution-demo',
+    );
+
+    expect(
+      await LocalAuthenticationService(
+        fixedNow: DateTime.utc(2026, 5, 1, 12),
+      ).verifySharePacket(proof.sharePacket),
+      isFalse,
+    );
+  });
+
   test('rejects expired authentication proof packets', () async {
     final result = LocalBreachCatalog(
       now: DateTime.utc(2026, 5, 1),

@@ -10,8 +10,8 @@ a relying-party authentication proof, not only registration and recovery.
 - Added `LocalAuthenticationService`.
 - The app can issue a signed local authentication proof for
   `municipalidad-guatemala-demo`.
-- Relying parties are checked against a local allowlist before a proof is
-  issued.
+- Relying parties are checked against a local allowlist before proof issuance
+  and again during proof verification.
 - The authentication packet includes only redacted/selective claims:
   - citizen pseudonym
   - DID-style identifier
@@ -55,7 +55,7 @@ Commands run from `kan-app`:
 flutter test test/services/local_authentication_service_test.dart test/widget_test.dart
 ```
 
-Result: 7 targeted tests passed.
+Result: 8 targeted tests passed.
 
 Coverage:
 
@@ -63,6 +63,8 @@ Coverage:
 - Verifies the signed authentication packet.
 - Rejects a tampered authentication packet.
 - Rejects authentication proof issuance to an unknown relying party.
+- Rejects a signed authentication proof for an untrusted relying party during
+  verifier-side policy validation.
 - Rejects an expired authentication packet.
 - Rejects new authentication proof issuance after local revocation.
 - Widget flow exposes `Probar autenticacion local`, then shows
