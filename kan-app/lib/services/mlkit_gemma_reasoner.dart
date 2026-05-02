@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 import '../models/kan_case.dart';
 import 'agent_execution_ledger.dart';
+import 'agent_response_contract.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
@@ -12,15 +13,18 @@ class MlKitGemmaReasoner implements KanReasoner {
   const MlKitGemmaReasoner({
     MethodChannel channel = const MethodChannel('gt.kan.kan_app/mlkit_gemma'),
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
+    AgentResponseContract responseContract = const AgentResponseContract(),
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
     this.privacyGuard = const PrivacyGuard(),
   }) : _channel = channel,
-       _promptBuilder = promptBuilder;
+       _promptBuilder = promptBuilder,
+       _responseContract = responseContract;
 
   final MethodChannel _channel;
   final ReasonerPromptBuilder _promptBuilder;
+  final AgentResponseContract _responseContract;
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
   final DigitalIdentityFabric identityFabric;
@@ -87,6 +91,7 @@ class MlKitGemmaReasoner implements KanReasoner {
     if (text.isEmpty) {
       throw const FormatException('ML Kit Gemma returned no final text.');
     }
+    final agentResponse = _responseContract.parse(text: text, result: result);
 
     final status = response?['status'] as String? ?? 'AVAILABLE';
     final model = response?['model'] as String? ?? 'mlkit-genai-prompt';
@@ -101,16 +106,14 @@ class MlKitGemmaReasoner implements KanReasoner {
         );
 
     return ReasonedGuidance(
-      summary: text,
-      nextSteps: const [
-        'Revise la respuesta antes de generar documentos.',
-        'Mantenga el CUI y las pruebas dentro del dispositivo.',
-      ],
+      summary: agentResponse.summary,
+      nextSteps: agentResponse.nextSteps,
       toolTrace: [
         ...assessment.toolTrace,
         ...trustReport.trace,
         ...privacyReport.trace,
         ...setupTrace,
+        ...agentResponse.trace,
         'gemma_agent.prompt(redacted_facts) -> ok',
         'mlkit_gemma.status -> $status',
         'mlkit_gemma.generateContent($model) -> ok',

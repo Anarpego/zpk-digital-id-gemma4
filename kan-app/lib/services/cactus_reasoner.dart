@@ -2,6 +2,7 @@ import 'package:cactus/cactus.dart';
 
 import '../models/kan_case.dart';
 import 'agent_execution_ledger.dart';
+import 'agent_response_contract.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
@@ -15,12 +16,14 @@ class CactusReasoner implements KanReasoner {
     this.maxTokens = 384,
     this.enableTools = true,
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
+    AgentResponseContract responseContract = const AgentResponseContract(),
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
     this.privacyGuard = const PrivacyGuard(),
   }) : _lm = lm ?? CactusLM(enableToolFiltering: enableTools),
-       _promptBuilder = promptBuilder;
+       _promptBuilder = promptBuilder,
+       _responseContract = responseContract;
 
   final CactusLM _lm;
   final String model;
@@ -31,6 +34,7 @@ class CactusReasoner implements KanReasoner {
   final DigitalIdentityFabric identityFabric;
   final PrivacyGuard privacyGuard;
   final ReasonerPromptBuilder _promptBuilder;
+  final AgentResponseContract _responseContract;
 
   bool _initialized = false;
 
@@ -93,6 +97,10 @@ class CactusReasoner implements KanReasoner {
     if (!completion.success) {
       throw StateError('Cactus completion failed: ${completion.response}');
     }
+    final agentResponse = _responseContract.parse(
+      text: completion.response,
+      result: result,
+    );
     final ledger =
         await AgentExecutionLedgerService(identityFabric: identityFabric).build(
           assessment: assessment,
@@ -104,16 +112,13 @@ class CactusReasoner implements KanReasoner {
         );
 
     return ReasonedGuidance(
-      summary: completion.response.trim(),
-      nextSteps: const [
-        'Revise la respuesta antes de generar documentos.',
-        'Mantenga el CUI y datos personales solo en el dispositivo.',
-        'Escalar con hechos redactados permite usar el mismo patron en Guatemala y otros paises.',
-      ],
+      summary: agentResponse.summary,
+      nextSteps: agentResponse.nextSteps,
       toolTrace: [
         ...assessment.toolTrace,
         ...trustReport.trace,
         ...privacyReport.trace,
+        ...agentResponse.trace,
         'gemma_agent.prompt(redacted_facts) -> ok',
         'cactus.tools -> ${enableTools ? 'enabled' : 'disabled'}',
         'cactus.generateCompletion(local, $model) -> ${completion.success ? 'ok' : 'error'}',

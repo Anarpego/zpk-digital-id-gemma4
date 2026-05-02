@@ -8,7 +8,7 @@ This repository is optimized for a public hackathon submission and reproducible 
 
 - Flutter app: `kan-app/`
 - Embedded synthetic breach catalog: `kan-app/assets/breach_catalog.json`
-- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, verifier-enforced allowlisted expiring local authentication proof, signed redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, and 15-minute consent proof.
+- Local ZPK trust fabric: HMAC-derived pseudonymous ID, DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, signed agent ledger, verifier-enforced allowlisted expiring local authentication proof, signed redacted recovery packet, signed local revocation receipt that blocks new auth proofs, selective disclosure claims, 15-minute consent proof, and validated JSON agent-response contracts for model outputs.
 - Local privacy controls: raw CUI prompt guard, encrypted app-internal audit archive, citizen archive deletion, `FLAG_SECURE`, disabled Android backup, and cleartext traffic disabled.
 - Evidence docs: `docs/evidence/`
 - Submission drafts: `submission/`
@@ -76,7 +76,7 @@ This mode uses Android ML Kit Prompt API. It needs a supported AICore device for
 
 ## Offline Agentic Flow
 
-The default APK runs without a backend. The local agent performs CUI format validation, embedded catalog lookup, identity-risk classification, privacy routing, DID-style credential issuance, verifier-enforced allowlisted expiring authentication proof generation, signed recovery packet generation, signed revocation that blocks later auth proofs, encrypted local audit storage, and Spanish recovery guidance. Gemma 4 is used only through redacted hosted prompts unless a supported on-device AICore runtime is available.
+The default APK runs without a backend. The local agent performs CUI format validation, embedded catalog lookup, identity-risk classification, privacy routing, DID-style credential issuance, verifier-enforced allowlisted expiring authentication proof generation, signed recovery packet generation, signed revocation that blocks later auth proofs, encrypted local audit storage, and Spanish recovery guidance. Model modes must return a validated JSON agent response before guidance is shown. Gemma 4 is used only through redacted hosted prompts unless a supported on-device AICore runtime is available.
 
 ## Verified Evidence
 
@@ -93,7 +93,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 37 tests
+- `flutter test` passes 40 tests
 - `flutter build apk --debug`
 
 ## Evidence Package

@@ -23,7 +23,7 @@ void main() {
       "content": {
         "parts": [
           {"text": "internal reasoning", "thought": true},
-          {"text": "Respuesta final segura."}
+          {"text": "{\\"summary\\":\\"Respuesta final segura.\\",\\"next_steps\\":[\\"Guardar evidencia redactada.\\",\\"Preparar denuncia local.\\"],\\"national_scale_note\\":\\"El flujo escala por municipio sin centralizar CUI.\\",\\"safety_review\\":{\\"raw_cui_included\\":false,\\"needs_human_review\\":true}}"}
         ],
         "role": "model"
       },
@@ -45,13 +45,15 @@ void main() {
       scenario: CaseScenario.discoveredVictim,
     );
 
-    expect(guidance.summary, 'Respuesta final segura.');
+    expect(guidance.summary, contains('Respuesta final segura.'));
+    expect(guidance.nextSteps, hasLength(2));
     expect(guidance.usedLocalOnly, isFalse);
     expect(guidance.toolTrace, contains('privacy_guard.raw_cui -> absent'));
     expect(
       guidance.toolTrace,
       contains('gemma_agent.prompt(redacted_facts) -> ok'),
     );
+    expect(guidance.toolTrace, contains('agent_contract.schema(json) -> ok'));
     expect(
       guidance.toolTrace,
       contains('trust_fabric.sign_credential(hmac-sha256) -> ok'),

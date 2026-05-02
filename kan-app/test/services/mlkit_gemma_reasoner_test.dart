@@ -8,6 +8,34 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const channel = MethodChannel('gt.kan.kan_app/mlkit_gemma');
+  const modelJson = '''
+{
+  "summary": "Respuesta local segura.",
+  "next_steps": [
+    "Guardar evidencia redactada.",
+    "Preparar denuncia local."
+  ],
+  "national_scale_note": "El flujo escala por municipio sin centralizar CUI.",
+  "safety_review": {
+    "raw_cui_included": false,
+    "needs_human_review": true
+  }
+}
+''';
+  const downloadedModelJson = '''
+{
+  "summary": "Respuesta local despues de descarga.",
+  "next_steps": [
+    "Confirmar evidencia local.",
+    "Compartir solo hechos redactados."
+  ],
+  "national_scale_note": "El flujo puede repetirse en aliados regionales.",
+  "safety_review": {
+    "raw_cui_included": false,
+    "needs_human_review": true
+  }
+}
+''';
 
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
@@ -29,7 +57,7 @@ void main() {
               'model': 'mlkit-genai-prompt-aicore',
             },
             'generate' => {
-              'text': 'Respuesta local segura.',
+              'text': modelJson,
               'status': 'AVAILABLE',
               'model': 'mlkit-genai-prompt-aicore',
             },
@@ -43,7 +71,8 @@ void main() {
     );
 
     expect(calls, ['status', 'warmup', 'generate']);
-    expect(guidance.summary, 'Respuesta local segura.');
+    expect(guidance.summary, contains('Respuesta local segura.'));
+    expect(guidance.nextSteps, hasLength(2));
     expect(guidance.usedLocalOnly, isTrue);
     expect(
       guidance.toolTrace,
@@ -52,6 +81,7 @@ void main() {
       ),
     );
     expect(guidance.toolTrace, contains('privacy_guard.raw_cui -> absent'));
+    expect(guidance.toolTrace, contains('agent_contract.schema(json) -> ok'));
   });
 
   test('downloads model when supported device reports downloadable', () async {
@@ -78,7 +108,7 @@ void main() {
               'model': 'mlkit-genai-prompt-aicore',
             },
             'generate' => {
-              'text': 'Respuesta local despues de descarga.',
+              'text': downloadedModelJson,
               'status': 'AVAILABLE',
               'model': 'mlkit-genai-prompt-aicore',
             },
@@ -92,7 +122,7 @@ void main() {
     );
 
     expect(calls, ['status', 'download', 'status', 'warmup', 'generate']);
-    expect(guidance.summary, 'Respuesta local despues de descarga.');
+    expect(guidance.summary, contains('Respuesta local despues de descarga.'));
     expect(
       guidance.toolTrace,
       contains(

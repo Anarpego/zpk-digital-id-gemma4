@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/kan_case.dart';
 import 'agent_execution_ledger.dart';
+import 'agent_response_contract.dart';
 import 'digital_identity_fabric.dart';
 import 'identity_protection_agent.dart';
 import 'kan_reasoner.dart';
@@ -16,17 +17,20 @@ class GemmaApiReasoner implements KanReasoner {
     this.model = 'gemma-4-31b-it',
     http.Client? client,
     ReasonerPromptBuilder promptBuilder = const ReasonerPromptBuilder(),
+    AgentResponseContract responseContract = const AgentResponseContract(),
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
     this.privacyGuard = const PrivacyGuard(),
   }) : _client = client ?? http.Client(),
-       _promptBuilder = promptBuilder;
+       _promptBuilder = promptBuilder,
+       _responseContract = responseContract;
 
   final String apiKey;
   final String model;
   final http.Client _client;
   final ReasonerPromptBuilder _promptBuilder;
+  final AgentResponseContract _responseContract;
   final RoutingPolicy routingPolicy;
   final IdentityProtectionAgent agent;
   final DigitalIdentityFabric identityFabric;
@@ -81,7 +85,11 @@ class GemmaApiReasoner implements KanReasoner {
     }
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    final text = _extractFinalText(body);
+    final modelText = _extractFinalText(body);
+    final agentResponse = _responseContract.parse(
+      text: modelText,
+      result: result,
+    );
     final usage = body['usageMetadata'] as Map<String, dynamic>? ?? {};
     final modelVersion = body['modelVersion'] as String? ?? model;
     final ledger =
@@ -95,16 +103,13 @@ class GemmaApiReasoner implements KanReasoner {
         );
 
     return ReasonedGuidance(
-      summary: text,
-      nextSteps: const [
-        'Revise la respuesta antes de generar documentos.',
-        'No envie CUI ni datos personales al servidor.',
-        'Use el paquete local para escalar con hechos redactados a nivel nacional.',
-      ],
+      summary: agentResponse.summary,
+      nextSteps: agentResponse.nextSteps,
       toolTrace: [
         ...assessment.toolTrace,
         ...trustReport.trace,
         ...privacyReport.trace,
+        ...agentResponse.trace,
         'gemma_agent.prompt(redacted_facts) -> ok',
         'gemma_api.generateContent($modelVersion) -> ok',
         'gemma_api.tokens -> prompt ${usage['promptTokenCount'] ?? 'n/a'}, total ${usage['totalTokenCount'] ?? 'n/a'}',

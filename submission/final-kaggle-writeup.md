@@ -21,12 +21,14 @@ The ML Kit/AICore path compiles and runs on the Mac Android emulator, but the em
 
 ## Agentic Identity Flow
 
-The important change is that Gemma is no longer just a response generator. ZPK builds a structured local agent context before any model call:
+The important change is that Gemma is no longer just a response generator. ZPK builds a structured local agent context before any model call and accepts model output only when it satisfies a JSON agent-response contract:
 
 - `agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, draft_action_packet`
 - `select_privacy_route(...) -> pii_block_ok`
 - `privacy_guard.raw_cui -> absent`
 - `privacy_guard.13_digit_identifier -> absent`
+- `agent_contract.schema(json) -> ok`
+- `agent_contract.safety_review(raw_cui=false) -> ok`
 - `trust_fabric.did_document(local) -> did:zpk:gt:...`
 - `trust_fabric.vc_selective_disclosure(local) -> ...`
 - `trust_fabric.sign_credential(hmac-sha256) -> ok`
@@ -52,7 +54,7 @@ This local trust fabric simulates the infrastructure a national digital identity
 
 ## Local-First Architecture
 
-The APK bundles `assets/breach_catalog.json`, a synthetic offline catalog with no real personal data. `LocalBreachCatalog.loadEmbeddedOrFallback()` loads it on device. The CUI is used only locally to create a pseudonymous ZPK citizen ID and risk assessment. Hosted reasoning receives only redacted facts such as match count, risk level, scenario, and action needs. A code-level `PrivacyGuard` now blocks the active raw CUI or any unredacted 13-digit identifier before hosted Gemma, Cactus local inference, or ML Kit/AICore generation.
+The APK bundles `assets/breach_catalog.json`, a synthetic offline catalog with no real personal data. `LocalBreachCatalog.loadEmbeddedOrFallback()` loads it on device. The CUI is used only locally to create a pseudonymous ZPK citizen ID and risk assessment. Hosted reasoning receives only redacted facts such as match count, risk level, scenario, and action needs. A code-level `PrivacyGuard` now blocks the active raw CUI or any unredacted 13-digit identifier before hosted Gemma, Cactus local inference, or ML Kit/AICore generation, and `AgentResponseContract` rejects model output that is not valid JSON or leaks identifiers.
 
 The Android shell adds production-style privacy hardening for the demo: `FLAG_SECURE` blocks screenshots and screen recording, app backup/data extraction is disabled, cleartext traffic is disallowed, and local audit receipts are encrypted at rest before storage.
 
@@ -70,4 +72,4 @@ ZPK targets Digital Equity & Inclusivity because it turns identity safety into a
 
 ## Reproducibility
 
-The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 37 tests, and `flutter build apk --debug`.
+The repository includes the Flutter app, synthetic catalog, tests, evidence screenshots, demo package script, Gemma 4 smoke script, ML Kit/AICore path, and Unsloth scaffold. Current local gates pass: `dart format --set-exit-if-changed lib test`, `flutter analyze`, `flutter test` with 40 tests, and `flutter build apk --debug`.

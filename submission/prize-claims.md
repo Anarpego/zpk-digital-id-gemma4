@@ -17,6 +17,7 @@ Claim ZPK Digital ID as a working social-impact Android app with:
 - Spanish guidance, redacted institutional packet, and complaint draft.
 - Hosted Gemma 4 app mode verified with `gemma-4-31b-it`.
 - ML Kit/AICore Android mode integrated and verified to fail closed on the Mac emulator.
+- Validated JSON agent-response contract for hosted, Cactus, and ML Kit model outputs.
 - Visible privacy/routing/tool traces.
 - A complete identity safety workflow: register, authenticate, protect, recover, and revoke locally.
 

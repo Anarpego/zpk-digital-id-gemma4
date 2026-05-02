@@ -22,6 +22,9 @@ void main() {
     expect(prompt, contains('patron_latam'));
     expect(prompt, contains('mintrab-tu-empleo-2026-04'));
     expect(prompt, contains('No pidas mas datos'));
+    expect(prompt, contains('Responde solo con JSON valido'));
+    expect(prompt, contains('"safety_review"'));
+    expect(prompt, contains('"raw_cui_included": false'));
     expect(prompt, isNot(contains(result.cui)));
   });
 }

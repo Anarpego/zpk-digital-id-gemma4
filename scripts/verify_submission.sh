@@ -69,6 +69,7 @@ for claim in \
   'verifier-enforced allowlisted expiring local authentication proof' \
   'citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore' \
   'ML Kit/AICore status probing plus model download/warmup before generation' \
+  'validated JSON agent-response contracts' \
   'hosted Gemma 4 mode verified with `gemma-4-31b-it`' \
   'fails closed on the Mac emulator'; do
   grep -Fq "$claim" "$KAGGLE_FORM" || fail "Kaggle form missing claim: $claim"
@@ -79,6 +80,8 @@ for trace in \
   'auth.relying_party(local_allowlist) -> approved' \
   'auth.valid_until(local) ->' \
   'auth.blocked(revocation) -> credential_revoked' \
+  'agent_contract.schema(json) -> ok' \
+  'agent_contract.safety_review(raw_cui=false) -> ok' \
   'audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed' \
   'privacy_guard.raw_cui -> absent' \
   'reasoner_mode(mlkit-gemma:aicore) -> fallback'; do

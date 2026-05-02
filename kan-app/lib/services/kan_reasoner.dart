@@ -124,10 +124,19 @@ Caso:
 - brechas:
 ${matches.isEmpty ? 'ninguna' : matches}
 
-Responde en espanol claro. No inventes instituciones. No pidas mas datos
-personales. Si hay coincidencia, recomienda evidencia, DPI fisico y denuncia
-preliminar. Si no hay coincidencia, explica que no prueba ausencia de riesgo.
-Incluye solo hechos redactados, pasos accionables y una nota de escala nacional.
+Responde solo con JSON valido, sin Markdown, con este esquema exacto:
+{
+  "summary": "explicacion breve en espanol sin CUI ni identificadores",
+  "next_steps": ["paso accionable", "paso accionable"],
+  "national_scale_note": "como este flujo escala para Guatemala y America Latina",
+  "safety_review": {
+    "raw_cui_included": false,
+    "needs_human_review": true
+  }
+}
+No inventes instituciones. No pidas mas datos personales. Si hay coincidencia,
+recomienda evidencia, DPI fisico y denuncia preliminar. Si no hay coincidencia,
+explica que no prueba ausencia de riesgo. Incluye solo hechos redactados.
 ''';
   }
 }
