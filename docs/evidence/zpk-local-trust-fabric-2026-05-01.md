@@ -10,6 +10,7 @@ This app now demonstrates ZPK Digital ID as a local-first identity wallet, not o
 - DID-style document: `did:zpk:gt:zpk-gt-...`
 - Android Keystore-backed HMAC-SHA256 verifiable-credential-style recovery credential: `ZpkIdentityRecoveryCredential`
 - Signed and locally verified SHA-256 agent execution ledger: local tool calls, credential issue, consent, and reasoner route
+- Hash-verified offline civic threat bulletins: Guatemala and Latin America fraud patterns matched without raw CUI
 - Signed and locally verified redacted recovery packet: private complaint remains local, institutional packet excludes raw CUI
 - Selective disclosure claims: risk, match count, scenario, pseudonymous citizen ID
 - Short-lived signed consent proof: 15 minutes
@@ -23,6 +24,9 @@ The local agent builds this state before model reasoning:
 ```text
 agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, draft_action_packet
 select_privacy_route(local_model) -> pii_block_ok
+threat_bulletin.verify(offline_hash_pack) -> 3/3_hash_ok
+threat_bulletin.match(CUI+correo+nombre+telefono) -> gt-dpi-fraud-ngo-2026-04,latam-sim-swap-cui-2026-04
+threat_bulletin.action(dpi_photo_identity_theft) -> Preparar denuncia preliminar, alertas bancarias y bloqueo preventivo de tramites no reconocidos.
 trust_fabric.did_document(local) -> did:zpk:gt:...
 trust_fabric.vc_selective_disclosure(local) -> ...
 trust_fabric.sign_credential(hmac-sha256) -> ok

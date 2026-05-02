@@ -50,7 +50,6 @@ zip -r "$ZIP" \
   submission/KAGGLE_DATASET_README.md \
   submission/final-kaggle-writeup.md \
   submission/kaggle-dataset-metadata.template.json \
-  submission/kaggle-writeup-draft.md \
   submission/media-gallery-cover.svg \
   submission/media-gallery-cover.png \
   submission/prize-claims.md \
@@ -60,7 +59,6 @@ zip -r "$ZIP" \
   submission/final-video-script.md \
   submission/kan-final-demo-video.mp4 \
   submission/video-raw \
-  submission/video-script-draft.md \
   unsloth \
   -x '*.DS_Store' 'unsloth/.venv/*' '*/__pycache__/*' '*.pyc'
 

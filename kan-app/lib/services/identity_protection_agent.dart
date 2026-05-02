@@ -1,4 +1,5 @@
 import '../models/kan_case.dart';
+import 'local_threat_bulletin_catalog.dart';
 import 'routing_policy.dart';
 
 enum IdentityRiskLevel { blocked, low, medium, high, critical }
@@ -35,6 +36,7 @@ class IdentityAgentAssessment {
     required this.redactedFacts,
     required this.nationalPlaybook,
     required this.regionalPlaybook,
+    required this.matchedBulletins,
   });
 
   final IdentityRiskLevel riskLevel;
@@ -43,6 +45,7 @@ class IdentityAgentAssessment {
   final List<String> redactedFacts;
   final List<String> nationalPlaybook;
   final List<String> regionalPlaybook;
+  final List<ThreatBulletinMatch> matchedBulletins;
 
   List<String> get toolTrace => [
     for (final call in toolCalls) call.trace,
@@ -62,6 +65,8 @@ ${redactedFacts.map((fact) => '  - $fact').join('\n')}
 ${nationalPlaybook.map((step) => '  - $step').join('\n')}
 - patron_latam:
 ${regionalPlaybook.map((step) => '  - $step').join('\n')}
+- boletines_publicos_verificados:
+${matchedBulletins.isEmpty ? '  - ninguno' : matchedBulletins.map((match) => '  - ${match.bulletin.id}: ${match.bulletin.riskPattern}, campos=${match.overlappingFields.join('+')}, accion=${match.bulletin.recommendedAction}').join('\n')}
 
 Herramientas ejecutadas:
 ${toolCalls.map((call) => '- ${call.trace}').join('\n')}
@@ -70,9 +75,13 @@ ${toolCalls.map((call) => '- ${call.trace}').join('\n')}
 }
 
 class IdentityProtectionAgent {
-  const IdentityProtectionAgent({this.routingPolicy = const RoutingPolicy()});
+  const IdentityProtectionAgent({
+    this.routingPolicy = const RoutingPolicy(),
+    this.threatCatalog = const LocalThreatBulletinCatalog(),
+  });
 
   final RoutingPolicy routingPolicy;
+  final LocalThreatBulletinCatalog threatCatalog;
 
   IdentityAgentAssessment assess({
     required VerificationResult result,
@@ -80,10 +89,17 @@ class IdentityProtectionAgent {
   }) {
     final route = routingPolicy.decide(result: result, scenario: scenario);
     final risk = _riskLevel(result: result, scenario: scenario);
+    final bulletinMatches = threatCatalog.match(
+      result: result,
+      scenario: scenario,
+    );
     final exposedFields =
         result.matches.expand((match) => match.exposedFields).toSet().toList()
           ..sort();
     final matchNames = result.matches.map((match) => match.name).toList();
+    final bulletinIds = bulletinMatches
+        .map((match) => match.bulletin.id)
+        .join(',');
 
     return IdentityAgentAssessment(
       riskLevel: risk,
@@ -118,6 +134,25 @@ class IdentityProtectionAgent {
           output: route.sendsPersonalData ? 'pii_block_failed' : 'pii_block_ok',
         ),
         AgentToolCall(
+          name: 'threat_bulletin.verify',
+          input: 'offline_hash_pack',
+          output:
+              '${threatCatalog.verifiedCount}/${threatCatalog.bulletins.length}_hash_ok',
+        ),
+        AgentToolCall(
+          name: 'threat_bulletin.match',
+          input: exposedFields.isEmpty
+              ? scenario.shortCode
+              : exposedFields.join('+'),
+          output: bulletinIds.isEmpty ? 'no_public_context' : bulletinIds,
+        ),
+        for (final match in bulletinMatches)
+          AgentToolCall(
+            name: 'threat_bulletin.action',
+            input: match.bulletin.riskPattern,
+            output: match.bulletin.recommendedAction,
+          ),
+        AgentToolCall(
           name: 'draft_action_packet',
           input: 'guatemala_identity_recovery',
           output: result.isValidCui
@@ -130,14 +165,13 @@ class IdentityProtectionAgent {
         'coincidencias_locales=${result.matches.length}',
         if (matchNames.isNotEmpty) 'fuentes=${matchNames.join(', ')}',
         if (exposedFields.isNotEmpty) 'campos=${exposedFields.join(', ')}',
+        if (bulletinMatches.isNotEmpty)
+          'boletines=${bulletinMatches.map((match) => match.bulletin.id).join(',')}',
         'escenario=${scenario.label}',
       ],
-      nationalPlaybook: _nationalPlaybook(risk),
-      regionalPlaybook: const [
-        'Reutilizar catalogos locales por pais sin centralizar identificadores.',
-        'Cambiar plantillas legales por jurisdiccion manteniendo la misma politica de privacidad.',
-        'Reportar solo metricas agregadas para instituciones publicas y organizaciones civiles.',
-      ],
+      nationalPlaybook: _nationalPlaybook(risk, bulletinMatches),
+      regionalPlaybook: _regionalPlaybook(bulletinMatches),
+      matchedBulletins: bulletinMatches,
     );
   }
 
@@ -171,8 +205,11 @@ class IdentityProtectionAgent {
     return IdentityRiskLevel.low;
   }
 
-  List<String> _nationalPlaybook(IdentityRiskLevel risk) {
-    return switch (risk) {
+  List<String> _nationalPlaybook(
+    IdentityRiskLevel risk,
+    List<ThreatBulletinMatch> bulletinMatches,
+  ) {
+    final baseline = switch (risk) {
       IdentityRiskLevel.blocked => const [
         'Corregir formato antes de cualquier consulta.',
         'No guardar ni transmitir identificadores incompletos.',
@@ -191,5 +228,23 @@ class IdentityProtectionAgent {
         'Escalar solo hechos redactados para orientacion nacional o regional.',
       ],
     };
+    if (bulletinMatches.isEmpty) {
+      return baseline;
+    }
+    return [
+      ...baseline,
+      for (final match in bulletinMatches)
+        'Aplicar boletin ${match.bulletin.id}: ${match.bulletin.recommendedAction}',
+    ];
+  }
+
+  List<String> _regionalPlaybook(List<ThreatBulletinMatch> bulletinMatches) {
+    return [
+      'Reutilizar catalogos locales por pais sin centralizar identificadores.',
+      'Cambiar plantillas legales por jurisdiccion manteniendo la misma politica de privacidad.',
+      'Reportar solo metricas agregadas para instituciones publicas y organizaciones civiles.',
+      if (bulletinMatches.any((match) => match.bulletin.region != 'Guatemala'))
+        'Mantener boletines regionales hash-verificados para patrones que cruzan fronteras.',
+    ];
   }
 }

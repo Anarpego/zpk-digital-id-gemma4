@@ -31,7 +31,8 @@ void main() {
           usedLocalOnly: true,
         );
 
-    expect(ledger.entries, hasLength(10));
+    final expectedEntries = assessment.toolCalls.length + 4;
+    expect(ledger.entries, hasLength(expectedEntries));
     expect(ledger.rootHash, hasLength(64));
     expect(ledger.proofValue, hasLength(64));
     expect(ledger.keyStore, 'dart-test-hmac');
@@ -47,7 +48,7 @@ void main() {
       contains(startsWith('agent_ledger.sign(dart-test-hmac) -> ')),
     );
     expect(ledger.trace, contains('agent_ledger.verify(local) -> ok'));
-    expect(ledger.trace, contains('agent_ledger.entries -> 10'));
+    expect(ledger.trace, contains('agent_ledger.entries -> $expectedEntries'));
     expect(
       await AgentExecutionLedgerService(identityFabric: fabric).verify(ledger),
       isTrue,

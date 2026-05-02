@@ -14,7 +14,7 @@ Claim ZPK Digital ID as a working social-impact Android app with:
 - Offline ZPK identity registration and synthetic CUI risk verification.
 - DID-style document, Android Keystore-backed HMAC-SHA256 recovery credential, Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof, signed and locally verified agent execution ledger, signed and locally verified redacted recovery packet, revocation that blocks later auth proofs, selective disclosure claims, and 15-minute consent proof.
 - Android privacy hardening: screenshot/screen-recording blocked, backup/data extraction disabled, and cleartext traffic disabled.
-- Spanish guidance, redacted institutional packet, and complaint draft.
+- Spanish guidance, redacted institutional packet, and preliminary complaint packet.
 - Hosted Gemma 4 app mode verified with `gemma-4-31b-it`.
 - ML Kit/AICore Android mode integrated and verified to fail closed on the Mac emulator.
 - Validated JSON agent-response contract for hosted, Cactus, and ML Kit model outputs.
@@ -69,7 +69,7 @@ Do not claim successful on-device Gemma 4 generation. The Android ML Kit/AICore 
 
 ### Offline Gemma 4
 
-Do not claim offline Gemma 4. The offline result is the sensitive-data workflow: embedded synthetic catalog lookup, routing trace, Spanish guidance, and local complaint draft. Gemma 4 is verified separately through hosted `gemma-4-31b-it`; the ML Kit/AICore path still needs a supported device for successful local generation.
+Do not claim offline Gemma 4. The offline result is the sensitive-data workflow: embedded synthetic catalog lookup, hash-verified civic threat bulletins, routing trace, Spanish guidance, and a local preliminary complaint packet. Gemma 4 is verified separately through hosted `gemma-4-31b-it`; the ML Kit/AICore path still needs a supported device for successful local generation.
 
 ### Production Government Or Crypto Claims
 
@@ -77,4 +77,4 @@ Do not claim production government integration, remote attestation, hardware-bac
 
 ### Production Legal Correctness
 
-Do not claim legal advice or production correctness. Say "preliminary complaint draft" and "citizen guidance".
+Do not claim legal advice or government production readiness. Say "preliminary complaint packet" and "citizen guidance".

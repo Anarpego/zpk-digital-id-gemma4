@@ -48,9 +48,7 @@
   - `submission/KAGGLE_DATASET_README.md`
   - `submission/YOUTUBE_DESCRIPTION.md`
   - `submission/kaggle-dataset-metadata.template.json`
-  - `submission/kaggle-writeup-draft.md` (699 words, under 1,500)
   - `submission/final-kaggle-writeup.md` (695 words, under 1,500)
-  - `submission/video-script-draft.md`
   - `submission/final-video-script.md`
   - `submission/final-video-captions.srt`
   - `submission/demo-runbook.md`
@@ -104,7 +102,7 @@
 
 - `cd kan-app && dart format --set-exit-if-changed lib test`: pass.
 - `cd kan-app && flutter analyze`: pass.
-- `cd kan-app && flutter test`: pass, 44 tests.
+- `cd kan-app && flutter test`: pass, 46 tests.
 - `cd kan-app && flutter build apk --debug`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m-pro --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=5`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m --dart-define=KAN_CACTUS_ENABLE_TOOLS=false --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=180`: pass.
@@ -116,7 +114,7 @@
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
 - `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-final.zip`.
-- `./scripts/verify_submission.sh`: pass; verified APK/video checksums, ZIP contents, no `.env`, no embedded Gemini API key pattern, and writeup length.
+- `./scripts/verify_submission.sh`: pass; verified APK/video checksums, ZIP contents, no `.env`, no draft submission copy, no embedded Gemini API key pattern, and writeup length.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 - Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
 - Remote Linux GPU Unsloth dependency install and import smoke in `/tmp/kan-unsloth-venv`: pass; CUDA available.
@@ -127,7 +125,7 @@
 - Public code repository. A local Git repository now exists with publish-ready hygiene files, but it has not been pushed to a public remote.
 - Final Kaggle writeup upload. `submission/final-kaggle-writeup.md` exists under 1,500 words with measured Gemma/Cactus evidence, but it has not been pasted/submitted to Kaggle.
 - Public video, maximum 3 minutes, recorded and attached to the media gallery. A final narrated MP4 exists locally, but it has not been uploaded to a public URL or attached to Kaggle yet.
-- Final media gallery cover upload. A draft SVG cover now exists locally but has not been uploaded.
+- Final media gallery cover upload. The final 1600x900 PNG/SVG cover exists locally but has not been uploaded.
 - Final selected competition track and prize claims. `submission/prize-claims.md` exists; selected Impact Track is Digital Equity & Inclusivity, but claims have not been entered in Kaggle.
 - Stronger Cactus prize evidence. Local inference now works with `functiongemma-270m` and tools disabled, but Cactus tool-calling still fails with code `-1`, and this is not Gemma 4 evidence.
 - Decision on whether Cactus local-routing evidence is enough for a technical prize if Gemma 4 is served through Google AI Studio instead.
@@ -144,7 +142,7 @@ Prompt-to-artifact checklist:
 |---|---|---|
 | Working Android app | `kan-app/`, `submission/live-demo/kan-debug.apk`, `./scripts/verify_submission.sh` | Ready locally |
 | Gemma 4 use | Hosted `gemma-4-31b-it` evidence in `docs/evidence/gemma4-api-smoke-2026-05-01.md`; app trace screenshot | Verified hosted |
-| Offline/private workflow | Embedded catalog, local routing trace, local complaint draft, default APK | Verified |
+| Offline/private workflow | Embedded catalog, hash-verified civic threat bulletins, local routing trace, local complaint draft, default APK | Verified |
 | On-device/offline model effort | Cactus local inference works with FunctionGemma; ML Kit/AICore path compiles and runs but emulator reports `UNAVAILABLE` | Partial, do not overclaim |
 | Fine-tuning/RL/Unsloth | `unsloth/` scaffold and failed Gemma 4 E2B OOM attempt on 6 GB RTX 4050 | Attempted, no adapter |
 | Public repository | `README.md`, `AGENTS.md`, `.env.example`, `LICENSE`, clean git tree | Ready to push after auth |

@@ -85,6 +85,8 @@ for trace in \
   'agent_contract.safety_review(raw_cui=false) -> ok' \
   'audit_archive.encrypt(AES-GCM-256, android-keystore) -> sealed' \
   'privacy_guard.raw_cui -> absent' \
+  'threat_bulletin.verify(offline_hash_pack) -> 3/3_hash_ok' \
+  'threat_bulletin.match(CUI+correo+nombre+telefono) -> gt-dpi-fraud-ngo-2026-04,latam-sim-swap-cui-2026-04' \
   'recovery_packet.verify(local) -> ok' \
   'reasoner_mode(mlkit-gemma:aicore) -> fallback'; do
   grep -Fq "$trace" "$WRITEUP" "$ROOT/docs/evidence"/*.md || fail "missing evidence trace: $trace"
@@ -108,6 +110,9 @@ if grep -q ' \.env$' "$zip_listing"; then
 fi
 if grep -q 'docs/evidence/zpk-android-keystore-trace-2026-05-01.uiautomator.xml$' "$zip_listing"; then
   fail "ZIP contains stale Android Keystore UIAutomator trace"
+fi
+if grep -Eq 'submission/(kaggle-writeup-draft|video-script-draft)\.md$' "$zip_listing"; then
+  fail "ZIP contains draft submission copy"
 fi
 if strings "$APK" | grep -Eiq 'AIza[0-9A-Za-z_-]{20,}|KAN_GEMINI_API_KEY|GEMINI_API_KEY|x-goog-api-key'; then
   fail "APK appears to contain an embedded Gemini API key or key marker"
