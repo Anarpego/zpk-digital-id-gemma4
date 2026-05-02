@@ -60,7 +60,7 @@ zip -r "$ZIP" \
   submission/kan-final-demo-video.mp4 \
   submission/video-raw \
   unsloth \
-  -x '*.DS_Store' 'unsloth/.venv/*' '*/__pycache__/*' '*.pyc'
+  -x '*.DS_Store' '*.uiautomator.xml' 'unsloth/.venv/*' '*/__pycache__/*' '*.pyc'
 
 shasum -a 256 "$ZIP" > "$ZIP_SHA"
 

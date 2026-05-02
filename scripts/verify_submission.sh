@@ -108,8 +108,8 @@ grep -q ' \.env\.example$' "$zip_listing" || fail "ZIP missing .env.example"
 if grep -q ' \.env$' "$zip_listing"; then
   fail "ZIP contains .env"
 fi
-if grep -q 'docs/evidence/zpk-android-keystore-trace-2026-05-01.uiautomator.xml$' "$zip_listing"; then
-  fail "ZIP contains stale Android Keystore UIAutomator trace"
+if grep -Eq '\.uiautomator\.xml$' "$zip_listing"; then
+  fail "ZIP contains raw UIAutomator XML evidence"
 fi
 if grep -Eq 'submission/(kaggle-writeup-draft|video-script-draft)\.md$' "$zip_listing"; then
   fail "ZIP contains draft submission copy"

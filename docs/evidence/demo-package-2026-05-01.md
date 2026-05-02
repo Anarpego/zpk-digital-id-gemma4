@@ -27,6 +27,7 @@ Local checks:
 - `submission/dist/kan-demo-package-final.zip.sha256` contains the current ZIP checksum.
 - The archive includes `.env.example` but does not include `.env`.
 - The archive excludes `submission/kaggle-writeup-draft.md` and `submission/video-script-draft.md`.
+- The archive excludes raw `*.uiautomator.xml` dumps so public evidence cannot drift behind the app trace.
 - The APK is the default local-mode debug build; it does not embed `KAN_GEMINI_API_KEY`.
 - `./scripts/verify_submission.sh` scans the APK for Gemini key markers and
   scans the ZIP for Gemini API key patterns before reporting pass.

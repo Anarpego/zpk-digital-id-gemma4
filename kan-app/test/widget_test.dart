@@ -30,6 +30,11 @@ void main() {
       find.textContaining('privacy_guard.raw_cui -> absent'),
       findsOneWidget,
     );
+    expect(
+      find.textContaining('threat_bulletin.verify(offline_hash_pack)'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('threat_bulletin.match'), findsOneWidget);
     expect(find.textContaining('agent_ledger.sign'), findsOneWidget);
     expect(
       find.textContaining('agent_ledger.verify(local) -> ok'),

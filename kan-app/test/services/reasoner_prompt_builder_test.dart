@@ -24,6 +24,9 @@ void main() {
     expect(prompt, contains('did:zpk:gt:<redacted-local-id>'));
     expect(prompt, isNot(contains('Pseudonimo ciudadano: zpk-gt-')));
     expect(prompt, contains('patron_latam'));
+    expect(prompt, contains('boletines_publicos_verificados'));
+    expect(prompt, contains('gt-dpi-fraud-ngo-2026-04'));
+    expect(prompt, contains('latam-sim-swap-cui-2026-04'));
     expect(prompt, contains('mintrab-tu-empleo-2026-04'));
     expect(prompt, contains('No pidas mas datos'));
     expect(prompt, contains('Responde solo con JSON valido'));
