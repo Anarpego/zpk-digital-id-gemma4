@@ -5,7 +5,7 @@ import 'package:kan_app/services/digital_identity_fabric.dart';
 import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/legal_template_service.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
-import 'package:kan_app/services/mock_reasoner.dart';
+import 'package:kan_app/services/local_deterministic_reasoner.dart';
 import 'package:kan_app/services/recovery_packet_service.dart';
 
 void main() {
@@ -26,7 +26,7 @@ void main() {
         scenario: scenario,
         assessment: assessment,
       );
-      final guidance = await MockReasoner(
+      final guidance = await LocalDeterministicReasoner(
         identityFabric: fabric,
       ).explain(result: result, scenario: scenario);
       final complaint = const LegalTemplateService().buildComplaint(
@@ -77,7 +77,7 @@ void main() {
       scenario: scenario,
       assessment: assessment,
     );
-    final guidance = await MockReasoner(
+    final guidance = await LocalDeterministicReasoner(
       identityFabric: fabric,
     ).explain(result: result, scenario: scenario);
     final packet = await RecoveryPacketService(identityFabric: fabric).build(

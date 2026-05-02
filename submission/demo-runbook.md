@@ -12,7 +12,7 @@ adb install -r build/app/outputs/flutter-apk/app-debug.apk
 adb shell monkey -p gt.kan.kan_app 1
 ```
 
-Default mode is deterministic mock mode:
+Default mode is the deterministic local reasoner:
 
 ```bash
 flutter run -d emulator-5554

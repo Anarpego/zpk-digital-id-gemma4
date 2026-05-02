@@ -2,13 +2,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kan_app/models/kan_case.dart';
 import 'package:kan_app/services/kan_reasoner.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
-import 'package:kan_app/services/mock_reasoner.dart';
+import 'package:kan_app/services/local_deterministic_reasoner.dart';
 
 void main() {
   test('fallback trace includes a useful primary error detail', () async {
     final reasoner = FallbackReasoner(
       primary: const _ThrowingReasoner(),
-      fallback: const MockReasoner(),
+      fallback: const LocalDeterministicReasoner(),
       primaryLabel: 'cactus:functiongemma-270m',
     );
 

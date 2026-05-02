@@ -8,7 +8,7 @@ import '../../services/kan_reasoner.dart';
 import '../../services/legal_template_service.dart';
 import '../../services/local_breach_catalog.dart';
 import '../../services/local_authentication_service.dart';
-import '../../services/mock_reasoner.dart';
+import '../../services/local_deterministic_reasoner.dart';
 import '../../services/recovery_packet_service.dart';
 import '../../services/revocation_service.dart';
 
@@ -16,10 +16,12 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({
     super.key,
     Object? reasoner,
-    this.reasonerLabel = 'Mock local',
+    this.reasonerLabel = 'Local deterministic',
     this.identityFabric,
     this.auditArchive,
-  }) : reasoner = reasoner is KanReasoner ? reasoner : const MockReasoner();
+  }) : reasoner = reasoner is KanReasoner
+           ? reasoner
+           : const LocalDeterministicReasoner();
 
   final KanReasoner reasoner;
   final String reasonerLabel;

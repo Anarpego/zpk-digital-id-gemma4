@@ -1,4 +1,4 @@
-enum ReasonerMode { mock, cactus, gemmaHosted, mlKitGemma }
+enum ReasonerMode { local, cactus, gemmaHosted, mlKitGemma }
 
 class AppConfig {
   const AppConfig({
@@ -13,22 +13,22 @@ class AppConfig {
 
   const AppConfig.fromEnvironment()
     : reasonerMode =
-          const String.fromEnvironment('KAN_REASONER', defaultValue: 'mock') ==
+          const String.fromEnvironment('KAN_REASONER', defaultValue: 'local') ==
               'cactus'
           ? ReasonerMode.cactus
           : const String.fromEnvironment(
                   'KAN_REASONER',
-                  defaultValue: 'mock',
+                  defaultValue: 'local',
                 ) ==
                 'gemma-hosted'
           ? ReasonerMode.gemmaHosted
           : const String.fromEnvironment(
                   'KAN_REASONER',
-                  defaultValue: 'mock',
+                  defaultValue: 'local',
                 ) ==
                 'mlkit-gemma'
           ? ReasonerMode.mlKitGemma
-          : ReasonerMode.mock,
+          : ReasonerMode.local,
       cactusModel = const String.fromEnvironment(
         'KAN_CACTUS_MODEL',
         defaultValue: 'functiongemma-270m-pro',
@@ -60,7 +60,7 @@ class AppConfig {
   final int mlKitTimeoutSeconds;
 
   String get label => switch (reasonerMode) {
-    ReasonerMode.mock => 'Mock local',
+    ReasonerMode.local => 'Local deterministic',
     ReasonerMode.cactus => 'Cactus local',
     ReasonerMode.gemmaHosted => 'Gemma 4 API',
     ReasonerMode.mlKitGemma => 'ML Kit Gemma local',

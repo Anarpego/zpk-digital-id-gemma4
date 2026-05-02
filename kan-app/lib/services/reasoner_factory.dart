@@ -5,8 +5,8 @@ import 'cactus_reasoner.dart';
 import 'digital_identity_fabric.dart';
 import 'gemma_api_reasoner.dart';
 import 'kan_reasoner.dart';
+import 'local_deterministic_reasoner.dart';
 import 'mlkit_gemma_reasoner.dart';
-import 'mock_reasoner.dart';
 
 class ReasonerFactory {
   const ReasonerFactory({this.identityFabric = const DigitalIdentityFabric()});
@@ -17,14 +17,16 @@ class ReasonerFactory {
     CactusConfig.isTelemetryEnabled = false;
 
     return switch (config.reasonerMode) {
-      ReasonerMode.mock => MockReasoner(identityFabric: identityFabric),
+      ReasonerMode.local => LocalDeterministicReasoner(
+        identityFabric: identityFabric,
+      ),
       ReasonerMode.cactus => FallbackReasoner(
         primary: CactusReasoner(
           model: config.cactusModel,
           enableTools: config.cactusEnableTools,
           identityFabric: identityFabric,
         ),
-        fallback: MockReasoner(identityFabric: identityFabric),
+        fallback: LocalDeterministicReasoner(identityFabric: identityFabric),
         primaryLabel: 'cactus:${config.cactusModel}',
         timeout: Duration(seconds: config.cactusTimeoutSeconds),
       ),
@@ -34,12 +36,12 @@ class ReasonerFactory {
           model: config.geminiModel,
           identityFabric: identityFabric,
         ),
-        fallback: MockReasoner(identityFabric: identityFabric),
+        fallback: LocalDeterministicReasoner(identityFabric: identityFabric),
         primaryLabel: 'gemma-api:${config.geminiModel}',
       ),
       ReasonerMode.mlKitGemma => FallbackReasoner(
         primary: MlKitGemmaReasoner(identityFabric: identityFabric),
-        fallback: MockReasoner(identityFabric: identityFabric),
+        fallback: LocalDeterministicReasoner(identityFabric: identityFabric),
         primaryLabel: 'mlkit-gemma:aicore',
         timeout: Duration(seconds: config.mlKitTimeoutSeconds),
       ),

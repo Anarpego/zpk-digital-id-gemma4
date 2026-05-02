@@ -55,11 +55,15 @@ shasum -a 256 -c "$APK.sha256" >/dev/null || fail "APK checksum mismatch"
 writeup_words="$(wc -w < "$WRITEUP" | tr -d ' ')"
 [[ "$writeup_words" -le 1500 ]] || fail "writeup is over 1500 words: $writeup_words"
 
-for public_copy in "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.md"; do
-  if grep -Eiq 'TODO_PUBLIC|placeholder|working social-impact prototype' "$public_copy"; then
+for public_copy in "$ROOT/README.md" "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.md" "$ROOT/submission/demo-runbook.md"; do
+  if grep -Eiq 'TODO_PUBLIC|placeholder|working social-impact prototype|\bmock mode\b|deterministic mock' "$public_copy"; then
     fail "public copy contains stale placeholder/prototype claim: $public_copy"
   fi
 done
+
+if grep -R -Eiq 'MockReasoner|ReasonerMode\.mock|mock_reasoner|mock-local' "$ROOT/kan-app/lib" "$ROOT/kan-app/test"; then
+  fail "runtime source still contains prototype mock reasoner naming"
+fi
 
 for claim in \
   'verifier-enforced allowlisted expiring local authentication proof' \

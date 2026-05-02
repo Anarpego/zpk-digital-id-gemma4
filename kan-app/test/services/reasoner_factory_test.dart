@@ -2,31 +2,31 @@ import 'package:cactus/cactus.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kan_app/config/app_config.dart';
 import 'package:kan_app/services/kan_reasoner.dart';
-import 'package:kan_app/services/mock_reasoner.dart';
+import 'package:kan_app/services/local_deterministic_reasoner.dart';
 import 'package:kan_app/services/reasoner_factory.dart';
 
 void main() {
-  test('default environment uses mock mode', () {
+  test('default environment uses local deterministic mode', () {
     const config = AppConfig.fromEnvironment();
 
-    expect(config.reasonerMode, ReasonerMode.mock);
+    expect(config.reasonerMode, ReasonerMode.local);
     expect(config.cactusModel, 'functiongemma-270m-pro');
     expect(config.cactusTimeoutSeconds, 45);
     expect(config.cactusEnableTools, isTrue);
     expect(config.geminiApiKey, isEmpty);
     expect(config.geminiModel, 'gemma-4-31b-it');
     expect(config.mlKitTimeoutSeconds, 120);
-    expect(config.label, 'Mock local');
+    expect(config.label, 'Local deterministic');
   });
 
   test(
-    'factory disables Cactus telemetry and keeps mock stable by default',
+    'factory disables Cactus telemetry and keeps local mode stable by default',
     () {
       CactusConfig.isTelemetryEnabled = true;
 
       final reasoner = const ReasonerFactory().build(
         const AppConfig(
-          reasonerMode: ReasonerMode.mock,
+          reasonerMode: ReasonerMode.local,
           cactusModel: 'functiongemma-270m-pro',
           cactusTimeoutSeconds: 45,
           cactusEnableTools: true,
@@ -37,7 +37,7 @@ void main() {
       );
 
       expect(CactusConfig.isTelemetryEnabled, isFalse);
-      expect(reasoner, isA<MockReasoner>());
+      expect(reasoner, isA<LocalDeterministicReasoner>());
     },
   );
 

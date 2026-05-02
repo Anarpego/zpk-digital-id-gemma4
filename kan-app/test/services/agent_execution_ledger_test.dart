@@ -27,7 +27,7 @@ void main() {
           trustReport: trustReport,
           result: result,
           scenario: CaseScenario.discoveredVictim,
-          reasonerLabel: 'mock-local',
+          reasonerLabel: 'local-deterministic',
           usedLocalOnly: true,
         );
 

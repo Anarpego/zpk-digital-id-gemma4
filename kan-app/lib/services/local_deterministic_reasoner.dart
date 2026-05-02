@@ -6,8 +6,8 @@ import 'kan_reasoner.dart';
 import 'privacy_guard.dart';
 import 'routing_policy.dart';
 
-class MockReasoner implements KanReasoner {
-  const MockReasoner({
+class LocalDeterministicReasoner implements KanReasoner {
+  const LocalDeterministicReasoner({
     this.routingPolicy = const RoutingPolicy(),
     this.agent = const IdentityProtectionAgent(),
     this.identityFabric = const DigitalIdentityFabric(),
@@ -44,7 +44,7 @@ class MockReasoner implements KanReasoner {
             trustReport: trustReport,
             result: result,
             scenario: scenario,
-            reasonerLabel: 'mock-local',
+            reasonerLabel: 'local-deterministic',
             usedLocalOnly: usedLocalOnly,
           );
       return ledger.trace;
