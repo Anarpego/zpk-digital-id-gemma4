@@ -2,13 +2,13 @@
 
 ## Verified In This Workspace
 
-- Flutter prototype exists at `kan-app/`.
+- Flutter Android app exists at `kan-app/`.
 - Offline synthetic CUI verification works with `1234567890101`.
 - Offline breach fixtures are bundled in `kan-app/assets/breach_catalog.json` and loaded by `LocalBreachCatalog.loadEmbeddedOrFallback()`.
 - Local Spanish guidance and complaint preview are generated without a server.
 - Tool trace is visible in the Android UI for function-calling evidence.
-- Cactus Flutter dependency is present (`cactus ^1.3.0`) and a `CactusReasoner` adapter compiles behind the mock default.
-- Runtime reasoner selection exists through `--dart-define=KAN_REASONER=mock|cactus|gemma-hosted|mlkit-gemma`, `KAN_CACTUS_MODEL=<slug>`, `KAN_GEMINI_MODEL=<model>`, and `KAN_MLKIT_TIMEOUT_SECONDS=<seconds>`.
+- Cactus Flutter dependency is present (`cactus ^1.3.0`) and a `CactusReasoner` adapter compiles behind the local deterministic default.
+- Runtime reasoner selection exists through `--dart-define=KAN_REASONER=local|cactus|gemma-hosted|mlkit-gemma`, `KAN_CACTUS_MODEL=<slug>`, `KAN_GEMINI_MODEL=<model>`, and `KAN_MLKIT_TIMEOUT_SECONDS=<seconds>`.
 - Hosted Gemma 4 app mode exists through `--dart-define=KAN_REASONER=gemma-hosted`, `KAN_GEMINI_API_KEY`, and `KAN_GEMINI_MODEL=gemma-4-31b-it`.
 - ML Kit/AICore Android mode exists through `--dart-define=KAN_REASONER=mlkit-gemma`, compiles with `com.google.mlkit:genai-prompt:1.0.0-beta1`, and fails closed on the Mac Android emulator with `FeatureStatus.UNAVAILABLE`.
 - Cactus telemetry is disabled in `ReasonerFactory` for privacy.
@@ -41,7 +41,7 @@
   - `docs/evidence/mlkit-gemma-ondevice-2026-05-01.md`
   - `docs/evidence/mlkit-gemma-emulator-unavailable-2026-05-01.png`
   - Trace shows `reasoner_mode(mlkit-gemma:aicore) -> fallback: PlatformException(UNAVAILABLE, ...)`.
-- Draft submission artifacts exist:
+- Submission artifacts exist:
   - `submission/ARTIFACT_MANIFEST.md`
   - `submission/GITHUB_RELEASE_NOTES.md`
   - `submission/KAGGLE_FORM.md`

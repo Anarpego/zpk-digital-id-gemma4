@@ -31,7 +31,7 @@ rotation procedures.
 Commands run on 2026-05-01:
 
 - `flutter analyze` from `kan-app`: passed with no issues.
-- `flutter test` from `kan-app`: 22 tests passed.
+- `flutter test` from `kan-app`: 40 tests passed.
 - `./scripts/package_demo.sh`: rebuilt `submission/live-demo/kan-debug.apk`
   and `submission/dist/kan-demo-package-final.zip`.
 - `./scripts/verify_submission.sh`: passed.
