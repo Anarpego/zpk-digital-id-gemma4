@@ -56,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AuditArchiveClearReceipt? _auditClearReceipt;
   String? _complaint;
   String? _auditError;
+  String? _authenticationError;
   bool _isVerifying = false;
 
   @override
@@ -131,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _auditClearReceipt = null;
       _complaint = complaint;
       _auditError = auditError;
+      _authenticationError = null;
       _isVerifying = false;
     });
   }
@@ -163,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _revocationReceipt = receipt;
       _authenticationProof = null;
+      _authenticationError = null;
     });
   }
 
@@ -172,13 +175,23 @@ class _HomeScreenState extends State<HomeScreen> {
     if (result == null || trustReport == null) {
       return;
     }
-    final proof = await _authenticationService.buildProof(
-      result: result,
-      scenario: _scenario,
-      trustReport: trustReport,
-      revocationReceipt: _revocationReceipt,
-    );
-    setState(() => _authenticationProof = proof);
+    try {
+      final proof = await _authenticationService.buildProof(
+        result: result,
+        scenario: _scenario,
+        trustReport: trustReport,
+        revocationReceipt: _revocationReceipt,
+      );
+      setState(() {
+        _authenticationProof = proof;
+        _authenticationError = null;
+      });
+    } catch (error) {
+      setState(() {
+        _authenticationProof = null;
+        _authenticationError = error.toString();
+      });
+    }
   }
 
   @override
@@ -262,6 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 12),
               _AuthenticationProofPanel(
                 proof: _authenticationProof,
+                error: _authenticationError,
                 revocationReceipt: _revocationReceipt,
                 onIssue: _issueAuthenticationProof,
               ),
@@ -326,11 +340,13 @@ class _EmptyState extends StatelessWidget {
 class _AuthenticationProofPanel extends StatelessWidget {
   const _AuthenticationProofPanel({
     required this.proof,
+    required this.error,
     required this.revocationReceipt,
     required this.onIssue,
   });
 
   final LocalAuthenticationProof? proof;
+  final String? error;
   final LocalRevocationReceipt? revocationReceipt;
   final VoidCallback onIssue;
 
@@ -376,6 +392,17 @@ class _AuthenticationProofPanel extends StatelessWidget {
                 'Emite una prueba firmada para una institucion sin revelar CUI.',
                 style: text.bodySmall,
               ),
+              if (error != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  'No se emitio la prueba. Active bloqueo de pantalla o autorice la verificacion local.',
+                  style: text.bodySmall,
+                ),
+                Text(
+                  'auth.device_presence(android-keyguard) -> denied',
+                  style: text.bodySmall,
+                ),
+              ],
               const SizedBox(height: 12),
               OutlinedButton.icon(
                 onPressed: onIssue,

@@ -60,7 +60,7 @@ Commands run from `kan-app`:
 flutter test test/services/local_authentication_service_test.dart test/widget_test.dart
 ```
 
-Result: 9 targeted tests passed.
+Result: 10 targeted tests passed.
 
 Coverage:
 

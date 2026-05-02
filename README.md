@@ -93,7 +93,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 41 tests
+- `flutter test` passes 42 tests
 - `flutter build apk --debug`
 
 ## Evidence Package

@@ -130,6 +130,27 @@ void main() {
     );
     expect(find.text('Denuncia lista'), findsNothing);
   });
+
+  testWidgets('authentication proof denial fails closed in UI', (tester) async {
+    await tester.pumpWidget(const _DeniedAuthKanApp());
+
+    await tester.tap(find.byIcon(Icons.verified_user_outlined));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Probar autenticacion local'),
+      500,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Probar autenticacion local'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('No se emitio la prueba'), findsOneWidget);
+    expect(
+      find.textContaining('auth.device_presence(android-keyguard) -> denied'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('auth.sign'), findsNothing);
+  });
 }
 
 class _TestKanApp extends StatelessWidget {
@@ -141,6 +162,29 @@ class _TestKanApp extends StatelessWidget {
       devicePresenceGate: BypassDevicePresenceGate(),
     ),
   );
+}
+
+class _DeniedAuthKanApp extends StatelessWidget {
+  const _DeniedAuthKanApp();
+
+  @override
+  Widget build(BuildContext context) => const KanApp(
+    authenticationService: LocalAuthenticationService(
+      devicePresenceGate: _DeniedDevicePresenceGate(),
+    ),
+  );
+}
+
+class _DeniedDevicePresenceGate implements DevicePresenceGate {
+  const _DeniedDevicePresenceGate();
+
+  @override
+  Future<DevicePresenceResult> verify({required String reason}) async =>
+      const DevicePresenceResult(
+        verified: false,
+        method: 'android-keyguard',
+        trace: ['auth.device_presence(android-keyguard) -> denied'],
+      );
 }
 
 Future<void> _pumpUntilFound(WidgetTester tester, Finder finder) async {

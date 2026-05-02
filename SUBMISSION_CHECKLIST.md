@@ -104,7 +104,7 @@
 
 - `cd kan-app && dart format --set-exit-if-changed lib test`: pass.
 - `cd kan-app && flutter analyze`: pass.
-- `cd kan-app && flutter test`: pass, 41 tests.
+- `cd kan-app && flutter test`: pass, 42 tests.
 - `cd kan-app && flutter build apk --debug`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m-pro --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=5`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m --dart-define=KAN_CACTUS_ENABLE_TOOLS=false --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=180`: pass.
