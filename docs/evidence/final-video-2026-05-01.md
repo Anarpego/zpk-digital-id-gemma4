@@ -15,7 +15,7 @@ Source assets:
 - `submission/video-raw/zpk-demo-flow.mp4`: Android emulator screen recording of the ZPK Digital ID flow.
 - `submission/final-video-narration.txt`: narration text derived from the final script.
 - `submission/video-raw/zpk-final-narration.aiff`: macOS text-to-speech narration source.
-- `submission/final-video-captions.srt`: caption draft.
+- `submission/final-video-captions.srt`: final caption file.
 
 Commands used:
 

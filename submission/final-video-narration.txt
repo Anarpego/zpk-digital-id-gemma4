@@ -4,7 +4,7 @@ The demo uses synthetic data only. A citizen enters a test CUI, and ZPK register
 
 The local agent checks risk, chooses a privacy route, and creates a DID-style document, an HMAC-SHA256-signed recovery credential, selective disclosure claims, and a 15-minute consent proof.
 
-If a synthetic risk match exists, ZPK explains it in plain Spanish and prepares a redacted institutional packet plus a preliminary complaint draft.
+If a synthetic risk match exists, ZPK explains it in plain Spanish and prepares a redacted institutional packet plus a preliminary complaint packet.
 
 For richer reasoning, the app has a hosted Gemma 4 mode verified with gemma-4-31b-it. The prompt receives redacted facts, not the raw CUI. The trace shows which tools ran and whether personal data stayed local.
 

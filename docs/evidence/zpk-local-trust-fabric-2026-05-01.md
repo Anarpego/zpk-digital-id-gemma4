@@ -22,7 +22,7 @@ This app now demonstrates ZPK Digital ID as a local-first identity wallet, not o
 The local agent builds this state before model reasoning:
 
 ```text
-agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, draft_action_packet
+agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, prepare_action_packet
 select_privacy_route(local_model) -> pii_block_ok
 threat_bulletin.verify(offline_hash_pack) -> 3/3_hash_ok
 threat_bulletin.match(CUI+correo+nombre+telefono) -> gt-dpi-fraud-ngo-2026-04,latam-sim-swap-cui-2026-04

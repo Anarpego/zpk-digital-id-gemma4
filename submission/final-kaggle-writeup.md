@@ -23,7 +23,7 @@ The ML Kit/AICore path compiles and runs on the Mac Android emulator, but the em
 
 The important change is that Gemma is no longer just a response generator. ZPK builds a structured local agent context before any model call and accepts model output only when it satisfies a JSON agent-response contract:
 
-- `agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, draft_action_packet`
+- `agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, prepare_action_packet`
 - `select_privacy_route(...) -> pii_block_ok`
 - `threat_bulletin.verify(offline_hash_pack) -> 3/3_hash_ok`
 - `threat_bulletin.match(...) -> Guatemala and Latin America risk context`

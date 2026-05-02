@@ -12,7 +12,7 @@ Objective: make ZPK Digital ID competitive for the Gemma 4 Good Hackathon, prior
 | Offline/local-first identity registration | `DigitalIdentityFabric`, `IdentityProtectionAgent`, DID-style document, Android Keystore-backed HMAC-SHA256 credential, signed agent ledger, selective disclosure claims, consent proof | Verified locally |
 | Android privacy hardening | `FLAG_SECURE`, backup/data-extraction exclusions, cleartext traffic disabled | Built and manifest-inspected locally |
 | Offline/local-first CUI risk check | `kan-app/assets/breach_catalog.json`, `LocalBreachCatalog.loadEmbeddedOrFallback()`, ZPK final video | Verified locally |
-| Spanish guidance and complaint/recovery draft | Flutter app flow, `LegalTemplateService`, final video | Verified locally |
+| Spanish guidance and complaint/recovery packet | Flutter app flow, `LegalTemplateService`, final video | Verified locally |
 | Visible privacy/tool trace | UI traces for agent planning, CUI validation, local risk lookup, privacy route, HMAC credential signing/verification, consent proof, Gemma API, and Cactus mode | Verified locally |
 | Gemma 4 usage | `GemmaApiReasoner`, `docs/evidence/gemma4-api-smoke-2026-05-01.md`, screenshot `kan-gemma-hosted-trace.png` | Verified for hosted `gemma-4-31b-it` |
 | Cactus integration | `cactus ^1.3.0`, `CactusReasoner`, `docs/evidence/cactus-local-inference-2026-05-01.md` | Partial: local inference works, tool-calling fails |

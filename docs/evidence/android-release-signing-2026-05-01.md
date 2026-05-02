@@ -43,7 +43,7 @@ Commands run on 2026-05-01:
 - `./scripts/verify_release_build.sh`: passed, produced intentionally unsigned
   release APK without `ZPK_RELEASE_*` credentials.
 - Release APK SHA-256:
-  `61ed0f8937dacfbbfe8a30368d5c3217b8067bcda8845ede15e2cef1dd722e87`.
+  `1c76c33a582847eb21ac0464b491726c806b88797d7eda4b6bb71159fec46c5b`.
 - `aapt2 dump badging submission/live-demo/kan-debug.apk`: confirmed
   `application-label:'ZPK Digital ID'`.
 - `aapt2 dump xmltree --file AndroidManifest.xml

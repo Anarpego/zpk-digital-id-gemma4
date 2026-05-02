@@ -109,7 +109,7 @@ class IdentityProtectionAgent {
           name: 'agent.plan',
           input: scenario.shortCode,
           output:
-              'validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, draft_action_packet',
+              'validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, prepare_action_packet',
         ),
         AgentToolCall(
           name: 'validate_cui',
@@ -153,7 +153,7 @@ class IdentityProtectionAgent {
             output: match.bulletin.recommendedAction,
           ),
         AgentToolCall(
-          name: 'draft_action_packet',
+          name: 'prepare_action_packet',
           input: 'guatemala_identity_recovery',
           output: result.isValidCui
               ? 'citizen_steps+complaint_template'
