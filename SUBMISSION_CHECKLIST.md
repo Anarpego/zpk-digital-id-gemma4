@@ -142,7 +142,7 @@ Prompt-to-artifact checklist:
 
 | Requirement | Evidence | Status |
 |---|---|---|
-| Working prototype | `kan-app/`, `submission/live-demo/kan-debug.apk`, `./scripts/verify_submission.sh` | Ready locally |
+| Working Android app | `kan-app/`, `submission/live-demo/kan-debug.apk`, `./scripts/verify_submission.sh` | Ready locally |
 | Gemma 4 use | Hosted `gemma-4-31b-it` evidence in `docs/evidence/gemma4-api-smoke-2026-05-01.md`; app trace screenshot | Verified hosted |
 | Offline/private workflow | Embedded catalog, local routing trace, local complaint draft, default APK | Verified |
 | On-device/offline model effort | Cactus local inference works with FunctionGemma; ML Kit/AICore path compiles and runs but emulator reports `UNAVAILABLE` | Partial, do not overclaim |

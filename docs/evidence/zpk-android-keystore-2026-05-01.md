@@ -30,14 +30,15 @@ adb install -r kan-app/build/app/outputs/flutter-apk/app-debug.apk
 adb shell monkey -p gt.kan.kan_app 1
 adb shell input tap 540 1050
 adb exec-out screencap -p > docs/evidence/zpk-android-keystore-trace-2026-05-01.png
-adb exec-out cat /sdcard/window.xml > docs/evidence/zpk-android-keystore-trace-2026-05-01.uiautomator.xml
 ```
 
-The UIAutomator trace includes:
+The runtime trace includes:
 
 ```text
 trust_fabric.keystore(android-keystore) -> zpk-android-keystore-issuer-key-2026-05
 trust_fabric.verify_credential_signature(local) -> ok
+agent_ledger.sign(android-keystore) -> ...
+agent_ledger.verify(local) -> ok
 ```
 
 The same signer is reused with purpose-separated payloads for the local agent

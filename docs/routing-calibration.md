@@ -1,6 +1,6 @@
 # Routing Calibration
 
-ZPK Digital ID needs to show local-first intelligence without sending personal data by default. The current prototype uses a deterministic routing policy and a local identity agent that are easy to test and explain in the video.
+ZPK Digital ID needs to show local-first intelligence without sending personal data by default. The current app uses a deterministic routing policy and a local identity agent that are easy to test, audit, and explain in the video.
 
 ## Routes
 

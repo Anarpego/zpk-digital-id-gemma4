@@ -55,8 +55,8 @@ shasum -a 256 -c "$APK.sha256" >/dev/null || fail "APK checksum mismatch"
 writeup_words="$(wc -w < "$WRITEUP" | tr -d ' ')"
 [[ "$writeup_words" -le 1500 ]] || fail "writeup is over 1500 words: $writeup_words"
 
-for public_copy in "$ROOT/README.md" "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.md" "$ROOT/submission/demo-runbook.md"; do
-  if grep -Eiq 'TODO_PUBLIC|placeholder|working social-impact prototype|\bmock mode\b|deterministic mock' "$public_copy"; then
+for public_copy in "$ROOT/README.md" "$WRITEUP" "$KAGGLE_FORM" "$PRIZE_CLAIMS" "$ROOT/SUBMIT_NOW.md" "$ROOT/SUBMISSION_CHECKLIST.md" "$ROOT/docs/routing-calibration.md" "$ROOT/submission/demo-runbook.md"; do
+  if grep -Eiq 'TODO_PUBLIC|placeholder|working social-impact prototype|working prototype|current prototype|\bmock mode\b|deterministic mock|Mock local' "$public_copy"; then
     fail "public copy contains stale placeholder/prototype claim: $public_copy"
   fi
 done
@@ -104,6 +104,9 @@ unzip -l "$ZIP" > "$zip_listing"
 grep -q ' \.env\.example$' "$zip_listing" || fail "ZIP missing .env.example"
 if grep -q ' \.env$' "$zip_listing"; then
   fail "ZIP contains .env"
+fi
+if grep -q 'docs/evidence/zpk-android-keystore-trace-2026-05-01.uiautomator.xml$' "$zip_listing"; then
+  fail "ZIP contains stale Android Keystore UIAutomator trace"
 fi
 
 for required in \
