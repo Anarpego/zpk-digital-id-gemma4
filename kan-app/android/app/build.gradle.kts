@@ -52,6 +52,10 @@ android {
             signingConfigs.findByName("release")?.let {
                 signingConfig = it
             }
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
@@ -61,6 +65,7 @@ flutter {
 }
 
 dependencies {
+    implementation("com.google.ai.edge.litertlm:litertlm-android:0.10.2")
     implementation("com.google.mlkit:genai-prompt:1.0.0-beta1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 }

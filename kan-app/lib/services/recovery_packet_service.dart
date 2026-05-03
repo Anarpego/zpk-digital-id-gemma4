@@ -46,7 +46,9 @@ class RecoveryPacketService {
       'recoveryStatus': trustReport.recoveryStatus,
       'consentScope': trustReport.consentGrant.scope,
       'consentExpiresInMinutes': trustReport.consentGrant.expiresInMinutes,
-      'redactionPolicy': 'raw_cui_retained_on_device',
+      'redactionPolicy': result.isValidCui
+          ? 'raw_cui_retained_on_device'
+          : 'no_cui_checklist_only',
       'institutionFacts': [
         for (final match in result.matches)
           {
@@ -74,7 +76,9 @@ class RecoveryPacketService {
       keyStore: signature.keyStore,
       trace: [
         'recovery_packet.private_complaint(local_only) -> ready',
-        'recovery_packet.redact(raw_cui) -> retained_on_device',
+        result.isValidCui
+            ? 'recovery_packet.redact(raw_cui) -> retained_on_device'
+            : 'recovery_packet.no_cui -> checklist_only',
         'recovery_packet.hash(sha256) -> ${packetHash.substring(0, 16)}',
         'recovery_packet.sign(${signature.keyStore}) -> ${signature.proofValue.substring(0, 16)}',
         'recovery_packet.verify(local) -> ${await verifyPacket(redactedSharePacket: redactedSharePacket, redactedPacketHash: packetHash, signature: signature.proofValue) ? 'ok' : 'failed'}',

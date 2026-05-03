@@ -1,17 +1,27 @@
 # Kan App
 
-Mobile-first prototype for the Gemma 4 Good Hackathon project described in `../kan.md`.
+Mobile-first ZPK Digital ID app for the Gemma 4 Good Hackathon project
+described in `../kan.md`.
 
 ## What Works Now
 
-- Offline synthetic CUI verification with no server call.
-- Accessible Spanish guidance for exposed, unknown, and invalid CUI cases.
-- Local complaint document preview generated on device.
-- Visible local tool trace for the demo video and judging evidence.
-- Cactus dependency and adapter boundary for local Gemma inference.
-- Training-Free GRPO-style experience prior baked into the reasoner prompt.
+- Citizen and institutional intake flows for IGSS, SAT, school/university,
+  identity recovery, fraud, extortion evidence, field access, and prevention.
+- Offline synthetic CUI verification, no-CUI institutional intake, local
+  routing, redacted recovery packets, signed local evidence, and sealed audit.
+- Gemma 4 reasoner adapters for hosted, iOS FlutterGemma, Android ML Kit/AICore,
+  and Android LiteRT-LM paths, with deterministic offline fallback.
+- Android LiteRT-LM status, model installation, SHA-256 verification, warmup,
+  low-memory guard, and native-generation bridge.
+- Copyable diagnostics and reproducible scripts for Kaggle evidence.
+- Synthetic Guatemala/LatAm SFT and RLKD datasets under `../unsloth/`.
 
-This checkpoint intentionally defaults to deterministic local services instead of API calls or downloaded models. The Cactus adapter compiles, but model download/initialization is a separate benchmark step.
+The app defaults to local-first privacy behavior. Hosted model calls are only
+for redacted prompts; CUI/DPI and proof material stay on device. On the
+available Motorola G15, the real Gemma 4 E2B LiteRT-LM model is installed in
+app-private storage, but generation is blocked by the 6 GB RAM safety gate and
+the app shows the deterministic offline fallback instead of crashing or making
+an unsupported claim.
 
 ## Run Locally
 
@@ -20,7 +30,10 @@ flutter pub get
 flutter run
 ```
 
-Use `1234567890101` for an exposed synthetic CUI and `1111111111111` for a valid CUI with no local match.
+Use `1234567890101` for an exposed synthetic CUI and `1111111111111` for a
+valid CUI with no local match. Institution flows such as IGSS/SAT/Colegio can
+also continue without CUI; they produce intake/checklists only, not identity
+credentials.
 
 ## Verify
 
@@ -30,9 +43,15 @@ flutter analyze
 flutter test
 ```
 
-## Next Integrations
+## Physical Device Evidence
 
-1. Benchmark `CactusReasoner` with a Gemma 4 model on Android.
-2. Move synthetic catalog data into a bundled SQLite asset.
-3. Add an Unsloth fine-tuning dataset, notebook, and before/after benchmark.
-4. Add optional server routing only for abstract legal reasoning with no CUI or PII.
+```bash
+../scripts/verify_motorola_physical_flow.sh --no-install
+../scripts/run_physical_litert_proof.sh --watch-seconds 300
+```
+
+`verify_motorola_physical_flow.sh` validates the current Motorola G15 flow:
+Persona -> IGSS -> no-CUI institutional intake -> Motor low-memory fallback.
+`run_physical_litert_proof.sh` is reserved for a future ARM64 Android phone with
+6 GB+ RAM; only a `litert_gemma.generate(...) -> ok` trace counts as Android
+physical Gemma 4 generation.

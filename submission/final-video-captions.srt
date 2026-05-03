@@ -4,7 +4,7 @@ In Guatemala, digital identity must work even when institutions, aid programs, o
 
 2
 00:00:18,000 --> 00:00:50,000
-The demo uses synthetic data only. A citizen enters a test CUI, and ZPK registers a pseudonymous identity on the device. The raw CUI is not sent to a server.
+The submitted app uses synthetic data only. A citizen enters a test CUI, and ZPK registers a pseudonymous identity on the device. The raw CUI is not sent to a server.
 
 3
 00:00:50,000 --> 00:01:20,000
@@ -16,7 +16,7 @@ For richer reasoning, ZPK has a hosted Gemma 4 mode verified with gemma-4-31b-it
 
 5
 00:01:55,000 --> 00:02:20,000
-The app also integrates Cactus local inference evidence, ML Kit AICore fail-closed fallback, and an Unsloth scaffold for future adaptation.
+The app also integrates Cactus local inference evidence, ML Kit AICore fail-closed fallback, and a Gemma 4 adaptation pipeline with SFT data, teacher traces, and GRPO rewards.
 
 6
 00:02:20,000 --> 00:02:50,000

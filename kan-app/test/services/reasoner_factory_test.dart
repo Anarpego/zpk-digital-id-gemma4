@@ -16,6 +16,13 @@ void main() {
     expect(config.geminiApiKey, isEmpty);
     expect(config.geminiModel, 'gemma-4-31b-it');
     expect(config.mlKitTimeoutSeconds, 120);
+    expect(config.litertModelPath, isEmpty);
+    expect(config.litertModelUrl, isEmpty);
+    expect(config.litertModelSha256, isEmpty);
+    expect(config.litertTimeoutSeconds, 180);
+    expect(config.flutterGemmaModelUrl, isEmpty);
+    expect(config.flutterGemmaModelId, 'gemma-4-E2B-it.litertlm');
+    expect(config.flutterGemmaTimeoutSeconds, 300);
     expect(config.label, 'Local deterministic');
   });
 
@@ -33,6 +40,13 @@ void main() {
           geminiApiKey: '',
           geminiModel: 'gemma-4-31b-it',
           mlKitTimeoutSeconds: 120,
+          litertModelPath: '',
+          litertModelUrl: '',
+          litertModelSha256: '',
+          litertTimeoutSeconds: 180,
+          flutterGemmaModelUrl: '',
+          flutterGemmaModelId: 'gemma-4-E2B-it.litertlm',
+          flutterGemmaTimeoutSeconds: 300,
         ),
       );
 
@@ -51,6 +65,13 @@ void main() {
         geminiApiKey: '',
         geminiModel: 'gemma-4-31b-it',
         mlKitTimeoutSeconds: 120,
+        litertModelPath: '',
+        litertModelUrl: '',
+        litertModelSha256: '',
+        litertTimeoutSeconds: 180,
+        flutterGemmaModelUrl: '',
+        flutterGemmaModelId: 'gemma-4-E2B-it.litertlm',
+        flutterGemmaTimeoutSeconds: 300,
       ),
     );
 
@@ -67,6 +88,13 @@ void main() {
         geminiApiKey: 'test-key',
         geminiModel: 'gemma-4-31b-it',
         mlKitTimeoutSeconds: 120,
+        litertModelPath: '',
+        litertModelUrl: '',
+        litertModelSha256: '',
+        litertTimeoutSeconds: 180,
+        flutterGemmaModelUrl: '',
+        flutterGemmaModelId: 'gemma-4-E2B-it.litertlm',
+        flutterGemmaTimeoutSeconds: 300,
       ),
     );
 
@@ -83,6 +111,60 @@ void main() {
         geminiApiKey: '',
         geminiModel: 'gemma-4-31b-it',
         mlKitTimeoutSeconds: 120,
+        litertModelPath: '',
+        litertModelUrl: '',
+        litertModelSha256: '',
+        litertTimeoutSeconds: 180,
+        flutterGemmaModelUrl: '',
+        flutterGemmaModelId: 'gemma-4-E2B-it.litertlm',
+        flutterGemmaTimeoutSeconds: 300,
+      ),
+    );
+
+    expect(reasoner, isA<FallbackReasoner>());
+  });
+
+  test('factory wraps LiteRT-LM Gemma mode with fallback reasoner', () {
+    final reasoner = const ReasonerFactory().build(
+      const AppConfig(
+        reasonerMode: ReasonerMode.litertGemma,
+        cactusModel: 'functiongemma-270m-pro',
+        cactusTimeoutSeconds: 45,
+        cactusEnableTools: true,
+        geminiApiKey: '',
+        geminiModel: 'gemma-4-31b-it',
+        mlKitTimeoutSeconds: 120,
+        litertModelPath: '/sdcard/Download/gemma-4-E2B-it.litertlm',
+        litertModelUrl: 'https://example.test/gemma-4-E2B-it.litertlm',
+        litertModelSha256: 'abc123',
+        litertTimeoutSeconds: 180,
+        flutterGemmaModelUrl: '',
+        flutterGemmaModelId: 'gemma-4-E2B-it.litertlm',
+        flutterGemmaTimeoutSeconds: 300,
+      ),
+    );
+
+    expect(reasoner, isA<FallbackReasoner>());
+  });
+
+  test('factory wraps Flutter Gemma 4 mode with fallback reasoner', () {
+    final reasoner = const ReasonerFactory().build(
+      const AppConfig(
+        reasonerMode: ReasonerMode.flutterGemma4,
+        cactusModel: 'functiongemma-270m-pro',
+        cactusTimeoutSeconds: 45,
+        cactusEnableTools: true,
+        geminiApiKey: '',
+        geminiModel: 'gemma-4-31b-it',
+        mlKitTimeoutSeconds: 120,
+        litertModelPath: '',
+        litertModelUrl: '',
+        litertModelSha256: '',
+        litertTimeoutSeconds: 180,
+        flutterGemmaModelUrl:
+            'https://example.test/models/gemma-4-E2B-it.litertlm',
+        flutterGemmaModelId: 'gemma-4-E2B-it.litertlm',
+        flutterGemmaTimeoutSeconds: 300,
       ),
     );
 

@@ -17,8 +17,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
-SFT_PATH = ROOT / "kan_legal_spanish_sft.jsonl"
+LEGACY_SFT_PATH = ROOT / "kan_legal_spanish_sft.jsonl"
 EVAL_PATH = ROOT / "eval_cases.jsonl"
+DATA_DIR = ROOT / "data"
+SFT_PATH = DATA_DIR / "zpk_gt_latam_sft_train.jsonl"
+VALIDATION_PATH = DATA_DIR / "zpk_gt_latam_sft_validation.jsonl"
 REPORT_PATH = ROOT / "outputs" / "dry_run_report.md"
 TRAIN_REPORT_PATH = ROOT / "outputs" / "training_report.md"
 
@@ -40,16 +43,29 @@ def read_jsonl(path: Path) -> list[dict]:
 def validate_sft(rows: list[dict]) -> list[str]:
     issues: list[str] = []
     for index, row in enumerate(rows, start=1):
-        conversations = row.get("conversations")
-        if not isinstance(conversations, list) or len(conversations) < 2:
-            issues.append(f"sft row {index}: missing two-turn conversations")
+        if "messages" in row:
+            messages = row.get("messages")
+            if not isinstance(messages, list) or len(messages) < 3:
+                issues.append(f"sft row {index}: missing messages")
+                continue
+            roles = [turn.get("role") for turn in messages]
+            if roles[:3] != ["system", "user", "assistant"]:
+                issues.append(f"sft row {index}: expected system -> user -> assistant")
+            for turn in messages:
+                if not isinstance(turn.get("content"), str) or not turn["content"].strip():
+                    issues.append(f"sft row {index}: empty message content")
             continue
-        roles = [turn.get("from") for turn in conversations]
-        if roles[:2] != ["human", "gpt"]:
-            issues.append(f"sft row {index}: expected human -> gpt")
-        for turn in conversations:
-            if not isinstance(turn.get("value"), str) or not turn["value"].strip():
-                issues.append(f"sft row {index}: empty turn value")
+
+        conversations = row.get("conversations")
+        if isinstance(conversations, list) and len(conversations) >= 2:
+            roles = [turn.get("from") for turn in conversations]
+            if roles[:2] != ["human", "gpt"]:
+                issues.append(f"sft row {index}: expected human -> gpt")
+            for turn in conversations:
+                if not isinstance(turn.get("value"), str) or not turn["value"].strip():
+                    issues.append(f"sft row {index}: empty turn value")
+        else:
+            issues.append(f"sft row {index}: missing messages or conversations")
     return issues
 
 
@@ -89,7 +105,8 @@ def write_report(sft_rows: list[dict], eval_rows: list[dict], issues: list[str])
 
 
 def dry_run() -> int:
-    sft_rows = read_jsonl(SFT_PATH)
+    sft_source = SFT_PATH if SFT_PATH.exists() else LEGACY_SFT_PATH
+    sft_rows = read_jsonl(sft_source)
     eval_rows = read_jsonl(EVAL_PATH)
     issues = [*validate_sft(sft_rows), *validate_eval(eval_rows)]
     write_report(sft_rows, eval_rows, issues)
@@ -128,7 +145,16 @@ def train(args: argparse.Namespace) -> int:
         random_state=3407,
     )
 
-    dataset = load_dataset("json", data_files=str(SFT_PATH), split="train")
+    if args.dataset == "generated":
+        data_files = {"train": str(SFT_PATH)}
+        if VALIDATION_PATH.exists():
+            data_files["validation"] = str(VALIDATION_PATH)
+        dataset = load_dataset("json", data_files=data_files)
+        train_dataset = dataset["train"]
+        eval_dataset = dataset.get("validation")
+    else:
+        train_dataset = load_dataset("json", data_files=str(LEGACY_SFT_PATH), split="train")
+        eval_dataset = None
     output_dir = ROOT / "outputs" / args.run_name
     max_steps = args.max_steps if args.max_steps > 0 else -1
 
@@ -144,6 +170,14 @@ def train(args: argparse.Namespace) -> int:
         )
 
     def formatting_func(example: dict) -> list[str]:
+        if "messages" in example:
+            return [
+                tokenizer.apply_chat_template(
+                    example["messages"],
+                    tokenize=False,
+                    add_generation_prompt=False,
+                )
+            ]
         conversations = example["conversations"]
         if conversations and isinstance(conversations[0], list):
             return [format_conversation(conversation) for conversation in conversations]
@@ -152,7 +186,8 @@ def train(args: argparse.Namespace) -> int:
     trainer = SFTTrainer(
         model=model,
         processing_class=tokenizer,
-        train_dataset=dataset,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset,
         formatting_func=formatting_func,
         args=SFTConfig(
             output_dir=str(output_dir),
@@ -163,7 +198,12 @@ def train(args: argparse.Namespace) -> int:
             max_steps=max_steps,
             learning_rate=args.learning_rate,
             logging_steps=1,
+            eval_strategy="steps" if eval_dataset is not None else "no",
+            eval_steps=args.eval_steps,
             save_strategy="epoch",
+            packing=args.packing,
+            eval_packing=False,
+            assistant_only_loss=args.assistant_only_loss,
         ),
     )
     result = trainer.train()
@@ -195,6 +235,7 @@ def train(args: argparse.Namespace) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="validate data only")
+    parser.add_argument("--dataset", choices=["generated", "legacy"], default="generated")
     parser.add_argument("--model-name", default="unsloth/gemma-4-E2B-it-unsloth-bnb-4bit")
     parser.add_argument("--run-name", default="lora")
     parser.add_argument("--max-seq-length", type=int, default=2048)
@@ -205,6 +246,9 @@ def main() -> int:
     parser.add_argument("--epochs", type=float, default=3)
     parser.add_argument("--max-steps", type=int, default=-1)
     parser.add_argument("--learning-rate", type=float, default=2e-4)
+    parser.add_argument("--eval-steps", type=int, default=25)
+    parser.add_argument("--packing", action="store_true")
+    parser.add_argument("--assistant-only-loss", action="store_true")
     args = parser.parse_args()
     return dry_run() if args.dry_run else train(args)
 

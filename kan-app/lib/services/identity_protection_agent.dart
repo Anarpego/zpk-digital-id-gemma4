@@ -109,12 +109,16 @@ class IdentityProtectionAgent {
           name: 'agent.plan',
           input: scenario.shortCode,
           output:
-              'validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, prepare_action_packet',
+              'validate_cui, local_breach_lookup, classify_identity_risk, preserve_evidence, select_privacy_route, prepare_action_packet',
         ),
         AgentToolCall(
           name: 'validate_cui',
           input: 'local_only',
-          output: result.isValidCui ? 'valid_13_digits' : 'invalid_format',
+          output: result.isValidCui
+              ? 'valid_13_digits'
+              : scenario.allowsNoCui
+              ? 'not_available_checklist_only'
+              : 'invalid_format',
         ),
         AgentToolCall(
           name: 'local_breach_lookup',
@@ -133,6 +137,54 @@ class IdentityProtectionAgent {
           input: route.route.traceCode,
           output: route.sendsPersonalData ? 'pii_block_failed' : 'pii_block_ok',
         ),
+        if (scenario == CaseScenario.extortionThreat)
+          const AgentToolCall(
+            name: 'preserve_evidence',
+            input: 'threat_or_extortion',
+            output: 'sealed_local_timeline+redacted_report',
+          ),
+        if (scenario == CaseScenario.remittanceFraud)
+          const AgentToolCall(
+            name: 'economic_fraud_triage',
+            input: 'loan_remittance_employment_scam',
+            output: 'freeze_checklist+institution_packet',
+          ),
+        if (scenario == CaseScenario.publicServiceBreach)
+          const AgentToolCall(
+            name: 'institution_recovery_packet',
+            input: 'public_service_or_registry_breach',
+            output: 'redacted_claim+presence_proof+review_request',
+          ),
+        if (scenario == CaseScenario.igssRegistration)
+          const AgentToolCall(
+            name: 'igss_registration_agent',
+            input: 'social_security_registration_or_recovery',
+            output: 'eligibility_checklist+presence_proof+institution_intake',
+          ),
+        if (scenario == CaseScenario.satTaxAccess)
+          const AgentToolCall(
+            name: 'sat_access_agent',
+            input: 'tax_portal_access_or_update',
+            output: 'portal_safety_check+redacted_update_packet',
+          ),
+        if (scenario == CaseScenario.schoolEnrollment)
+          const AgentToolCall(
+            name: 'education_enrollment_agent',
+            input: 'school_or_university_registration',
+            output: 'guardian_consent+limited_student_claim+institution_intake',
+          ),
+        if (scenario == CaseScenario.fieldAccess)
+          const AgentToolCall(
+            name: 'field_access_voucher',
+            input: 'school_clinic_aid_without_connectivity',
+            output: 'limited_claim+offline_qr+no_document_copy',
+          ),
+        if (scenario == CaseScenario.violenceCoercion)
+          const AgentToolCall(
+            name: 'coercion_safety_plan',
+            input: 'identity_threat_with_personal_safety_risk',
+            output: 'sealed_timeline+safe_contact_summary',
+          ),
         AgentToolCall(
           name: 'threat_bulletin.verify',
           input: 'offline_hash_pack',
@@ -154,9 +206,9 @@ class IdentityProtectionAgent {
           ),
         AgentToolCall(
           name: 'prepare_action_packet',
-          input: 'guatemala_identity_recovery',
-          output: result.isValidCui
-              ? 'citizen_steps+complaint_template'
+          input: _actionPacketInput(scenario),
+          output: result.isValidCui || scenario.allowsNoCui
+              ? _actionPacketOutput(scenario)
               : 'format_help_only',
         ),
       ],
@@ -168,6 +220,7 @@ class IdentityProtectionAgent {
         if (bulletinMatches.isNotEmpty)
           'boletines=${bulletinMatches.map((match) => match.bulletin.id).join(',')}',
         'escenario=${scenario.label}',
+        'mision=${scenario.mission}',
       ],
       nationalPlaybook: _nationalPlaybook(risk, bulletinMatches),
       regionalPlaybook: _regionalPlaybook(bulletinMatches),
@@ -180,6 +233,9 @@ class IdentityProtectionAgent {
     required CaseScenario scenario,
   }) {
     if (!result.isValidCui) {
+      if (scenario.allowsNoCui) {
+        return IdentityRiskLevel.medium;
+      }
       return IdentityRiskLevel.blocked;
     }
     if (result.isExposed) {
@@ -198,6 +254,24 @@ class IdentityProtectionAgent {
       return hasCredentialRisk
           ? IdentityRiskLevel.critical
           : IdentityRiskLevel.high;
+    }
+    if (scenario == CaseScenario.extortionThreat) {
+      return IdentityRiskLevel.critical;
+    }
+    if (scenario == CaseScenario.remittanceFraud) {
+      return result.isExposed
+          ? IdentityRiskLevel.critical
+          : IdentityRiskLevel.high;
+    }
+    if (scenario == CaseScenario.publicServiceBreach ||
+        scenario == CaseScenario.igssRegistration ||
+        scenario == CaseScenario.satTaxAccess ||
+        scenario == CaseScenario.schoolEnrollment ||
+        scenario == CaseScenario.fieldAccess) {
+      return IdentityRiskLevel.high;
+    }
+    if (scenario == CaseScenario.violenceCoercion) {
+      return IdentityRiskLevel.critical;
     }
     if (scenario == CaseScenario.suspicion) {
       return IdentityRiskLevel.medium;
@@ -237,6 +311,38 @@ class IdentityProtectionAgent {
         'Aplicar boletin ${match.bulletin.id}: ${match.bulletin.recommendedAction}',
     ];
   }
+
+  String _actionPacketInput(CaseScenario scenario) => switch (scenario) {
+    CaseScenario.extortionThreat => 'guatemala_extortion_evidence',
+    CaseScenario.remittanceFraud => 'guatemala_economic_fraud_recovery',
+    CaseScenario.publicServiceBreach => 'guatemala_public_service_recovery',
+    CaseScenario.igssRegistration => 'guatemala_igss_registration',
+    CaseScenario.satTaxAccess => 'guatemala_sat_access_update',
+    CaseScenario.schoolEnrollment => 'guatemala_education_enrollment',
+    CaseScenario.fieldAccess => 'guatemala_field_access_identity',
+    CaseScenario.violenceCoercion => 'guatemala_coercion_safety_identity',
+    _ => 'guatemala_identity_recovery',
+  };
+
+  String _actionPacketOutput(CaseScenario scenario) => switch (scenario) {
+    CaseScenario.extortionThreat =>
+      'safety_steps+sealed_evidence+redacted_complaint',
+    CaseScenario.remittanceFraud =>
+      'bank_telco_alerts+recovery_steps+institution_packet',
+    CaseScenario.publicServiceBreach =>
+      'registry_review_request+redacted_claim+presence_proof',
+    CaseScenario.igssRegistration =>
+      'igss_checklist+redacted_intake+appointment_packet',
+    CaseScenario.satTaxAccess =>
+      'sat_portal_safety+redacted_update_packet+counter_script',
+    CaseScenario.schoolEnrollment =>
+      'education_enrollment_checklist+guardian_consent+limited_claim',
+    CaseScenario.fieldAccess =>
+      'limited_offline_claim+service_counter_packet+audit_receipt',
+    CaseScenario.violenceCoercion =>
+      'safe_contact_summary+sealed_evidence+support_packet',
+    _ => 'citizen_steps+complaint_template',
+  };
 
   List<String> _regionalPlaybook(List<ThreatBulletinMatch> bulletinMatches) {
     return [

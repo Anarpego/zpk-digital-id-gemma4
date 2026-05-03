@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+
+import '../test_identity_fabric.dart';
 import 'package:kan_app/models/kan_case.dart';
-import 'package:kan_app/services/digital_identity_fabric.dart';
 import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/legal_template_service.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
@@ -17,7 +18,7 @@ void main() {
         result: result,
         scenario: CaseScenario.discoveredVictim,
       );
-      final fabric = const DigitalIdentityFabric();
+      final fabric = testIdentityFabric;
       final trustReport = await fabric.evaluate(
         result: result,
         scenario: CaseScenario.discoveredVictim,
@@ -71,7 +72,7 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final fabric = const DigitalIdentityFabric();
+    final fabric = testIdentityFabric;
     final trustReport = await fabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,

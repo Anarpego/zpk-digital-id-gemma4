@@ -8,15 +8,16 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 
 | Artifact | Path | Purpose | SHA-256 |
 |---|---|---|---|
-| Android APK | `submission/live-demo/kan-debug.apk` | Installable local-mode demo APK | See `submission/live-demo/kan-debug.apk.sha256` |
+| Local APK | `submission/live-demo/zpk-local-release.apk` | Signed ARM64 local-mode Android APK | See `submission/live-demo/zpk-local-release.apk.sha256` |
+| LiteRT APK | `submission/live-demo/zpk-litert-release.apk` | Signed ARM64 LiteRT-mode APK for physical-device Gemma testing | See `submission/live-demo/zpk-litert-release.apk.sha256` |
 | Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6` |
-| Media cover | `submission/media-gallery-cover.png` | 1600x900 Kaggle media-gallery image | `15ba1a8f5037973ce6b0c76defdfd05bee438d2f8ddf15393cc75070e4a6f2b6` |
-| Demo package | `submission/dist/kan-demo-package-final.zip` | Downloadable bundle with APK, video, docs, evidence, and Unsloth scaffold | See `submission/dist/kan-demo-package-final.zip.sha256` |
+| Media cover | `submission/media-gallery-cover.png` | 1600x900 Kaggle media-gallery image | `bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947` |
+| Submission package | `submission/dist/kan-demo-package-final.zip` | Downloadable bundle with APK, app source, video, docs, evidence, and adaptation pipeline | See `submission/dist/kan-demo-package-final.zip.sha256` |
 
 ## Kaggle Form Inputs
 
 - Repository URL: fill in after public GitHub push.
-- Live demo URL: fill in after uploading `submission/dist/kan-demo-package-final.zip`.
+- Live artifact URL: fill in after uploading `submission/dist/kan-demo-package-final.zip`.
 - Video URL: fill in after uploading `submission/kan-final-demo-video.mp4`.
 - Kaggle form copy: `submission/KAGGLE_FORM.md`.
 - YouTube upload copy: `submission/YOUTUBE_DESCRIPTION.md`.
@@ -31,10 +32,10 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 
 ```bash
 git status --short
-git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv"
-shasum -a 256 submission/live-demo/kan-debug.apk submission/kan-final-demo-video.mp4 submission/media-gallery-cover.png
-shasum -a 256 -c submission/dist/kan-demo-package-final.zip.sha256
-unzip -l submission/dist/kan-demo-package-final.zip | rg "\\.env|kan-final-demo-video|training_attempt|kan-debug.apk"
+git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/zpk-local-release|unsloth/.venv"
+shasum -a 256 submission/live-demo/zpk-local-release.apk submission/live-demo/zpk-litert-release.apk submission/kan-final-demo-video.mp4 submission/media-gallery-cover.png
+(cd submission/dist && shasum -a 256 -c kan-demo-package-final.zip.sha256)
+unzip -l submission/dist/kan-demo-package-final.zip | rg "\\.env|kan-final-demo-video|training_attempt|zpk-local-release.apk|zpk-litert-release.apk"
 ./scripts/verify_submission.sh
 ./scripts/verify_release_build.sh
 ./scripts/publish_submission.sh --check
@@ -47,6 +48,9 @@ Expected:
 - Git working tree is clean.
 - `.env`, generated ZIPs, APKs, and `.venv` are ignored.
 - The archive contains `.env.example` but not `.env`.
+- The archive contains the auditable Flutter app source under `kan-app/`
+  (`lib/`, `test/`, assets, and minimal Android/iOS project files) without
+  `.dart_tool`, `build`, `local.properties`, Pods, or IDE state.
 - The video is under 180 seconds.
 - The media cover is 1600x900.
 - Release builds do not silently use Android debug signing; without

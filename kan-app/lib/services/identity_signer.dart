@@ -23,23 +23,22 @@ class IdentitySignature {
 
 class LocalHmacIdentitySigner implements IdentitySigner {
   const LocalHmacIdentitySigner({
-    this.issuerKeyId = 'zpk-local-test-issuer-key-2026-05',
-    this.issuerSecret = _testIssuerSecret,
+    required this.issuerKeyId,
+    required this.issuerSecret,
+    this.keyStore = 'dart-local-hmac',
   });
-
-  static const _testIssuerSecret =
-      'zpk-local-test-issuer-secret-not-for-production';
 
   @override
   final String issuerKeyId;
   final String issuerSecret;
+  final String keyStore;
 
   @override
   Future<IdentitySignature> signCanonical(String canonicalPayload) async {
     final hmac = Hmac(sha256, utf8.encode(issuerSecret));
     return IdentitySignature(
       proofValue: hmac.convert(utf8.encode(canonicalPayload)).toString(),
-      keyStore: 'dart-test-hmac',
+      keyStore: keyStore,
       proofSuite: 'HmacSha256Signature2026',
     );
   }

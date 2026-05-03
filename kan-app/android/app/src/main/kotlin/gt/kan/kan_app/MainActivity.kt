@@ -1,13 +1,23 @@
 package gt.kan.kan_app
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.view.WindowManager
+import com.google.ai.edge.litertlm.Backend
+import com.google.ai.edge.litertlm.Content
+import com.google.ai.edge.litertlm.Contents
+import com.google.ai.edge.litertlm.ConversationConfig
+import com.google.ai.edge.litertlm.Engine
+import com.google.ai.edge.litertlm.EngineConfig
+import com.google.ai.edge.litertlm.SamplerConfig
 import com.google.mlkit.genai.common.DownloadStatus
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.Generation
@@ -15,6 +25,8 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
+import java.net.URL
+import java.security.MessageDigest
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -26,21 +38,29 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : FlutterActivity() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var deviceAuthResult: MethodChannel.Result? = null
+    private val litertLock = Any()
+    private var litertEngine: Engine? = null
+    private var litertEngineModelPath: String? = null
 
     companion object {
         private const val AUDIT_ARCHIVE_KEY_ALIAS = "zpk-audit-archive-aes-gcm-2026-05"
         private const val DEVICE_AUTH_REQUEST_CODE = 7301
+        private const val LITERT_GEMMA_MIN_RAM_BYTES = 6_000_000_000L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE,
-        )
+        val isDebuggable = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (!isDebuggable) {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE,
+            )
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -61,6 +81,50 @@ class MainActivity : FlutterActivity() {
                         result.error("INVALID_PROMPT", "Prompt must not be empty.", null)
                     } else {
                         generateOnDevice(prompt, result)
+                    }
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "gt.kan.kan_app/litert_gemma",
+        ).setMethodCallHandler { call, result ->
+            val modelPath = call.argument<String>("modelPath")?.trim()
+            when (call.method) {
+                "status" -> {
+                    val sha256 = call.argument<String>("sha256")?.trim().orEmpty()
+                    checkLiteRtGemmaStatus(modelPath, sha256, result)
+                }
+                "warmup" -> {
+                    val sha256 = call.argument<String>("sha256")?.trim().orEmpty()
+                    if (modelPath.isNullOrEmpty()) {
+                        result.error("MISSING_MODEL_PATH", "modelPath is required.", null)
+                    } else {
+                        warmupLiteRtGemma(modelPath, sha256, result)
+                    }
+                }
+                "generate" -> {
+                    val prompt = call.argument<String>("prompt")?.trim()
+                    val sha256 = call.argument<String>("sha256")?.trim().orEmpty()
+                    if (modelPath.isNullOrEmpty()) {
+                        result.error("MISSING_MODEL_PATH", "modelPath is required.", null)
+                    } else if (prompt.isNullOrEmpty()) {
+                        result.error("INVALID_PROMPT", "Prompt must not be empty.", null)
+                    } else {
+                        generateLiteRtGemma(modelPath, prompt, sha256, result)
+                    }
+                }
+                "downloadModel" -> {
+                    val url = call.argument<String>("url")?.trim()
+                    val sha256 = call.argument<String>("sha256")?.trim().orEmpty()
+                    if (modelPath.isNullOrEmpty()) {
+                        result.error("MISSING_MODEL_PATH", "modelPath is required.", null)
+                    } else if (url.isNullOrEmpty()) {
+                        result.error("MISSING_MODEL_URL", "url is required.", null)
+                    } else {
+                        downloadLiteRtGemmaModel(url, modelPath, sha256, result)
                     }
                 }
                 else -> result.notImplemented()
@@ -128,6 +192,7 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        closeLiteRtEngine()
         scope.cancel()
         super.cleanUpFlutterEngine(flutterEngine)
     }
@@ -307,6 +372,432 @@ class MainActivity : FlutterActivity() {
                 )
             }
         }
+    }
+
+    private fun checkLiteRtGemmaStatus(
+        modelPath: String?,
+        expectedSha256: String,
+        result: MethodChannel.Result,
+    ) {
+        if (modelPath.isNullOrEmpty()) {
+            result.success(
+                mapOf(
+                    "status" to "MISSING_MODEL_PATH",
+                    "model" to "gemma-4-E2B-it-litertlm",
+                ),
+            )
+            return
+        }
+        scope.launch {
+            try {
+                val status = withContext(Dispatchers.IO) {
+                    val modelFile = safeLiteRtModelFile(modelPath)
+                    val partialFile = File(modelFile.parentFile, "${modelFile.name}.part")
+                    val expectedFile = File(modelFile.parentFile, "${modelFile.name}.bytes")
+                    val expectedBytes = expectedFile
+                        .takeIf { it.exists() && it.isFile }
+                        ?.readText(Charsets.UTF_8)
+                        ?.trim()
+                        ?.toLongOrNull()
+                    if (!modelFile.exists() || !modelFile.isFile) {
+                        if (partialFile.exists() && partialFile.isFile) {
+                            return@withContext mapOf(
+                                "status" to "DOWNLOADING",
+                                "model" to "gemma-4-E2B-it-litertlm",
+                                "modelPath" to modelPath,
+                                "partialSizeBytes" to partialFile.length(),
+                                "expectedBytes" to (expectedBytes ?: 0L),
+                            )
+                        }
+                        return@withContext mapOf(
+                            "status" to "MISSING_MODEL",
+                            "model" to "gemma-4-E2B-it-litertlm",
+                            "modelPath" to modelPath,
+                            "expectedBytes" to (expectedBytes ?: 0L),
+                        )
+                    }
+                    val sidecarSha = File(modelFile.parentFile, "${modelFile.name}.sha256")
+                        .takeIf { it.exists() && it.isFile }
+                        ?.readText(Charsets.UTF_8)
+                        ?.trim()
+                    val response = mutableMapOf<String, Any>(
+                        "status" to "AVAILABLE",
+                        "model" to "gemma-4-E2B-it-litertlm",
+                        "modelPath" to modelPath,
+                        "modelSizeBytes" to modelFile.length(),
+                    )
+                    if (expectedSha256.isNotEmpty()) {
+                        val actualSha256 = sidecarSha
+                        response["sha256"] = actualSha256 ?: "not_verified_in_status"
+                        response["sha256Expected"] = expectedSha256
+                        response["hashVerification"] =
+                            if (actualSha256 == null) "deferred_to_install_or_warmup" else "sidecar"
+                        if (
+                            actualSha256 != null &&
+                            !actualSha256.equals(expectedSha256, ignoreCase = true)
+                        ) {
+                            response["status"] = "CORRUPT_MODEL"
+                        }
+                    }
+                    if (response["status"] == "AVAILABLE" && isAndroidEmulator()) {
+                        response["status"] = "EMULATOR_UNSUPPORTED"
+                        response["runtimeGuard"] = "android-emulator-native-litertlm"
+                    }
+                    if (response["status"] == "AVAILABLE" && !hasLiteRtMemoryHeadroom()) {
+                        response["status"] = "DEVICE_LOW_MEMORY"
+                        response["runtimeGuard"] = "android-low-memory-litertlm"
+                        response["deviceRamBytes"] = deviceRamBytes()
+                        response["requiredRamBytes"] = LITERT_GEMMA_MIN_RAM_BYTES
+                    }
+                    response
+                }
+                result.success(status)
+            } catch (error: Throwable) {
+                result.error(
+                    "LITERT_GEMMA_STATUS_ERROR",
+                    error.message ?: error.javaClass.simpleName,
+                    mapOf("type" to error.javaClass.name),
+                )
+            }
+        }
+    }
+
+    private fun warmupLiteRtGemma(
+        modelPath: String,
+        expectedSha256: String,
+        result: MethodChannel.Result,
+    ) {
+        if (isAndroidEmulator()) {
+            result.error(
+                "LITERT_GEMMA_EMULATOR_UNSUPPORTED",
+                "LiteRT-LM Gemma is installed, but Android emulator native generation is disabled to avoid a known LiteRT-LM crash. Use a physical ARM64 device.",
+                mapOf(
+                    "status" to "EMULATOR_UNSUPPORTED",
+                    "model" to "gemma-4-E2B-it-litertlm",
+                ),
+            )
+            return
+        }
+        if (!hasLiteRtMemoryHeadroom()) {
+            result.error(
+                "LITERT_GEMMA_LOW_MEMORY",
+                "This device has ${deviceRamBytes()} bytes of RAM; Gemma 4 E2B LiteRT-LM needs at least $LITERT_GEMMA_MIN_RAM_BYTES bytes for safe local generation.",
+                mapOf(
+                    "status" to "DEVICE_LOW_MEMORY",
+                    "model" to "gemma-4-E2B-it-litertlm",
+                    "deviceRamBytes" to deviceRamBytes(),
+                    "requiredRamBytes" to LITERT_GEMMA_MIN_RAM_BYTES,
+                ),
+            )
+            return
+        }
+        scope.launch {
+            try {
+                val hashVerification = withContext(Dispatchers.IO) {
+                    getOrCreateLiteRtEngine(modelPath, expectedSha256)
+                    engineHashVerification()
+                }
+                result.success(
+                    mapOf(
+                        "status" to "READY",
+                        "model" to "gemma-4-E2B-it-litertlm",
+                        "hashVerification" to hashVerification,
+                    ),
+                )
+            } catch (error: Throwable) {
+                result.error(
+                    "LITERT_GEMMA_WARMUP_ERROR",
+                    error.message ?: error.javaClass.simpleName,
+                    mapOf("type" to error.javaClass.name),
+                )
+            }
+        }
+    }
+
+    private fun generateLiteRtGemma(
+        modelPath: String,
+        prompt: String,
+        expectedSha256: String,
+        result: MethodChannel.Result,
+    ) {
+        if (isAndroidEmulator()) {
+            result.error(
+                "LITERT_GEMMA_EMULATOR_UNSUPPORTED",
+                "LiteRT-LM Gemma generation is disabled on Android emulator because the native runtime crashes during engine creation. Use a physical ARM64 device.",
+                mapOf(
+                    "status" to "EMULATOR_UNSUPPORTED",
+                    "model" to "gemma-4-E2B-it-litertlm",
+                ),
+            )
+            return
+        }
+        if (!hasLiteRtMemoryHeadroom()) {
+            result.error(
+                "LITERT_GEMMA_LOW_MEMORY",
+                "This device has ${deviceRamBytes()} bytes of RAM; Gemma 4 E2B LiteRT-LM needs at least $LITERT_GEMMA_MIN_RAM_BYTES bytes for safe local generation.",
+                mapOf(
+                    "status" to "DEVICE_LOW_MEMORY",
+                    "model" to "gemma-4-E2B-it-litertlm",
+                    "deviceRamBytes" to deviceRamBytes(),
+                    "requiredRamBytes" to LITERT_GEMMA_MIN_RAM_BYTES,
+                ),
+            )
+            return
+        }
+        scope.launch {
+            try {
+                val generation = withContext(Dispatchers.IO) {
+                    val engine = getOrCreateLiteRtEngine(modelPath, expectedSha256)
+                    val conversationConfig = ConversationConfig(
+                        systemInstruction = Contents.of(
+                            "ZPK Digital ID. Solo JSON valido. Sin identificadores.",
+                        ),
+                        samplerConfig = SamplerConfig(
+                            topK = 1,
+                            topP = 1.0,
+                            temperature = 0.0,
+                        ),
+                    )
+                    val text = engine.createConversation(conversationConfig).use { conversation ->
+                        conversation.sendMessage(prompt).contents.contents
+                            .filterIsInstance<Content.Text>()
+                            .joinToString(separator = "") { it.text }
+                            .trim()
+                    }
+                    mapOf(
+                        "text" to text,
+                        "hashVerification" to engineHashVerification(),
+                    )
+                }
+                val text = generation["text"] as String
+                if (text.isEmpty()) {
+                    result.error(
+                        "EMPTY_RESPONSE",
+                        "LiteRT-LM Gemma returned no text.",
+                        mapOf("status" to "AVAILABLE"),
+                    )
+                } else {
+                    result.success(
+                        mapOf(
+                            "text" to text,
+                            "status" to "AVAILABLE",
+                            "model" to "gemma-4-E2B-it-litertlm",
+                            "hashVerification" to generation["hashVerification"],
+                        ),
+                    )
+                }
+            } catch (error: Throwable) {
+                result.error(
+                    "LITERT_GEMMA_ERROR",
+                    error.message ?: error.javaClass.simpleName,
+                    mapOf("type" to error.javaClass.name),
+                )
+            }
+        }
+    }
+
+    private fun downloadLiteRtGemmaModel(
+        url: String,
+        modelPath: String,
+        expectedSha256: String,
+        result: MethodChannel.Result,
+    ) {
+        scope.launch {
+            try {
+                val download = withContext(Dispatchers.IO) {
+                    val target = safeLiteRtModelFile(modelPath)
+                    val temp = File(target.parentFile, "${target.name}.part")
+                    val expectedFile = File(target.parentFile, "${target.name}.bytes")
+                    target.parentFile?.mkdirs()
+
+                    val digest = MessageDigest.getInstance("SHA-256")
+                    var totalBytes = 0L
+                    val connection = URL(url).openConnection().apply {
+                        connectTimeout = 30_000
+                        readTimeout = 60_000
+                    }
+                    val expectedBytes = connection.contentLengthLong.takeIf { it > 0L } ?: 0L
+                    if (expectedBytes > 0L) {
+                        expectedFile.writeText(expectedBytes.toString(), Charsets.UTF_8)
+                    }
+                    connection.getInputStream().use { input ->
+                        temp.outputStream().use { output ->
+                            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                            while (true) {
+                                val read = input.read(buffer)
+                                if (read < 0) {
+                                    break
+                                }
+                                digest.update(buffer, 0, read)
+                                output.write(buffer, 0, read)
+                                totalBytes += read
+                            }
+                        }
+                    }
+                    val actualSha256 = digest.digest().toHex()
+                    if (
+                        expectedSha256.isNotEmpty() &&
+                        !actualSha256.equals(expectedSha256, ignoreCase = true)
+                    ) {
+                        temp.delete()
+                        throw IllegalStateException(
+                            "Downloaded LiteRT-LM model hash mismatch: $actualSha256",
+                        )
+                    }
+                    if (target.exists() && !target.delete()) {
+                        temp.delete()
+                        throw IllegalStateException("Could not replace existing model.")
+                    }
+                    if (!temp.renameTo(target)) {
+                        temp.delete()
+                        throw IllegalStateException("Could not move downloaded model into place.")
+                    }
+                    File(target.parentFile, "${target.name}.sha256")
+                        .writeText(actualSha256, Charsets.UTF_8)
+                    mapOf(
+                        "status" to "AVAILABLE",
+                        "model" to "gemma-4-E2B-it-litertlm",
+                        "modelPath" to target.absolutePath,
+                        "bytes" to totalBytes,
+                        "expectedBytes" to expectedBytes,
+                        "sha256" to actualSha256,
+                    )
+                }
+                result.success(download)
+            } catch (error: Throwable) {
+                result.error(
+                    "LITERT_GEMMA_DOWNLOAD_ERROR",
+                    error.message ?: error.javaClass.simpleName,
+                    mapOf("type" to error.javaClass.name),
+                )
+            }
+        }
+    }
+
+    private fun getOrCreateLiteRtEngine(modelPath: String, expectedSha256: String): Engine {
+        val modelFile = safeLiteRtModelFile(modelPath)
+        require(modelFile.exists() && modelFile.isFile) {
+            "Gemma 4 LiteRT-LM model file does not exist: $modelPath"
+        }
+        val hashVerification = verifyLiteRtModelHashIfNeeded(modelFile, expectedSha256)
+        synchronized(litertLock) {
+            val cached = litertEngine
+            if (cached != null && litertEngineModelPath == modelFile.absolutePath) {
+                litertHashVerification = hashVerification
+                return cached
+            }
+            closeLiteRtEngineLocked()
+            val engineConfig = EngineConfig(
+                modelPath = modelFile.absolutePath,
+                backend = Backend.CPU(numOfThreads = 1),
+                maxNumTokens = 128,
+                cacheDir = File(cacheDir, "litert-lm").absolutePath,
+            )
+            val engine = Engine(engineConfig)
+            engine.initialize()
+            litertEngine = engine
+            litertEngineModelPath = modelFile.absolutePath
+            litertHashVerification = hashVerification
+            return engine
+        }
+    }
+
+    private var litertHashVerification: String = "not_required"
+
+    private fun engineHashVerification(): String = litertHashVerification
+
+    private fun verifyLiteRtModelHashIfNeeded(modelFile: File, expectedSha256: String): String {
+        if (expectedSha256.isEmpty()) {
+            return "not_configured"
+        }
+        val sidecar = File(modelFile.parentFile, "${modelFile.name}.sha256")
+        val sidecarSha = sidecar
+            .takeIf { it.exists() && it.isFile }
+            ?.readText(Charsets.UTF_8)
+            ?.trim()
+        if (sidecarSha != null && sidecarSha.equals(expectedSha256, ignoreCase = true)) {
+            return "sidecar"
+        }
+        val actualSha256 = sha256Of(modelFile)
+        if (!actualSha256.equals(expectedSha256, ignoreCase = true)) {
+            throw IllegalStateException(
+                "LiteRT-LM model hash mismatch: $actualSha256",
+            )
+        }
+        sidecar.writeText(actualSha256, Charsets.UTF_8)
+        return if (sidecarSha == null) "computed" else "computed_sidecar_repaired"
+    }
+
+    private fun safeLiteRtModelFile(modelPath: String): File {
+        val target = File(modelPath)
+        val canonicalTarget = target.canonicalFile
+        val allowedRoots = listOfNotNull(
+            filesDir,
+            getExternalFilesDir(null),
+        ).map { it.canonicalFile }
+        val isAllowed = allowedRoots.any { root ->
+            canonicalTarget.path == root.path ||
+                canonicalTarget.path.startsWith("${root.path}/")
+        }
+        require(isAllowed) {
+            "LiteRT-LM model must be stored under app-private internal or external files directory."
+        }
+        return canonicalTarget
+    }
+
+    private fun isAndroidEmulator(): Boolean {
+        val fingerprint = Build.FINGERPRINT.lowercase()
+        val model = Build.MODEL.lowercase()
+        val product = Build.PRODUCT.lowercase()
+        val hardware = Build.HARDWARE.lowercase()
+        val manufacturer = Build.MANUFACTURER.lowercase()
+        return fingerprint.contains("generic") ||
+            fingerprint.contains("sdk_gphone") ||
+            model.contains("sdk_gphone") ||
+            model.contains("emulator") ||
+            product.contains("sdk_gphone") ||
+            product.contains("emulator") ||
+            hardware.contains("ranchu") ||
+            hardware.contains("goldfish") ||
+            manufacturer.contains("genymotion")
+    }
+
+    private fun hasLiteRtMemoryHeadroom(): Boolean =
+        deviceRamBytes() >= LITERT_GEMMA_MIN_RAM_BYTES
+
+    private fun deviceRamBytes(): Long {
+        val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val memoryInfo = ActivityManager.MemoryInfo()
+        activityManager.getMemoryInfo(memoryInfo)
+        return memoryInfo.totalMem
+    }
+
+    private fun sha256Of(file: File): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        file.inputStream().use { input ->
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            while (true) {
+                val read = input.read(buffer)
+                if (read < 0) {
+                    break
+                }
+                digest.update(buffer, 0, read)
+            }
+        }
+        return digest.digest().toHex()
+    }
+
+    private fun closeLiteRtEngine() {
+        synchronized(litertLock) {
+            closeLiteRtEngineLocked()
+        }
+    }
+
+    private fun closeLiteRtEngineLocked() {
+        litertEngine?.close()
+        litertEngine = null
+        litertEngineModelPath = null
+        litertHashVerification = "not_required"
     }
 
     private fun signIdentityPayload(

@@ -11,7 +11,78 @@ abstract interface class KanReasoner {
   });
 }
 
-class FallbackReasoner implements KanReasoner {
+abstract interface class ReasonerRuntimeProbe {
+  Future<ReasonerRuntimeStatus> runtimeStatus();
+}
+
+abstract interface class ReasonerRuntimeInstaller {
+  Future<ReasonerRuntimeInstallResult> installRuntimeAssets();
+}
+
+abstract interface class ReasonerRuntimeSelfTester {
+  Future<ReasonerRuntimeSelfTestResult> runRuntimeSelfTest();
+}
+
+class ReasonerRuntimeStatus {
+  const ReasonerRuntimeStatus({
+    required this.label,
+    required this.state,
+    required this.summary,
+    required this.isOfflineCapable,
+    required this.isModelBacked,
+    required this.trace,
+    this.downloadedBytes,
+    this.totalBytes,
+  });
+
+  final String label;
+  final String state;
+  final String summary;
+  final bool isOfflineCapable;
+  final bool isModelBacked;
+  final List<String> trace;
+  final int? downloadedBytes;
+  final int? totalBytes;
+}
+
+class ReasonerRuntimeSelfTestResult {
+  const ReasonerRuntimeSelfTestResult({
+    required this.label,
+    required this.status,
+    required this.summary,
+    required this.trace,
+  });
+
+  final String label;
+  final String status;
+  final String summary;
+  final List<String> trace;
+}
+
+class ReasonerRuntimeInstallResult {
+  const ReasonerRuntimeInstallResult({
+    required this.label,
+    required this.status,
+    required this.summary,
+    required this.trace,
+    this.downloadedBytes,
+    this.totalBytes,
+  });
+
+  final String label;
+  final String status;
+  final String summary;
+  final List<String> trace;
+  final int? downloadedBytes;
+  final int? totalBytes;
+}
+
+class FallbackReasoner
+    implements
+        KanReasoner,
+        ReasonerRuntimeProbe,
+        ReasonerRuntimeInstaller,
+        ReasonerRuntimeSelfTester {
   const FallbackReasoner({
     required this.primary,
     required this.fallback,
@@ -59,6 +130,106 @@ class FallbackReasoner implements KanReasoner {
     final message = error.toString().replaceAll(RegExp(r'\s+'), ' ').trim();
     final detail = message.isEmpty ? error.runtimeType.toString() : message;
     return detail.length <= 140 ? detail : '${detail.substring(0, 137)}...';
+  }
+
+  @override
+  Future<ReasonerRuntimeStatus> runtimeStatus() async {
+    if (primary case final ReasonerRuntimeProbe probe) {
+      try {
+        final status = await probe.runtimeStatus().timeout(
+          const Duration(seconds: 6),
+        );
+        final fallbackStatus = await _fallbackRuntimeStatus();
+        final fallbackReady =
+            fallbackStatus != null && fallbackStatus.isOfflineCapable;
+        final primaryReady = status.isOfflineCapable;
+        final includeFallback = !primaryReady && fallbackStatus != null;
+        return ReasonerRuntimeStatus(
+          label: status.label,
+          state: status.state,
+          summary: includeFallback && fallbackReady
+              ? '${status.summary} Respaldo offline disponible: ${fallbackStatus.summary}'
+              : status.summary,
+          isOfflineCapable: primaryReady || fallbackReady,
+          isModelBacked: status.isModelBacked,
+          trace: [
+            'reasoner_runtime($primaryLabel) -> ${status.state}',
+            ...status.trace,
+            if (includeFallback) ...fallbackStatus.trace,
+          ],
+          downloadedBytes: status.downloadedBytes,
+          totalBytes: status.totalBytes,
+        );
+      } catch (error) {
+        final fallbackStatus =
+            await _fallbackRuntimeStatus() ??
+            const ReasonerRuntimeStatus(
+              label: 'Local fallback',
+              state: 'READY',
+              summary: 'Agente local disponible como respaldo.',
+              isOfflineCapable: true,
+              isModelBacked: false,
+              trace: ['reasoner_runtime(fallback) -> ready'],
+            );
+        final detail = _describeError(error);
+        return ReasonerRuntimeStatus(
+          label: primaryLabel,
+          state: 'PRIMARY_NOT_READY',
+          summary:
+              'Gemma 4 todavia no esta listo: $detail. Respaldo disponible: ${fallbackStatus.summary}',
+          isOfflineCapable: fallbackStatus.isOfflineCapable,
+          isModelBacked: true,
+          trace: [
+            'reasoner_runtime($primaryLabel) -> primary_not_ready: $detail',
+            ...fallbackStatus.trace,
+          ],
+        );
+      }
+    }
+    if (fallback case final ReasonerRuntimeProbe probe) {
+      return probe.runtimeStatus();
+    }
+    return const ReasonerRuntimeStatus(
+      label: 'Agente local',
+      state: 'READY',
+      summary: 'Agente local disponible.',
+      isOfflineCapable: true,
+      isModelBacked: false,
+      trace: ['reasoner_runtime(local) -> ready'],
+    );
+  }
+
+  Future<ReasonerRuntimeStatus?> _fallbackRuntimeStatus() async {
+    if (fallback case final ReasonerRuntimeProbe probe) {
+      return probe.runtimeStatus();
+    }
+    return null;
+  }
+
+  @override
+  Future<ReasonerRuntimeInstallResult> installRuntimeAssets() async {
+    if (primary case final ReasonerRuntimeInstaller installer) {
+      return installer.installRuntimeAssets();
+    }
+    return const ReasonerRuntimeInstallResult(
+      label: 'Agente local ZPK',
+      status: 'NOT_REQUIRED',
+      summary: 'El motor local deterministico no necesita instalar modelo.',
+      trace: ['reasoner_install(local) -> not_required'],
+    );
+  }
+
+  @override
+  Future<ReasonerRuntimeSelfTestResult> runRuntimeSelfTest() async {
+    if (primary case final ReasonerRuntimeSelfTester selfTester) {
+      return selfTester.runRuntimeSelfTest().timeout(timeout);
+    }
+    return const ReasonerRuntimeSelfTestResult(
+      label: 'Agente local ZPK',
+      status: 'NOT_SUPPORTED',
+      summary: 'El motor actual no expone una prueba nativa de modelo.',
+      trace: ['reasoner_self_test(local) -> not_supported'],
+    );
   }
 }
 
@@ -110,6 +281,10 @@ recuperacion segura de identidad en Guatemala.
 Tu meta es ayudar a una persona a defender su identidad digital sin filtrar CUI,
 DPI, telefono, direccion ni evidencia privada. Piensa como un sistema nacional
 que puede repetirse en Guatemala y otros paises de America Latina.
+El producto no es un chatbot general: decide rutas y ejecuta herramientas
+locales para recuperacion de identidad, extorsion, fraude economico,
+registro IGSS, acceso SAT, inscripcion educativa, autenticacion, revocacion y
+auditoria cifrada.
 
 Reglas aprendidas por experiencia:
 ${experiencePrior.map((rule) => '- $rule').join('\n')}
@@ -117,13 +292,13 @@ ${experiencePrior.map((rule) => '- $rule').join('\n')}
 ${assessment.toPromptBlock()}
 
 Infraestructura local de identidad:
-- emisor_demo: ${trustReport.credential.issuer}
+- emisor_local: ${trustReport.credential.issuer}
 - pseudonimo_ciudadano: emitido_localmente
 - nivel_aseguramiento: ${trustReport.credential.assuranceLevel}
 - consentimiento: ${trustReport.consentGrant.scope}
 - prueba_local: firmada_en_dispositivo
 - did_local: did:zpk:gt:<redacted-local-id>
-- credencial_verificable_demo: ${trustReport.verifiableCredential['type']}
+- credencial_verificable_local: ${trustReport.verifiableCredential['type']}
 - divulgacion_selectiva: ${selectiveClaims.join(', ')}
 - recuperacion: ${trustReport.recoveryStatus}
 - paquete_institucional:
@@ -131,6 +306,8 @@ ${institutionPacket.map((item) => '  - $item').join('\n')}
 
 Caso:
 - flujo: ${scenario.label}
+- mision: ${scenario.mission}
+- institucion_objetivo: ${scenario.institutionName}
 - cui_valido: ${result.isValidCui}
 - coincidencias_locales: ${result.matches.length}
 - brechas:

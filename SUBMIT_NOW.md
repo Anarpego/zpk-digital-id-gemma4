@@ -49,7 +49,7 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 ## 4. Hashes To Confirm Uploads
 
 - ZIP: see `submission/dist/kan-demo-package-final.zip.sha256`
-- APK: see `submission/live-demo/kan-debug.apk.sha256`
+- APK: see `submission/live-demo/zpk-local-release.apk.sha256`
 - Video: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
 - Cover PNG: `15ba1a8f5037973ce6b0c76defdfd05bee438d2f8ddf15393cc75070e4a6f2b6`
 
@@ -66,11 +66,12 @@ Claim strongly:
 Claim cautiously:
 
 - Cactus: partial local-inference/routing evidence only.
-- ML Kit/AICore: integration and fallback evidence only.
+- ML Kit/AICore: integration and fallback evidence only on the available emulator.
+- Offline Gemma 4: claim Mac LiteRT-LM and iOS/Apple Silicon FlutterGemma evidence; claim Android LiteRT bridge/model-install/low-memory guard, not G15 generation.
 
 Do not claim:
 
-- Successful offline/on-device Gemma 4 generation.
+- Successful Android in-app Gemma 4 generation on the Motorola G15.
 - Completed Unsloth adapter or RL fine-tune.
 - Real government integration, hardware-backed key custody on every possible citizen device, or standards certification.
 - Production legal advice.

@@ -9,7 +9,7 @@ a relying-party authentication proof, not only registration and recovery.
 
 - Added `LocalAuthenticationService`.
 - The app can issue a signed local authentication proof for
-  `municipalidad-guatemala-demo`.
+  `municipalidad-guatemala`.
 - Relying parties are checked against a local allowlist before proof issuance
   and again during proof verification.
 - Proof issuance now requires Android device-presence confirmation through
@@ -73,7 +73,7 @@ Coverage:
   verifier-side policy validation.
 - Rejects an expired authentication packet.
 - Rejects new authentication proof issuance after local revocation.
-- Widget flow exposes `Probar autenticacion local`, then shows
+- Widget flow exposes `Emitir prueba local`, then shows
   `auth.sign(...)` and `auth.verify(local) -> ok`.
 - Widget flow revokes the local credential and then shows
   `auth.blocked(revocation) -> credential_revoked`.

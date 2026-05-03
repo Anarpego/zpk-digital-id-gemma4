@@ -28,14 +28,44 @@ void main() {
     expect(decision.confidence, greaterThan(0.90));
   });
 
-  test('suspicion without local match recommends abstract server route', () {
+  test('suspicion without local match stays on local model route', () {
     final decision = policy.decide(
       result: LocalBreachCatalog().verify('1111111111111'),
       scenario: CaseScenario.suspicion,
     );
 
-    expect(decision.route, InferenceRoute.abstractServer);
+    expect(decision.route, InferenceRoute.localGemma);
     expect(decision.sendsPersonalData, isFalse);
-    expect(decision.confidence, lessThan(0.70));
+    expect(decision.confidence, greaterThan(0.70));
+  });
+
+  test('institutional scale cases stay on local Gemma route', () {
+    for (final scenario in [
+      CaseScenario.publicServiceBreach,
+      CaseScenario.igssRegistration,
+      CaseScenario.satTaxAccess,
+      CaseScenario.schoolEnrollment,
+      CaseScenario.fieldAccess,
+      CaseScenario.violenceCoercion,
+    ]) {
+      final decision = policy.decide(
+        result: LocalBreachCatalog().verify('1111111111111'),
+        scenario: scenario,
+      );
+
+      expect(decision.route, InferenceRoute.localGemma);
+      expect(decision.sendsPersonalData, isFalse);
+    }
+  });
+
+  test('institution intake can run without CUI', () {
+    final decision = policy.decide(
+      result: LocalBreachCatalog().verify(''),
+      scenario: CaseScenario.igssRegistration,
+    );
+
+    expect(decision.route, InferenceRoute.localGemma);
+    expect(decision.sendsPersonalData, isFalse);
+    expect(decision.reason, contains('sin emitir credencial real'));
   });
 }

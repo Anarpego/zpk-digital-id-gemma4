@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'config/app_config.dart';
-import 'features/demo/home_screen.dart';
+import 'features/identity_wallet/home_screen.dart';
 import 'services/audit_archive.dart';
 import 'services/local_authentication_service.dart';
 import 'services/digital_identity_fabric.dart';

@@ -4,6 +4,8 @@ import 'package:kan_app/services/kan_reasoner.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
 import 'package:kan_app/services/privacy_guard.dart';
 
+import '../test_identity_fabric.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -13,6 +15,7 @@ void main() {
     final prompt = await const ReasonerPromptBuilder().build(
       result: result,
       scenario: CaseScenario.discoveredVictim,
+      identityFabric: testIdentityFabric,
     );
 
     expect(prompt, contains('Reglas aprendidas por experiencia'));

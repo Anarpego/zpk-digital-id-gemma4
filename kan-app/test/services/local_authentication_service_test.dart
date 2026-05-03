@@ -1,7 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+
+import '../test_identity_fabric.dart';
 import 'package:kan_app/models/kan_case.dart';
 import 'package:kan_app/services/device_presence_gate.dart';
-import 'package:kan_app/services/digital_identity_fabric.dart';
 import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/local_authentication_service.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
@@ -16,13 +17,14 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final trustReport = await const DigitalIdentityFabric().evaluate(
+    final trustReport = await testIdentityFabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
     );
 
     final service = LocalAuthenticationService(
+      identityFabric: testIdentityFabric,
       fixedNow: DateTime.utc(2026, 5, 1, 12),
       devicePresenceGate: const BypassDevicePresenceGate(),
     );
@@ -32,7 +34,7 @@ void main() {
       trustReport: trustReport,
     );
 
-    expect(proof.relyingParty, 'municipalidad-guatemala-demo');
+    expect(proof.relyingParty, 'municipalidad-guatemala');
     expect(proof.challenge, startsWith('zpk-auth-'));
     expect(proof.pseudonymousId, startsWith('zpk-gt-'));
     expect(proof.issuedAt, DateTime.utc(2026, 5, 1, 12));
@@ -76,13 +78,14 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final trustReport = await const DigitalIdentityFabric().evaluate(
+    final trustReport = await testIdentityFabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
     );
     final proof =
         await const LocalAuthenticationService(
+          identityFabric: testIdentityFabric,
           devicePresenceGate: BypassDevicePresenceGate(),
         ).buildProof(
           result: result,
@@ -94,6 +97,7 @@ void main() {
 
     expect(
       await const LocalAuthenticationService(
+        identityFabric: testIdentityFabric,
         devicePresenceGate: BypassDevicePresenceGate(),
       ).verifySharePacket(tampered),
       isFalse,
@@ -110,7 +114,7 @@ void main() {
         result: result,
         scenario: CaseScenario.discoveredVictim,
       );
-      final trustReport = await const DigitalIdentityFabric().evaluate(
+      final trustReport = await testIdentityFabric.evaluate(
         result: result,
         scenario: CaseScenario.discoveredVictim,
         assessment: assessment,
@@ -118,12 +122,13 @@ void main() {
 
       await expectLater(
         const LocalAuthenticationService(
+          identityFabric: testIdentityFabric,
           devicePresenceGate: BypassDevicePresenceGate(),
         ).buildProof(
           result: result,
           scenario: CaseScenario.discoveredVictim,
           trustReport: trustReport,
-          relyingParty: 'unknown-institution-demo',
+          relyingParty: 'unknown-institution',
         ),
         throwsStateError,
       );
@@ -138,7 +143,7 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final trustReport = await const DigitalIdentityFabric().evaluate(
+    final trustReport = await testIdentityFabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
@@ -146,6 +151,7 @@ void main() {
 
     await expectLater(
       const LocalAuthenticationService(
+        identityFabric: testIdentityFabric,
         devicePresenceGate: _DeniedDevicePresenceGate(),
       ).buildProof(
         result: result,
@@ -164,17 +170,18 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final trustReport = await const DigitalIdentityFabric().evaluate(
+    final trustReport = await testIdentityFabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
     );
     final permissiveService = LocalAuthenticationService(
+      identityFabric: testIdentityFabric,
       fixedNow: DateTime.utc(2026, 5, 1, 12),
       devicePresenceGate: const BypassDevicePresenceGate(),
       relyingPartyPolicy: const RelyingPartyPolicy(
         allowedParties: {
-          'unknown-institution-demo': ['identity_recovery'],
+          'unknown-institution': ['identity_recovery'],
         },
       ),
     );
@@ -182,11 +189,12 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
       trustReport: trustReport,
-      relyingParty: 'unknown-institution-demo',
+      relyingParty: 'unknown-institution',
     );
 
     expect(
       await LocalAuthenticationService(
+        identityFabric: testIdentityFabric,
         fixedNow: DateTime.utc(2026, 5, 1, 12),
         devicePresenceGate: const BypassDevicePresenceGate(),
       ).verifySharePacket(proof.sharePacket),
@@ -202,13 +210,14 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final trustReport = await const DigitalIdentityFabric().evaluate(
+    final trustReport = await testIdentityFabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
     );
     final proof =
         await LocalAuthenticationService(
+          identityFabric: testIdentityFabric,
           fixedNow: DateTime.utc(2026, 5, 1, 12),
           devicePresenceGate: const BypassDevicePresenceGate(),
         ).buildProof(
@@ -219,6 +228,7 @@ void main() {
 
     expect(
       await LocalAuthenticationService(
+        identityFabric: testIdentityFabric,
         fixedNow: DateTime.utc(2026, 5, 1, 12, 6),
         devicePresenceGate: const BypassDevicePresenceGate(),
       ).verifySharePacket(proof.sharePacket),
@@ -227,7 +237,7 @@ void main() {
   });
 
   test('does not issue authentication proof after local revocation', () async {
-    final identityFabric = const DigitalIdentityFabric();
+    final identityFabric = testIdentityFabric;
     final result = LocalBreachCatalog(
       now: DateTime.utc(2026, 5, 1),
     ).verify('1234567890101');
@@ -252,6 +262,7 @@ void main() {
 
     await expectLater(
       const LocalAuthenticationService(
+        identityFabric: testIdentityFabric,
         devicePresenceGate: BypassDevicePresenceGate(),
       ).buildProof(
         result: result,

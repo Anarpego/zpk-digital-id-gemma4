@@ -6,9 +6,11 @@
 cd kan-app
 flutter pub get
 flutter test
-flutter build apk --debug
-flutter emulators --launch Medium_Phone_API_36.1
-adb install -r build/app/outputs/flutter-apk/app-debug.apk
+flutter build apk --release --split-per-abi
+cd ..
+# Requires ZPK_RELEASE_* signing variables for the public APKs.
+./scripts/package_demo.sh
+adb install -r submission/live-demo/zpk-local-release.apk
 adb shell monkey -p gt.kan.kan_app 1
 ```
 

@@ -56,7 +56,7 @@ class IdentityTrustReport {
 
 class DigitalIdentityFabric {
   const DigitalIdentityFabric({
-    IdentitySigner signer = const LocalHmacIdentitySigner(),
+    IdentitySigner signer = const DeviceKeystoreIdentitySigner(),
   }) : _signer = signer;
 
   const DigitalIdentityFabric.device()
@@ -75,13 +75,20 @@ class DigitalIdentityFabric {
     required CaseScenario scenario,
     required IdentityAgentAssessment assessment,
   }) async {
-    final pseudonym = await _stablePseudonym(result.cui);
+    final pseudonym = await _stablePseudonym(result.cui, scenario);
     final risk = assessment.riskLevel.label;
-    final registryState = result.isValidCui ? 'format_verified' : 'blocked';
+    final registryState = result.isValidCui
+        ? 'format_verified'
+        : scenario.allowsNoCui
+        ? 'intake_checklist_no_cui'
+        : 'blocked';
     final did = 'did:zpk:gt:$pseudonym';
     final issuedAt = result.checkedAt.toUtc().toIso8601String();
     final recoveryStatus = switch (assessment.riskLevel) {
       IdentityRiskLevel.blocked => 'No se emite credencial hasta corregir CUI.',
+      IdentityRiskLevel.medium
+          when !result.isValidCui && scenario.allowsNoCui =>
+        'Modo sin CUI: se emite guia de intake y paquete institucional limitado, no credencial de identidad.',
       IdentityRiskLevel.low =>
         'Identidad preventiva: credencial local lista, sin alerta activa.',
       IdentityRiskLevel.medium =>
@@ -127,10 +134,12 @@ class DigitalIdentityFabric {
         issuer: 'ZPK Digital ID Local Trust Fabric',
         assuranceLevel: result.isExposed
             ? 'alto_riesgo_verificado'
+            : !result.isValidCui && scenario.allowsNoCui
+            ? 'intake_sin_cui'
             : 'basico_local',
       ),
       consentGrant: ConsentGrant(
-        relyingParty: 'institucion_autorizada_demo',
+        relyingParty: 'institucion_autorizada',
         scope: 'identity_recovery:$risk:${scenario.shortCode}',
         expiresInMinutes: 15,
         localProof: proofValue,
@@ -141,7 +150,7 @@ class DigitalIdentityFabric {
         'verificationMethod': [
           {
             'id': '$did#device-key',
-            'type': 'LocalDemoKey2026',
+            'type': 'LocalDeviceKey2026',
             'controller': did,
           },
         ],
@@ -156,6 +165,8 @@ class DigitalIdentityFabric {
       recoveryStatus: recoveryStatus,
       institutionPacket: [
         'CUI completo: retenido en dispositivo',
+        if (!result.isValidCui && scenario.allowsNoCui)
+          'CUI no disponible: solo checklist e intake presencial',
         'Pseudonimo ciudadano: $pseudonym',
         'Riesgo: $risk',
         'Coincidencias locales: ${result.matches.length}',
@@ -199,8 +210,12 @@ class DigitalIdentityFabric {
     return proofValue == expectedSignature.proofValue;
   }
 
-  Future<String> _stablePseudonym(String cui) async {
+  Future<String> _stablePseudonym(String cui, CaseScenario scenario) async {
     if (cui.length != 13) {
+      if (scenario.allowsNoCui) {
+        final token = await _stableToken('no-cui:${scenario.shortCode}');
+        return 'zpk-gt-intake-${token.substring(0, 12)}';
+      }
       return 'zpk-gt-invalid';
     }
     return 'zpk-gt-${(await _stableToken(cui)).substring(0, 16)}';

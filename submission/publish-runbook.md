@@ -17,8 +17,8 @@ Expected:
 ## Secret Audit
 
 ```bash
-git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv"
-git diff --cached --name-only | rg "\\.env$|submission/dist|submission/live-demo/kan-debug|unsloth/.venv|build/"
+git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/zpk-local-release|unsloth/.venv"
+git diff --cached --name-only | rg "\\.env$|submission/dist|submission/live-demo/zpk-local-release|unsloth/.venv|build/"
 ```
 
 Expected:

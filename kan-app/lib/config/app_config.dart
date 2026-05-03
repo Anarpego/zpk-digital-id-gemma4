@@ -1,4 +1,11 @@
-enum ReasonerMode { local, cactus, gemmaHosted, mlKitGemma }
+enum ReasonerMode {
+  local,
+  cactus,
+  gemmaHosted,
+  mlKitGemma,
+  litertGemma,
+  flutterGemma4,
+}
 
 class AppConfig {
   const AppConfig({
@@ -9,6 +16,13 @@ class AppConfig {
     required this.geminiApiKey,
     required this.geminiModel,
     required this.mlKitTimeoutSeconds,
+    required this.litertModelPath,
+    required this.litertModelUrl,
+    required this.litertModelSha256,
+    required this.litertTimeoutSeconds,
+    required this.flutterGemmaModelUrl,
+    required this.flutterGemmaModelId,
+    required this.flutterGemmaTimeoutSeconds,
   });
 
   const AppConfig.fromEnvironment()
@@ -28,6 +42,18 @@ class AppConfig {
                 ) ==
                 'mlkit-gemma'
           ? ReasonerMode.mlKitGemma
+          : const String.fromEnvironment(
+                  'KAN_REASONER',
+                  defaultValue: 'local',
+                ) ==
+                'litert-gemma'
+          ? ReasonerMode.litertGemma
+          : const String.fromEnvironment(
+                  'KAN_REASONER',
+                  defaultValue: 'local',
+                ) ==
+                'flutter-gemma4'
+          ? ReasonerMode.flutterGemma4
           : ReasonerMode.local,
       cactusModel = const String.fromEnvironment(
         'KAN_CACTUS_MODEL',
@@ -49,6 +75,26 @@ class AppConfig {
       mlKitTimeoutSeconds = const int.fromEnvironment(
         'KAN_MLKIT_TIMEOUT_SECONDS',
         defaultValue: 120,
+      ),
+      litertModelPath = const String.fromEnvironment('KAN_LITERT_MODEL_PATH'),
+      litertModelUrl = const String.fromEnvironment('KAN_LITERT_MODEL_URL'),
+      litertModelSha256 = const String.fromEnvironment(
+        'KAN_LITERT_MODEL_SHA256',
+      ),
+      litertTimeoutSeconds = const int.fromEnvironment(
+        'KAN_LITERT_TIMEOUT_SECONDS',
+        defaultValue: 180,
+      ),
+      flutterGemmaModelUrl = const String.fromEnvironment(
+        'KAN_FLUTTER_GEMMA_MODEL_URL',
+      ),
+      flutterGemmaModelId = const String.fromEnvironment(
+        'KAN_FLUTTER_GEMMA_MODEL_ID',
+        defaultValue: 'gemma-4-E2B-it.litertlm',
+      ),
+      flutterGemmaTimeoutSeconds = const int.fromEnvironment(
+        'KAN_FLUTTER_GEMMA_TIMEOUT_SECONDS',
+        defaultValue: 300,
       );
 
   final ReasonerMode reasonerMode;
@@ -58,11 +104,20 @@ class AppConfig {
   final String geminiApiKey;
   final String geminiModel;
   final int mlKitTimeoutSeconds;
+  final String litertModelPath;
+  final String litertModelUrl;
+  final String litertModelSha256;
+  final int litertTimeoutSeconds;
+  final String flutterGemmaModelUrl;
+  final String flutterGemmaModelId;
+  final int flutterGemmaTimeoutSeconds;
 
   String get label => switch (reasonerMode) {
     ReasonerMode.local => 'Local deterministic',
     ReasonerMode.cactus => 'Cactus local',
     ReasonerMode.gemmaHosted => 'Gemma 4 API',
     ReasonerMode.mlKitGemma => 'ML Kit Gemma local',
+    ReasonerMode.litertGemma => 'LiteRT-LM Gemma 4 local',
+    ReasonerMode.flutterGemma4 => 'Flutter Gemma 4 local',
   };
 }

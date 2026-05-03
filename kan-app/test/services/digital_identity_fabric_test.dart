@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+
+import '../test_identity_fabric.dart';
 import 'package:kan_app/models/kan_case.dart';
-import 'package:kan_app/services/digital_identity_fabric.dart';
 import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
 
@@ -11,7 +12,7 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final report = await const DigitalIdentityFabric().evaluate(
+    final report = await testIdentityFabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
@@ -25,7 +26,7 @@ void main() {
       contains('HmacSha256Signature2026'),
     );
     expect(
-      await const DigitalIdentityFabric().verifyCredential(
+      await testIdentityFabric.verifyCredential(
         verifiableCredential: report.verifiableCredential,
       ),
       isTrue,
@@ -47,7 +48,7 @@ void main() {
     expect(
       report.trace,
       contains(
-        'trust_fabric.keystore(dart-test-hmac) -> zpk-local-test-issuer-key-2026-05',
+        'trust_fabric.keystore(dart-test-hmac) -> zpk-test-issuer-key-2026-05',
       ),
     );
     expect(
@@ -68,7 +69,7 @@ void main() {
       result: result,
       scenario: CaseScenario.discoveredVictim,
     );
-    final report = await const DigitalIdentityFabric().evaluate(
+    final report = await testIdentityFabric.evaluate(
       result: result,
       scenario: CaseScenario.discoveredVictim,
       assessment: assessment,
@@ -80,9 +81,7 @@ void main() {
     };
 
     expect(
-      await const DigitalIdentityFabric().verifyCredential(
-        verifiableCredential: tampered,
-      ),
+      await testIdentityFabric.verifyCredential(verifiableCredential: tampered),
       isFalse,
     );
   });

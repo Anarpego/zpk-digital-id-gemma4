@@ -1,7 +1,7 @@
 {
-  "title": "ZPK Digital ID Gemma 4 Good Demo Package",
-  "subtitle": "Android-first identity registration and recovery demo, video, evidence, and submission files",
-  "description": "ZPK Digital ID is a local-first Android identity wallet for Guatemalan citizens. This dataset contains the demo ZIP, final narrated video, writeup, evidence, and reproducibility files for the Gemma 4 Good Hackathon submission. It uses synthetic data only and includes no API keys.",
+  "title": "ZPK Digital ID Gemma 4 Good Submission Package",
+  "subtitle": "Android-first identity registration and recovery app, video, evidence, and submission files",
+  "description": "ZPK Digital ID is a local-first Android identity wallet for Guatemalan citizens. This dataset contains the submission ZIP, final narrated video, writeup, evidence, and reproducibility files for the Gemma 4 Good Hackathon submission. It uses synthetic data only and includes no API keys.",
   "id": "KAGGLE_USERNAME/kan-gemma4-good-demo",
   "licenses": [
     {
@@ -18,15 +18,15 @@
   "resources": [
     {
       "path": "kan-demo-package-final.zip",
-      "description": "Downloadable demo package with APK, static demo page, final video, evidence, screenshots, and Unsloth scaffold."
+      "description": "Downloadable submission package with APK, static artifact page, final video, evidence, screenshots, and adaptation pipeline."
     },
     {
       "path": "kan-demo-package-final.zip.sha256",
-      "description": "SHA-256 checksum for the downloadable demo package."
+      "description": "SHA-256 checksum for the downloadable submission package."
     },
     {
       "path": "kan-final-demo-video.mp4",
-      "description": "Narrated demo video under 3 minutes."
+      "description": "Narrated final video under 3 minutes."
     },
     {
       "path": "media-gallery-cover.png",

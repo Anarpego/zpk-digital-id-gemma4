@@ -18,7 +18,7 @@ In Guatemala, digital identity must work even when institutions, aid programs, o
 Visual: app home screen, `Wallet local`, synthetic CUI `1234567890101`.
 
 Voiceover:
-The demo uses synthetic data only. A citizen enters a test CUI, and ZPK registers a pseudonymous identity on the device. The raw CUI is not sent to a server.
+The submitted app uses synthetic data only. A citizen enters a test CUI, and ZPK registers a pseudonymous identity on the device. The raw CUI is not sent to a server.
 
 ## 0:50-1:20 Action
 
@@ -36,10 +36,10 @@ For richer reasoning, ZPK has a hosted Gemma 4 mode verified with `gemma-4-31b-i
 
 ## 1:55-2:20 Cactus And Adaptation
 
-Visual: Cactus local metrics screenshot, Unsloth scaffold files.
+Visual: Cactus local metrics screenshot, Gemma 4 adaptation pipeline files.
 
 Voiceover:
-The app also integrates Cactus for local model routing. Current Cactus evidence shows local inference metrics on Android, while tool-calling remains a known limitation. For adaptation, ZPK includes a Training-Free GRPO-style experience prior and an Unsloth fine-tuning scaffold for Guatemalan legal Spanish.
+The app also integrates Cactus for local model routing. Current Cactus evidence shows local inference metrics on Android, while tool-calling remains a known limitation. For adaptation, ZPK includes a Training-Free GRPO-style experience prior, 12,000 validated synthetic SFT examples, 1,200 RLKD-style teacher traces, SFT/QLoRA code, and GRPO rewards for Guatemalan legal Spanish.
 
 ## 2:20-2:50 Impact
 

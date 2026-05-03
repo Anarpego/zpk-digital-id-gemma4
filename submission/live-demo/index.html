@@ -66,8 +66,10 @@
       <h1>ZPK Digital ID</h1>
       <p>Local-first identity registration and recovery for Guatemalan citizens. This downloadable Android app creates a pseudonymous ZPK identity, checks synthetic CUI risk, issues a signed authentication proof, encrypts a local audit receipt, and prepares a redacted recovery packet on device.</p>
       <div class="actions">
-        <a class="button" href="kan-debug.apk">Download Android APK</a>
-        <a class="button secondary" href="kan-debug.apk.sha256">APK SHA-256</a>
+        <a class="button" href="zpk-local-release.apk">Download Local APK</a>
+        <a class="button" href="zpk-litert-release.apk">Download LiteRT APK</a>
+        <a class="button secondary" href="zpk-local-release.apk.sha256">APK SHA-256</a>
+        <a class="button secondary" href="zpk-litert-release.apk.sha256">LiteRT SHA-256</a>
         <a class="button secondary" href="../kan-final-demo-video.mp4">Final demo video</a>
         <a class="button secondary" href="../video-raw/zpk-demo-flow.mp4">Raw demo footage</a>
       </div>
@@ -75,8 +77,10 @@
     <main>
       <section>
         <h2>Install</h2>
-        <p>Use an Android emulator or connected Android device.</p>
-        <pre><code>adb install -r kan-debug.apk
+        <p>Use an Android emulator or connected Android device. The local APK is the reliable judging flow; the LiteRT APK starts in offline Gemma mode for physical-device testing.</p>
+        <pre><code>adb install -r zpk-local-release.apk
+adb shell monkey -p gt.kan.kan_app 1</code></pre>
+        <pre><code>adb install -r zpk-litert-release.apk
 adb shell monkey -p gt.kan.kan_app 1</code></pre>
         <p>Use synthetic CUI <code>1234567890101</code> for the main flow.</p>
       </section>
@@ -88,6 +92,7 @@ adb shell monkey -p gt.kan.kan_app 1</code></pre>
           <li>DID-style document, verifiable-credential-style recovery credential, and selective disclosure claims.</li>
           <li>Local Spanish guidance and preliminary complaint generation.</li>
           <li>Visible traces for catalog lookup, privacy routing, signed authentication proof, consent proof, signed revocation, encrypted audit storage, and redacted institutional packet.</li>
+          <li>Signed ARM64 LiteRT APK with offline Gemma runtime status, install action, copyable diagnostics, and copyable agent traces for physical-device validation.</li>
           <li>Separate evidence screenshots for hosted Gemma 4 and Cactus local inference.</li>
           <li>A narrated final demo video under 3 minutes.</li>
         </ul>
@@ -113,9 +118,10 @@ adb shell monkey -p gt.kan.kan_app 1</code></pre>
         <ul>
           <li>No real personal data or real breach data is included.</li>
           <li>This is not production legal advice.</li>
-          <li>The APK is default local mode and does not embed a Gemini API key.</li>
+          <li>The local APK is default local mode; the LiteRT APK is for physical-device Gemma validation. Neither embeds a Gemini API key.</li>
           <li>Cactus tool-calling is not working yet; Cactus local inference is documented separately.</li>
           <li>ML Kit/AICore on-device Gemma generation requires supported hardware; the Mac emulator evidence shows a fail-closed fallback.</li>
+          <li>Native Android LiteRT generation should only be claimed after a physical phone produces <code>litert_gemma.generate(...) -&gt; ok</code>.</li>
         </ul>
       </section>
     </main>

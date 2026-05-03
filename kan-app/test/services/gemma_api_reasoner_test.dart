@@ -5,10 +5,13 @@ import 'package:kan_app/models/kan_case.dart';
 import 'package:kan_app/services/gemma_api_reasoner.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
 
+import '../test_identity_fabric.dart';
+
 void main() {
   test('parses hosted Gemma final text and token trace', () async {
     final reasoner = GemmaApiReasoner(
       apiKey: 'test-key',
+      identityFabric: testIdentityFabric,
       client: MockClient((request) async {
         expect(request.headers['x-goog-api-key'], 'test-key');
         expect(

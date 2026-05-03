@@ -37,6 +37,8 @@ dependencies:
   cactus: ^1.3.0
   crypto: ^3.0.7
   http: ^1.6.0
+  flutter_gemma:
+    path: ../third_party/flutter_gemma
 
 dev_dependencies:
   flutter_test:

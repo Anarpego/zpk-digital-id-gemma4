@@ -25,4 +25,24 @@ Firma: ______________________
 Fecha: ______________________
 ''';
   }
+
+  String buildInstitutionIntake({
+    required VerificationResult result,
+    required CaseScenario scenario,
+  }) {
+    return '''
+SOLICITUD DE INTAKE INSTITUCIONAL
+
+Persona solicitante: ______________________________
+Institucion objetivo: ${scenario.institutionName}
+Flujo seleccionado: ${scenario.label}
+
+El CUI no esta disponible en este momento. ZPK no emite una credencial de identidad en este modo; solo prepara checklist, resumen redactado y prueba local de consentimiento para revision presencial.
+
+Solicitud: orientar registro, recuperacion o actualizacion por canal oficial, indicando documentos minimos y numero de seguimiento.
+
+Firma: ______________________
+Fecha: ______________________
+''';
+  }
 }

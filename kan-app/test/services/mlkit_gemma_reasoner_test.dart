@@ -4,6 +4,8 @@ import 'package:kan_app/models/kan_case.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
 import 'package:kan_app/services/mlkit_gemma_reasoner.dart';
 
+import '../test_identity_fabric.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -65,10 +67,13 @@ void main() {
           };
         });
 
-    final guidance = await const MlKitGemmaReasoner().explain(
-      result: LocalBreachCatalog().verify('1234567890101'),
-      scenario: CaseScenario.discoveredVictim,
-    );
+    final guidance =
+        await const MlKitGemmaReasoner(
+          identityFabric: testIdentityFabric,
+        ).explain(
+          result: LocalBreachCatalog().verify('1234567890101'),
+          scenario: CaseScenario.discoveredVictim,
+        );
 
     expect(calls, ['status', 'warmup', 'generate']);
     expect(guidance.summary, contains('Respuesta local segura.'));
@@ -116,10 +121,13 @@ void main() {
           };
         });
 
-    final guidance = await const MlKitGemmaReasoner().explain(
-      result: LocalBreachCatalog().verify('1234567890101'),
-      scenario: CaseScenario.discoveredVictim,
-    );
+    final guidance =
+        await const MlKitGemmaReasoner(
+          identityFabric: testIdentityFabric,
+        ).explain(
+          result: LocalBreachCatalog().verify('1234567890101'),
+          scenario: CaseScenario.discoveredVictim,
+        );
 
     expect(calls, ['status', 'download', 'status', 'warmup', 'generate']);
     expect(guidance.summary, contains('Respuesta local despues de descarga.'));
@@ -153,7 +161,7 @@ void main() {
           });
 
       await expectLater(
-        const MlKitGemmaReasoner().explain(
+        const MlKitGemmaReasoner(identityFabric: testIdentityFabric).explain(
           result: LocalBreachCatalog().verify('1234567890101'),
           scenario: CaseScenario.discoveredVictim,
         ),

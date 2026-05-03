@@ -4,7 +4,7 @@ Date: 2026-05-01
 
 This app now demonstrates ZPK Digital ID as a local-first identity wallet, not only a breach-response helper.
 
-## Local-Only Infrastructure Simulated
+## Local-Only Infrastructure Evidence
 
 - HMAC-derived pseudonymous citizen ID: `zpk-gt-...`
 - DID-style document: `did:zpk:gt:zpk-gt-...`
@@ -22,10 +22,13 @@ This app now demonstrates ZPK Digital ID as a local-first identity wallet, not o
 The local agent builds this state before model reasoning:
 
 ```text
-agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, select_privacy_route, prepare_action_packet
+agent.plan(...) -> validate_cui, local_breach_lookup, classify_identity_risk, preserve_evidence, select_privacy_route, prepare_action_packet
 select_privacy_route(local_model) -> pii_block_ok
-threat_bulletin.verify(offline_hash_pack) -> 3/3_hash_ok
+threat_bulletin.verify(offline_hash_pack) -> 8/8_hash_ok
 threat_bulletin.match(CUI+correo+nombre+telefono) -> gt-dpi-fraud-ngo-2026-04,latam-sim-swap-cui-2026-04
+institution_recovery_packet(public_service_or_registry_breach) -> redacted_claim+presence_proof+review_request
+field_access_voucher(school_clinic_aid_without_connectivity) -> limited_claim+offline_qr+no_document_copy
+coercion_safety_plan(identity_threat_with_personal_safety_risk) -> sealed_timeline+safe_contact_summary
 threat_bulletin.action(dpi_photo_identity_theft) -> Preparar denuncia preliminar, alertas bancarias y bloqueo preventivo de tramites no reconocidos.
 trust_fabric.did_document(local) -> did:zpk:gt:...
 trust_fabric.vc_selective_disclosure(local) -> ...

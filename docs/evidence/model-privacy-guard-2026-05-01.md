@@ -34,7 +34,7 @@ Commands run from `kan-app`:
   test/services/gemma_api_reasoner_test.dart`: passed after redacting local
   proof material from model prompts.
 - `flutter analyze`: passed with no issues.
-- `flutter test`: 46 tests passed.
+- `flutter test`: pass, 74 tests in the current suite after later LiteRT, low-memory guard, and visible agent-proof coverage.
 
 ## Non-Claims
 

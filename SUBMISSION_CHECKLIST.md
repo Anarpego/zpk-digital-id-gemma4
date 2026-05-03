@@ -8,7 +8,7 @@
 - Local Spanish guidance and complaint preview are generated without a server.
 - Tool trace is visible in the Android UI for function-calling evidence.
 - Cactus Flutter dependency is present (`cactus ^1.3.0`) and a `CactusReasoner` adapter compiles behind the local deterministic default.
-- Runtime reasoner selection exists through `--dart-define=KAN_REASONER=local|cactus|gemma-hosted|mlkit-gemma`, `KAN_CACTUS_MODEL=<slug>`, `KAN_GEMINI_MODEL=<model>`, and `KAN_MLKIT_TIMEOUT_SECONDS=<seconds>`.
+- Runtime reasoner selection exists through `--dart-define=KAN_REASONER=local|cactus|gemma-hosted|mlkit-gemma|litert-gemma|flutter-gemma4`, plus mode-specific model, timeout, URL, and SHA-256 settings.
 - Hosted Gemma 4 app mode exists through `--dart-define=KAN_REASONER=gemma-hosted`, `KAN_GEMINI_API_KEY`, and `KAN_GEMINI_MODEL=gemma-4-31b-it`.
 - ML Kit/AICore Android mode exists through `--dart-define=KAN_REASONER=mlkit-gemma`, compiles with `com.google.mlkit:genai-prompt:1.0.0-beta1`, and fails closed on the Mac Android emulator with `FeatureStatus.UNAVAILABLE`.
 - Cactus telemetry is disabled in `ReasonerFactory` for privacy.
@@ -17,7 +17,7 @@
 - Gemini API model-list evidence exists in `docs/evidence/gemini-api-model-list-2026-05-01.md` and includes `gemma-4-26b-a4b-it` plus `gemma-4-31b-it`.
 - Training-Free GRPO-style experience prior is encoded in `ReasonerPromptBuilder` and surfaced in local traces.
 - Local-tools-vs-local-model-vs-abstract-server routing is implemented in `RoutingPolicy`, shown in the UI, and covered by tests.
-- Android debug APK builds at `kan-app/build/app/outputs/flutter-apk/app-debug.apk`.
+- Signed ARM64 local-mode release APK builds at `submission/live-demo/zpk-local-release.apk`.
 - Emulator smoke test launched `gt.kan.kan_app` and captured:
   - `kan-app/kan-smoke.png`
   - `kan-app/kan-result.png`
@@ -48,7 +48,7 @@
   - `submission/KAGGLE_DATASET_README.md`
   - `submission/YOUTUBE_DESCRIPTION.md`
   - `submission/kaggle-dataset-metadata.template.json`
-  - `submission/final-kaggle-writeup.md` (695 words, under 1,500)
+  - `submission/final-kaggle-writeup.md` (1,464 words, under 1,500)
   - `submission/final-video-script.md`
   - `submission/final-video-captions.srt`
   - `submission/demo-runbook.md`
@@ -74,20 +74,26 @@
   - `scripts/prepare_kaggle_dataset.sh`
   - `scripts/publish_submission.sh`
   - `scripts/verify_submission.sh`
-- Local downloadable demo package exists:
+- Local downloadable submission package exists:
   - `submission/dist/kan-demo-package-final.zip`
   - `submission/dist/kan-demo-package-final.zip.sha256`
-  - `submission/live-demo/kan-debug.apk`
-  - `submission/live-demo/kan-debug.apk.sha256`
+  - `submission/live-demo/zpk-local-release.apk`
+  - `submission/live-demo/zpk-local-release.apk.sha256`
   - `submission/live-demo/index.html`
-- Unsloth seed artifacts exist but are not trained:
+- Gemma 4 adaptation artifacts exist but are not trained:
   - `unsloth/kan_legal_spanish_sft.jsonl`
+  - `unsloth/data/zpk_gt_latam_sft_train.jsonl`
+  - `unsloth/data/zpk_gt_latam_sft_validation.jsonl`
+  - `unsloth/data/zpk_gt_latam_sft_test.jsonl`
+  - `unsloth/data/zpk_gt_latam_rlkd_teacher.jsonl`
   - `unsloth/eval_cases.jsonl`
   - `unsloth/README.md`
   - `unsloth/train_lora.py`
+  - `unsloth/train_grpo.py`
   - `unsloth/pyproject.toml`
+  - `unsloth/outputs/dataset_quality_report.md`
   - `unsloth/outputs/dry_run_report.md`
-- Unsloth scaffold evidence exists:
+- Adaptation evidence exists:
   - `docs/evidence/unsloth-scaffold-2026-05-01.md`
 - Remote Unsloth training stack smoke passed in `/tmp/kan-unsloth-venv` on the Linux GPU box:
   - `unsloth-2026.4.8`
@@ -102,19 +108,22 @@
 
 - `cd kan-app && dart format --set-exit-if-changed lib test`: pass.
 - `cd kan-app && flutter analyze`: pass.
-- `cd kan-app && flutter test`: pass, 46 tests.
-- `cd kan-app && flutter build apk --debug`: pass.
+- `cd kan-app && flutter test`: pass, 73 tests.
+- `cd kan-app && flutter build apk --release --split-per-abi`: pass for signed release packaging.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m-pro --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=5`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=cactus --dart-define=KAN_CACTUS_MODEL=functiongemma-270m --dart-define=KAN_CACTUS_ENABLE_TOOLS=false --dart-define=KAN_CACTUS_TIMEOUT_SECONDS=180`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=gemma-hosted --dart-define=KAN_GEMINI_MODEL=gemma-4-31b-it`: pass.
 - `cd kan-app && flutter build apk --debug --dart-define=KAN_REASONER=mlkit-gemma --dart-define=KAN_MLKIT_TIMEOUT_SECONDS=120`: pass.
-- `./scripts/verify_release_build.sh`: pass; release APK builds and is intentionally unsigned without `ZPK_RELEASE_*` credentials.
+- `./scripts/verify_release_build.sh`: pass with `ZPK_RELEASE_*`; release APK builds, verifies as signed, and does not use the Android debug certificate.
 - `/bin/zsh -lc 'set -a; source ../.env; set +a; flutter build apk --debug --dart-define=KAN_REASONER=gemma-hosted --dart-define=KAN_GEMINI_MODEL=gemma-4-31b-it --dart-define=KAN_GEMINI_API_KEY="$GEMINI_API_KEY"'`: pass for local testing only; do not publish an APK with an embedded API key.
 - `cd kan-app && flutter pub outdated`: direct and dev dependencies are up to date; older versions are transitive constraints from packages.
 - `/bin/zsh -lc 'set -a; source .env; set +a; curl ... models/gemma-4-31b-it:generateContent'`: pass; returned `modelVersion: gemma-4-31b-it`.
 - `./scripts/gemma4_smoke.sh <prompt>`: pass; repeatable hosted Gemma 4 smoke path works when network is allowed.
 - `./scripts/package_demo.sh`: pass; generated `submission/dist/kan-demo-package-final.zip`.
-- `./scripts/verify_submission.sh`: pass; verified APK/video checksums, ZIP contents, no `.env`, no draft submission copy, no embedded Gemini API key pattern, and writeup length.
+- `./scripts/verify_submission.sh`: pass; verifies APK/video/cover checksums, signed local and LiteRT APKs, native LiteRT libraries, ZIP contents, Kaggle upload checksum, no `.env`, no draft submission copy, no embedded Gemini API key pattern, no stale prototype/admin wording, source guards for LiteRT SHA-256 warmup/generation, and writeup length.
+- `cd unsloth && uv run python generate_guatemala_latam_sft.py --examples 12000`: pass; generated 12,000 synthetic Guatemala/LatAm rows.
+- `cd unsloth && uv run python evaluate_dataset.py`: pass; validates strict JSON, unique IDs, no 13-digit identifiers, synthetic metadata, and `raw_cui_included=false`.
+- `cd unsloth && uv run python distill_with_gemma4_teacher.py --teacher local --limit 1200`: pass; generated RLKD-style structured teacher traces.
 - `cd unsloth && uv run python train_lora.py --dry-run`: pass; generated `unsloth/outputs/dry_run_report.md`.
 - Remote Linux GPU dry-run in `/tmp/kan-unsloth-venv`: pass; RTX 4050 Laptop GPU with 6,141 MiB VRAM detected.
 - Remote Linux GPU Unsloth dependency install and import smoke in `/tmp/kan-unsloth-venv`: pass; CUDA available.
@@ -140,7 +149,7 @@ Prompt-to-artifact checklist:
 
 | Requirement | Evidence | Status |
 |---|---|---|
-| Working Android app | `kan-app/`, `submission/live-demo/kan-debug.apk`, `./scripts/verify_submission.sh` | Ready locally |
+| Working Android app | `kan-app/`, `submission/live-demo/zpk-local-release.apk`, `./scripts/verify_submission.sh` | Ready locally |
 | Gemma 4 use | Hosted `gemma-4-31b-it` evidence in `docs/evidence/gemma4-api-smoke-2026-05-01.md`; app trace screenshot | Verified hosted |
 | Offline/private workflow | Embedded catalog, hash-verified civic threat bulletins, local routing trace, local preliminary complaint packet, default APK | Verified |
 | On-device/offline model effort | Cactus local inference works with FunctionGemma; ML Kit/AICore path compiles and runs but emulator reports `UNAVAILABLE` | Partial, do not overclaim |
@@ -148,7 +157,7 @@ Prompt-to-artifact checklist:
 | Public repository | `README.md`, `AGENTS.md`, `.env.example`, `LICENSE`, clean git tree | Ready to push after auth |
 | Video demo | `submission/kan-final-demo-video.mp4`, under 3 minutes | Ready locally |
 | Media gallery cover | `submission/media-gallery-cover.png`, 1600x900 PNG rendered from SVG | Ready locally |
-| Writeup | `submission/final-kaggle-writeup.md`, 695 words | Ready locally |
+| Writeup | `submission/final-kaggle-writeup.md`, 1,464 words | Ready locally |
 | Live demo/download | `submission/dist/kan-demo-package-final.zip` plus `.sha256` | Ready locally, not uploaded |
 | No secrets | `.env` ignored; verifier checks ZIP excludes `.env`, APK excludes Gemini key markers, and ZIP excludes Gemini API key patterns | Verified |
 

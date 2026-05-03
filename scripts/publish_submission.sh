@@ -18,8 +18,8 @@ fail() {
 if [[ "${1:-}" == "--check" ]]; then
   ./scripts/verify_submission.sh
   [[ -z "$(git status --short)" ]] || fail "working tree is not clean"
-  git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/kan-debug|unsloth/.venv" >/dev/null
-  git diff --cached --name-only | rg "\\.env$|submission/dist|submission/live-demo/kan-debug|unsloth/.venv|build/" && fail "generated or secret file is staged"
+  git status --ignored --short | rg "\\.env|submission/dist|submission/live-demo/zpk-local-release|unsloth/.venv" >/dev/null
+  git diff --cached --name-only | rg "\\.env$|submission/dist|submission/live-demo/zpk-local-release|motorola/.*\\.apk(\\.sha256)?$|unsloth/.venv|build/" && fail "generated or secret file is staged"
   gh auth status
   echo "PASS: publish prerequisites checked"
   exit 0
@@ -32,6 +32,9 @@ fi
 [[ -f "$VIDEO" ]] || fail "missing video: $VIDEO"
 [[ -f "$COVER" ]] || fail "missing media cover: $COVER"
 [[ -z "$(git status --short)" ]] || fail "working tree is not clean"
+if git diff --cached --name-only | rg "\\.env$|submission/dist|submission/live-demo/zpk-local-release|motorola/.*\\.apk(\\.sha256)?$|unsloth/.venv|build/" >/dev/null; then
+  fail "generated or secret file is staged"
+fi
 
 gh auth status >/dev/null || fail "GitHub CLI is not authenticated. Run: gh auth login"
 

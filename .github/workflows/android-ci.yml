@@ -1,0 +1,51 @@
+name: Android CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  flutter-android:
+    name: Flutter Android gates
+    runs-on: macos-15
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.4
+          cache: true
+
+      - name: Install Flutter dependencies
+        working-directory: kan-app
+        run: flutter pub get
+
+      - name: Check formatting
+        working-directory: kan-app
+        run: dart format --set-exit-if-changed lib test
+
+      - name: Analyze
+        working-directory: kan-app
+        run: flutter analyze
+
+      - name: Test
+        working-directory: kan-app
+        run: flutter test
+
+      - name: Build release APK
+        working-directory: kan-app
+        run: flutter build apk --release --split-per-abi
+
+      - name: LiteRT app-agent harness
+        run: ./scripts/test_litert_agent_harness.sh
+
+      - name: Release signing gate
+        run: ./scripts/verify_release_build.sh

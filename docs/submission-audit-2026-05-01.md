@@ -8,7 +8,7 @@ Objective: make ZPK Digital ID competitive for the Gemma 4 Good Hackathon, prior
 
 | Requirement | Evidence | Status |
 |---|---|---|
-| Working Android demo | `kan-app/`, `submission/live-demo/kan-debug.apk`, `flutter build apk --debug` | Verified locally |
+| Working Android app | `kan-app/`, `submission/live-demo/zpk-local-release.apk`, signed ARM64 release packaging | Verified locally |
 | Offline/local-first identity registration | `DigitalIdentityFabric`, `IdentityProtectionAgent`, DID-style document, Android Keystore-backed HMAC-SHA256 credential, signed agent ledger, selective disclosure claims, consent proof | Verified locally |
 | Android privacy hardening | `FLAG_SECURE`, backup/data-extraction exclusions, cleartext traffic disabled | Built and manifest-inspected locally |
 | Offline/local-first CUI risk check | `kan-app/assets/breach_catalog.json`, `LocalBreachCatalog.loadEmbeddedOrFallback()`, ZPK final video | Verified locally |

@@ -1,7 +1,7 @@
 # Kan Unsloth Dry-Run Report
 
 Status: PASS
-SFT examples: 6
+SFT examples: 9840
 Evaluation cases: 3
 
 ## Checks

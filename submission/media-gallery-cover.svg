@@ -36,7 +36,7 @@
     <text x="84" y="292" font-family="Arial" font-size="28" font-weight="800" fill="#111814">Riesgo CUI</text>
     <rect x="58" y="360" width="304" height="184" rx="8" fill="#eaf4ef"/>
     <text x="84" y="416" font-family="Arial" font-size="28" font-weight="800" fill="#111814">Credencial ZPK</text>
-    <text x="84" y="470" font-family="Arial" font-size="22" fill="#303934">DID + VC demo</text>
+    <text x="84" y="470" font-family="Arial" font-size="22" fill="#303934">DID + VC local</text>
     <text x="84" y="510" font-family="Arial" font-size="22" fill="#303934">Paquete redactado</text>
   </g>
 

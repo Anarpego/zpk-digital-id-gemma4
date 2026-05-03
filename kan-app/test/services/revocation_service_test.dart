@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+
+import '../test_identity_fabric.dart';
 import 'package:kan_app/models/kan_case.dart';
-import 'package:kan_app/services/digital_identity_fabric.dart';
 import 'package:kan_app/services/identity_protection_agent.dart';
 import 'package:kan_app/services/local_breach_catalog.dart';
 import 'package:kan_app/services/revocation_service.dart';
@@ -11,7 +12,7 @@ void main() {
       now: DateTime.utc(2026, 5, 1),
     ).verify('1234567890101');
     final scenario = CaseScenario.discoveredVictim;
-    final fabric = const DigitalIdentityFabric();
+    final fabric = testIdentityFabric;
     final assessment = const IdentityProtectionAgent().assess(
       result: result,
       scenario: scenario,

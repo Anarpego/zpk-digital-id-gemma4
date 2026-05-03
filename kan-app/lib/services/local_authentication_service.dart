@@ -41,8 +41,8 @@ class RelyingPartyPolicy {
   const RelyingPartyPolicy({this.allowedParties = defaultAllowedParties});
 
   static const defaultAllowedParties = {
-    'municipalidad-guatemala-demo': ['identity_recovery', 'citizen_support'],
-    'registro-civil-gt-demo': ['identity_recovery'],
+    'municipalidad-guatemala': ['identity_recovery', 'citizen_support'],
+    'registro-civil-gt': ['identity_recovery'],
   };
 
   final Map<String, List<String>> allowedParties;
@@ -71,12 +71,15 @@ class LocalAuthenticationService {
     required CaseScenario scenario,
     required IdentityTrustReport trustReport,
     LocalRevocationReceipt? revocationReceipt,
-    String relyingParty = 'municipalidad-guatemala-demo',
+    String relyingParty = 'municipalidad-guatemala',
   }) async {
     if (revocationReceipt != null) {
       throw StateError(
         'Local credential ${revocationReceipt.revocationId} is revoked.',
       );
+    }
+    if (!result.isValidCui) {
+      throw StateError('No local identity credential is issued without CUI.');
     }
     final allowedScopes = relyingPartyPolicy.scopesFor(relyingParty);
     if (allowedScopes.isEmpty) {
