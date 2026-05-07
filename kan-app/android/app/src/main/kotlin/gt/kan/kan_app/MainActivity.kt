@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.ActivityManager
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -186,6 +187,20 @@ class MainActivity : FlutterActivity() {
                     }
                 }
                 "clear" -> clearAuditArchive(result)
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "gt.kan.kan_app/platform_share",
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "shareText" -> {
+                    val title = call.argument<String>("title")?.trim().orEmpty()
+                    val text = call.argument<String>("text")?.trim().orEmpty()
+                    shareText(title, text, result)
+                }
                 else -> result.notImplemented()
             }
         }
@@ -675,7 +690,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun getOrCreateLiteRtEngine(modelPath: String, expectedSha256: String): Engine {
-        val modelFile = safeLiteRtModelFile(modelPath)
+        val modelFile = prepareLiteRtModelFile(modelPath, expectedSha256)
         require(modelFile.exists() && modelFile.isFile) {
             "Gemma 4 LiteRT-LM model file does not exist: $modelPath"
         }
@@ -689,8 +704,8 @@ class MainActivity : FlutterActivity() {
             closeLiteRtEngineLocked()
             val engineConfig = EngineConfig(
                 modelPath = modelFile.absolutePath,
-                backend = Backend.CPU(numOfThreads = 1),
-                maxNumTokens = 128,
+                backend = Backend.CPU(numOfThreads = 4),
+                maxNumTokens = 2048,
                 cacheDir = File(cacheDir, "litert-lm").absolutePath,
             )
             val engine = Engine(engineConfig)
@@ -726,6 +741,68 @@ class MainActivity : FlutterActivity() {
         }
         sidecar.writeText(actualSha256, Charsets.UTF_8)
         return if (sidecarSha == null) "computed" else "computed_sidecar_repaired"
+    }
+
+    private fun prepareLiteRtModelFile(modelPath: String, expectedSha256: String): File {
+        val source = safeLiteRtModelFile(modelPath)
+        val externalRoot = getExternalFilesDir(null)?.canonicalFile
+        val isExternal = externalRoot != null &&
+            (source.path == externalRoot.path || source.path.startsWith("${externalRoot.path}/"))
+        if (!isExternal) {
+            return source
+        }
+
+        require(source.exists() && source.isFile) {
+            "Gemma 4 LiteRT-LM model file does not exist: $modelPath"
+        }
+
+        val internalDir = File(filesDir, "models")
+        val internal = File(internalDir, source.name).canonicalFile
+        internal.parentFile?.mkdirs()
+
+        val externalSidecar = File(source.parentFile, "${source.name}.sha256")
+            .takeIf { it.exists() && it.isFile }
+            ?.readText(Charsets.UTF_8)
+            ?.trim()
+        val internalSidecar = File(internal.parentFile, "${internal.name}.sha256")
+        val internalSha = internalSidecar
+            .takeIf { it.exists() && it.isFile }
+            ?.readText(Charsets.UTF_8)
+            ?.trim()
+
+        val internalReady = internal.exists() &&
+            internal.isFile &&
+            internal.length() == source.length() &&
+            (
+                expectedSha256.isEmpty() ||
+                    internalSha?.equals(expectedSha256, ignoreCase = true) == true
+            )
+        if (internalReady) {
+            return internal
+        }
+
+        val temp = File(internal.parentFile, "${internal.name}.importing")
+        if (temp.exists()) {
+            temp.delete()
+        }
+        source.inputStream().use { input ->
+            temp.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+        if (internal.exists() && !internal.delete()) {
+            temp.delete()
+            throw IllegalStateException("Could not replace imported internal model.")
+        }
+        if (!temp.renameTo(internal)) {
+            temp.delete()
+            throw IllegalStateException("Could not move imported model into internal storage.")
+        }
+
+        val shaForSidecar = externalSidecar
+            ?: if (expectedSha256.isNotEmpty()) expectedSha256 else sha256Of(internal)
+        internalSidecar.writeText(shaForSidecar, Charsets.UTF_8)
+        return internal
     }
 
     private fun safeLiteRtModelFile(modelPath: String): File {
@@ -888,6 +965,29 @@ class MainActivity : FlutterActivity() {
         } catch (error: Throwable) {
             result.error(
                 "AUDIT_ARCHIVE_CLEAR_ERROR",
+                error.message ?: error.javaClass.simpleName,
+                mapOf("type" to error.javaClass.name),
+            )
+        }
+    }
+
+    private fun shareText(title: String, text: String, result: MethodChannel.Result) {
+        if (text.isEmpty()) {
+            result.error("INVALID_SHARE_TEXT", "Text to share must not be empty.", null)
+            return
+        }
+        try {
+            val subject = title.ifEmpty { "ZPK Digital ID" }
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, subject)
+                putExtra(Intent.EXTRA_TEXT, text)
+            }
+            startActivity(Intent.createChooser(sendIntent, subject))
+            result.success(mapOf("status" to "opened"))
+        } catch (error: Throwable) {
+            result.error(
+                "SHARE_SHEET_ERROR",
                 error.message ?: error.javaClass.simpleName,
                 mapOf("type" to error.javaClass.name),
             )

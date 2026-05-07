@@ -2,6 +2,10 @@
 
 Date: 2026-05-01
 
+Status: superseded by `docs/evidence/goal-completion-audit-2026-05-07.md`.
+This file records the earlier Motorola-limited state before the final Honor
+Android release proof. Do not use it as the current submission status.
+
 Objective: remove prototype limits where possible, make ZPK Digital ID behave
 like an actual Android app, and strengthen the offline agentic Gemma 4 path for
 the Gemma 4 Good Hackathon.
@@ -25,7 +29,7 @@ the Gemma 4 Good Hackathon.
 | Repeatable CI gates | `.github/workflows/android-ci.yml` runs format, analyze, tests, APK build, LiteRT harness, release-signing gate | Done |
 | No raw CUI to model | `PrivacyGuard`, JSON contract tests, evidence traces | Done |
 | Submission package gates | `./scripts/package_demo.sh`, `./scripts/verify_submission.sh` | Done |
-| Native Android offline generation | physical phone trace with `litert_gemma.generate(...) -> ok` | Blocked |
+| Native Android offline generation | Superseded by Honor Android release proof in `goal-completion-audit-2026-05-07.md` | Superseded |
 
 ## Current Blocker
 

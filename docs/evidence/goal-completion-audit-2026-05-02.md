@@ -2,6 +2,10 @@
 
 Date: 2026-05-03
 
+Status: superseded by `docs/evidence/goal-completion-audit-2026-05-07.md`.
+This file is historical evidence from the pre-Honor-device state. It should not
+be used as the current Kaggle claim.
+
 Objective audited: remove remaining prototype limits, make ZPK Digital ID behave as a production-grade app where locally possible, focus on offline agentic Gemma 4 for the Gemma 4 Good Hackathon, and avoid unsupported claims.
 
 ## Implemented App Capabilities
@@ -32,7 +36,7 @@ Objective audited: remove remaining prototype limits, make ZPK Digital ID behave
 - Phone self-test flow is documented in `docs/evidence/litert-gemma4-phone-self-test-2026-05-02.md` and covered by Flutter widget tests. Motorola G15 physical testing installed the model but now reports `DEVICE_LOW_MEMORY` instead of exposing a crash-prone self-test. A dedicated widget test also verifies that low-memory runtime status does not offer install/self-test actions and keeps the deterministic offline fallback visible.
 - The future high-RAM Android proof helper `scripts/run_physical_litert_proof.sh` is packaged, Bash 3/macOS compatible, rejects emulators/non-ARM64 devices, and refuses low-RAM phones by default before asking for Gemma generation evidence.
 - The Motorola physical flow verifier was rerun on the connected G15 and now validates stable no-CUI safety evidence in landscape: `Bandeja IGSS`, `Atender como intake presencial sin credencial`, `Pseudonimo:`, `Hash paquete:`, and the Motor low-memory fallback.
-- `FallbackReasoner.runtimeStatus()` now preserves `isOfflineCapable=true` when the primary Gemma runtime probe throws but the deterministic local agent is ready. The added regression test is `runtime wrapper stays offline-capable when primary probe fails`, and the full Flutter suite now passes 74 tests.
+- `FallbackReasoner.runtimeStatus()` now preserves `isOfflineCapable=true` when the primary Gemma runtime probe throws but the deterministic local agent is ready. The added regression test is `runtime wrapper stays offline-capable when primary probe fails`. Current test count is tracked in `goal-completion-audit-2026-05-07.md`.
 - The app now surfaces agent execution evidence above the raw trace: `Prueba agente local`, tool count, `PII bloqueada`, model JSON contract state, and `ledger firmado`. Widget tests cover both deterministic offline guidance and LiteRT/Gemma JSON guidance.
 - ML Kit/AICore fallback is documented as fail-closed on the Mac emulator.
 - Cactus Android local-inference metrics are documented with the known tool-calling limitation.
@@ -52,7 +56,7 @@ Objective restated as success criteria: make the app production-oriented, remove
 | Offline Gemma 4 local inference | Mac LiteRT-LM proof in `litert-gemma4-offline-2026-05-01.md`; iOS FlutterGemma real `.litertlm` proof in `ios-flutter-gemma4-smoke-2026-05-02.md`; verifier now checks `flutter_gemma4.generate(gemma-4-E2B-it.litertlm) -> ok` | Pass for Mac/iOS |
 | Android emulator does not crash or lie | `MainActivity.kt` detects emulator and reports `EMULATOR_UNSUPPORTED`; widget tests verify no dead-end install/self-test actions; evidence in `litert-gemma4-phone-self-test-2026-05-02.md` | Pass |
 | Native runtime probe failure does not kill offline UX | `FallbackReasoner.runtimeStatus()` marks the wrapper offline-capable when fallback runtime is ready; `fallback_reasoner_test.dart` covers `PRIMARY_NOT_READY` with local fallback trace | Pass |
-| Physical Android Gemma 4 generation | Requires signed APK on ARM64 phone and in-app trace `litert_gemma.generate(...) -> ok`; Motorola G15 instead verifies model install plus `DEVICE_LOW_MEMORY` guard | Missing for generation; pass for honest low-memory guard |
+| Physical Android Gemma 4 generation | Superseded by Honor Android release proof in `goal-completion-audit-2026-05-07.md`; Motorola G15 remains historical low-memory context | Superseded |
 | Institutional intake UX | Motorola G15 UIAutomator evidence and `./scripts/verify_motorola_physical_flow.sh --no-install` show `Bandeja IGSS`, no-CUI intake via `Atender como intake presencial sin credencial`, pseudonym, package hash, and Motor low-memory fallback | Pass |
 | Privacy/PII boundary | `PrivacyGuard`, `AgentResponseContract`, local-only routing, no API key in APK/ZIP scans, `privacy_guard.raw_cui -> absent`, `agent_contract.safety_review(raw_cui=false) -> ok` | Pass |
 | Local trust and audit fabric | Device keystore signer, DID-style local credential, selective disclosure, revocation, AES-GCM audit archive, signed ledger; iOS smoke verifies Keychain path | Pass for app evidence; not a government production deployment |

@@ -12,6 +12,6 @@ Contents:
 - `final-kaggle-writeup.md`: writeup text under 1,500 words.
 - `KAGGLE_FORM.md`: copy/paste Kaggle form fields.
 
-The app uses synthetic data only. It shows local ZPK identity registration, DID-style and Android Keystore-backed HMAC-SHA256 recovery artifacts, a signed agent ledger, selective disclosure claims, CUI risk lookup, and Spanish recovery guidance. The package also includes a LiteRT-mode APK for physical-device offline Gemma validation. It includes `.env.example` but not `.env`, and it does not embed a Gemini API key.
+The app uses synthetic data only. It shows local ZPK identity registration, DID-style and Android Keystore-backed HMAC-SHA256 recovery artifacts, a signed agent ledger, selective disclosure claims, CUI risk lookup, Spanish recovery guidance, citizen mode, and a local institutional ventanilla mode. The primary proof is a physical Honor Android release run with local Gemma 4 E2B through LiteRT-LM, producing a signed Ministerio Publico complaint from a WhatsApp extortion case. The package includes `.env.example` but not `.env`, and it does not embed a Gemini API key.
 
 The `unsloth/` folder contains the adaptation pipeline: 12,000 validated synthetic Guatemala/LatAm SFT rows, train/validation/test splits, a dataset card, 1,200 RLKD-style teacher traces, SFT LoRA/QLoRA training code, optional GRPO training code, and deterministic safety rewards. No trained adapter is claimed in this dataset.

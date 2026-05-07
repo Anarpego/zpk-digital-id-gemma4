@@ -41,7 +41,7 @@ Results:
 
 - `dart format --set-exit-if-changed lib test`: pass.
 - `flutter analyze`: pass, no issues found.
-- `flutter test`: pass, 74 tests in the current suite after later LiteRT, low-memory guard, and visible agent-proof coverage.
+- `flutter test`: pass at the time of this evidence capture. Current test count is tracked in `goal-completion-audit-2026-05-07.md`.
 - `flutter build apk --debug ...`: pass, generated `build/app/outputs/flutter-apk/app-debug.apk`.
 
 ## Emulator Runtime Result

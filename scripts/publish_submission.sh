@@ -2,11 +2,14 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-REPO_NAME="${REPO_NAME:-kan-gemma4-good}"
+REPO_NAME="${REPO_NAME:-zpk-digital-id-gemma4}"
+RELEASE_TAG="${RELEASE_TAG:-v2026.05.07-kaggle}"
 ZIP="$ROOT/submission/dist/kan-demo-package-final.zip"
 ZIP_SHA="$ZIP.sha256"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
 COVER="$ROOT/submission/media-gallery-cover.png"
+CITIZEN_APK="$ROOT/submission/live-demo/zpk-citizen-gemma4-release.apk"
+CITIZEN_APK_SHA="$CITIZEN_APK.sha256"
 
 cd "$ROOT"
 
@@ -31,6 +34,8 @@ fi
 [[ -f "$ZIP_SHA" ]] || fail "missing ZIP checksum: $ZIP_SHA"
 [[ -f "$VIDEO" ]] || fail "missing video: $VIDEO"
 [[ -f "$COVER" ]] || fail "missing media cover: $COVER"
+[[ -f "$CITIZEN_APK" ]] || fail "missing citizen Gemma APK: $CITIZEN_APK"
+[[ -f "$CITIZEN_APK_SHA" ]] || fail "missing citizen Gemma APK checksum: $CITIZEN_APK_SHA"
 [[ -z "$(git status --short)" ]] || fail "working tree is not clean"
 if git diff --cached --name-only | rg "\\.env$|submission/dist|submission/live-demo/zpk-local-release|motorola/.*\\.apk(\\.sha256)?$|unsloth/.venv|build/" >/dev/null; then
   fail "generated or secret file is staged"
@@ -43,18 +48,21 @@ if ! git remote get-url origin >/dev/null 2>&1; then
 else
   git push -u origin main
 fi
+git push origin "$RELEASE_TAG"
 
-tag="submission-2026-05-01"
+tag="$RELEASE_TAG"
 if ! gh release view "$tag" >/dev/null 2>&1; then
   gh release create "$tag" \
     "$ZIP" \
     "$ZIP_SHA" \
     "$VIDEO" \
     "$COVER" \
+    "$CITIZEN_APK" \
+    "$CITIZEN_APK_SHA" \
     --title "ZPK Digital ID Gemma 4 Good submission package" \
     --notes-file submission/GITHUB_RELEASE_NOTES.md
 else
-  gh release upload "$tag" "$ZIP" "$ZIP_SHA" "$VIDEO" "$COVER" --clobber
+  gh release upload "$tag" "$ZIP" "$ZIP_SHA" "$VIDEO" "$COVER" "$CITIZEN_APK" "$CITIZEN_APK_SHA" --clobber
 fi
 
 echo "Published repository and release assets."

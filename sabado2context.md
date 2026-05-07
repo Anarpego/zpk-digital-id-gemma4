@@ -1,421 +1,575 @@
-# Contexto sabado 2 - ZPK Digital ID
+# Contexto actual ZPK Digital ID + Gemma 4
 
-## Proposito de este archivo
+Actualizado: 2026-05-07, America/Guatemala.
+Repo: `/Users/anibalperez/Code/AI/kaggle`.
+App activa: `kan-app/`.
 
-Este archivo es el handoff para una futura sesion de codigo. Resume que es la app hoy, que se probo en el Motorola fisico, como quedo Gemma 4 LiteRT-LM, que artefactos estan listos y que limites no se deben ocultar.
-
-No se debe enviar nada a Kaggle desde Codex. El usuario hara la submission manual.
+Este archivo es el handoff para una sesion futura. No asumir que todo esta
+committeado: el working tree esta sucio con cambios grandes despues del commit
+`772b83b feat: harden offline Gemma identity app`.
 
 ## Objetivo del proyecto
 
-ZPK Digital ID es una app Flutter Android para Gemma 4 Good enfocada primero en Guatemala. La propuesta es identidad digital local-first para paises con infraestructura institucional fragil: CUI/DPI se queda en el dispositivo, la app produce paquetes redactados, rutas de recuperacion y evidencia verificable para instituciones como IGSS, SAT y colegios, sin enviar PII al modelo.
+Ganar el Gemma 4 Good Hackathon con una app real de identidad digital y ayuda
+institucional para Guatemala. La historia tecnica debe ser:
 
-La historia para jueces: una persona con poca experiencia tecnologica puede recuperar o proteger identidad despues de filtraciones, estafas, extorsion o tramites bloqueados; una institucion puede recibir un intake firmado y minimizado sin exigir datos sensibles por canales inseguros.
+- Gemma 4 corre local/offline en el telefono cuando el hardware lo permite.
+- El agente no es chatbot: decide pasos ReAct y llama herramientas locales.
+- La persona recibe documentos accionables: denuncia, solicitud, SMS familiar,
+  QR firmado.
+- La institucion tiene un modo ventanilla para verificar paquetes firmados y
+  devolver acuse.
+- PII no sale del dispositivo; la app muestra lo bloqueado antes de razonar.
 
-## Estado actual de la app
+No enviar ni verificar submission de Kaggle desde la herramienta de desarrollo. El usuario lo hara
+manualmente.
 
-Ruta principal: `kan-app/`.
+## Estado real al 2026-05-07
 
-La app ya no esta organizada como una sola pantalla larga de demo. La vista principal esta en:
+### Verificado hoy en Honor fisico
+
+Dispositivo conectado por USB:
 
 ```text
-kan-app/lib/features/identity_wallet/home_screen.dart
+serial: AJ4UVB4C25000283
+model: ELI-NX9
+device: HNELIX
+abi: arm64-v8a
+ram: MemTotal 11602968 kB (~11.6 GB)
 ```
 
-Vistas actuales:
-
-- `Persona`: selecciona el caso de ayuda, por ejemplo IGSS, SAT, colegio, dinero, amenazas o DPI/datos.
-- `Acciones`: muestra pasos ejecutables y lenguaje claro para usuarios sin background tecnico.
-- `Institucion`: mesa simulada de intake institucional, por ejemplo IGSS/SAT/colegio, con ruta de atencion y paquete redactado.
-- `Evidencia`: muestra trust fabric, paquete firmado, hash, pseudonimo y auditoria local.
-- `Motor`: estado real del motor offline: LiteRT-LM Gemma 4 si el dispositivo aguanta, o respaldo deterministico offline si no.
-
-En `Acciones` y `Evidencia`, la app muestra ahora una prueba visible del agente antes de las trazas crudas: `Prueba agente local`, conteo de herramientas, `PII bloqueada`, estado de JSON de modelo cuando aplica, y `ledger firmado`. Esto evita que el juez tenga que leer logs para ver el comportamiento agentico.
-
-Casos principales:
-
-- `IGSS`: afiliacion, recuperacion o atencion presencial sin CUI.
-- `SAT`: recuperacion de acceso, actualizacion o bloqueo preventivo.
-- `Colegio`: inscripcion, beca o constancia.
-- Otros: tramite, DPI/datos, dinero, amenazas, campo, proteccion, duda y prevenir.
-
-Los flujos `IGSS`, `SAT` y `Colegio` permiten continuar sin CUI. En ese modo la app no emite credencial falsa; genera intake institucional, checklist y paquete redactado. Si hay CUI sintetico valido, la app puede crear pseudonimo local y paquete firmado.
-
-## Estructura de codigo relevante
-
-- `kan-app/lib/main.dart`: entrypoint Flutter y configuracion general.
-- `kan-app/lib/config/app_config.dart`: dart-defines, modo de razonador y rutas de modelo.
-- `kan-app/lib/features/identity_wallet/home_screen.dart`: UI Persona/Acciones/Institucion/Evidencia/Motor.
-- `kan-app/lib/models/kan_case.dart`: escenarios, labels, misiones, institucion objetivo y `allowsNoCui`.
-- `kan-app/lib/services/kan_reasoner.dart`: contrato comun, estado runtime y fallback.
-- `kan-app/lib/services/litert_gemma_reasoner.dart`: razonador Gemma 4 LiteRT-LM via MethodChannel.
-- `kan-app/lib/services/local_deterministic_reasoner.dart`: agente offline deterministico.
-- `kan-app/lib/services/reasoner_factory.dart`: selecciona razonador segun configuracion.
-- `kan-app/lib/services/routing_policy.dart`: decide herramientas locales vs modelo sin enviar PII.
-- `kan-app/lib/services/identity_protection_agent.dart`: herramientas agente, evaluacion de riesgo y acciones.
-- `kan-app/lib/services/digital_identity_fabric.dart`: credencial/pseudonimo/firma local.
-- `kan-app/lib/services/recovery_packet_service.dart`: paquete de recuperacion redactado.
-- `kan-app/lib/services/identity_signer.dart`: firma local.
-- `kan-app/android/app/src/main/kotlin/gt/kan/kan_app/MainActivity.kt`: puente nativo Android para LiteRT-LM, instalacion, verificacion de hash y guard de RAM.
-- `kan-app/test/`: pruebas widget y servicios.
-- `scripts/`: empaquetado, verificadores de submission y pruebas fisicas.
-- `motorola/`: APK vigente y runbook para dispositivo fisico.
-- `unsloth/`: dataset y scripts de fine-tuning/evaluacion usando `uv`, nunca system Python.
-
-Ruta vieja eliminada: `kan-app/lib/features/demo/home_screen.dart`. `scripts/verify_submission.sh` falla si vuelve a aparecer `features/demo`.
-
-## Gemma 4 LiteRT-LM
-
-Modelo instalado en el Motorola G15:
+Paquete instalado y corriendo:
 
 ```text
-/data/user/0/gt.kan.kan_app/files/models/gemma-4-E2B-it.litertlm
+package: gt.kan.kan_app.citizenpreview
+apk: kan-app/build/app/outputs/flutter-apk/app-debug.apk
+apk sha256: 5a6d15c75a6615c6f740ba1200126858e6f2b57afbb5795bc9a227b251857a5c
+versionName: 1.0.0-citizenpreview
+debuggable: true
+lastUpdateTime: 2026-05-07 11:33:35
+```
+
+La app arranca en `CitizenHome` con:
+
+```text
+KAN_HOME=citizen
+KAN_REASONER=litert-gemma
+KAN_LITERT_MODEL_PATH=/data/data/gt.kan.kan_app.citizenpreview/files/models/gemma-4-E2B-it.litertlm
+KAN_LITERT_MODEL_SHA256=ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42
+KAN_LITERT_TIMEOUT_SECONDS=240
+```
+
+Permisos concedidos por ADB para preparar pruebas fisicas:
+
+```bash
+adb shell pm grant gt.kan.kan_app.citizenpreview android.permission.CAMERA
+adb shell pm grant gt.kan.kan_app.citizenpreview android.permission.RECORD_AUDIO
+```
+
+### Modelo Gemma 4 instalado
+
+El modelo esta dentro del sandbox privado de la app debug:
+
+```text
+/data/user/0/gt.kan.kan_app.citizenpreview/files/models/gemma-4-E2B-it.litertlm
+size: 2583085056 bytes (~2.4 GB)
+sidecar sha256 file: gemma-4-E2B-it.litertlm.sha256
+sha256: ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42
+```
+
+Comandos para reinstalar el modelo si se borra la app:
+
+```bash
+adb push gemma-4-E2B-it.litertlm /data/local/tmp/gemma.litertlm
+adb shell "run-as gt.kan.kan_app.citizenpreview sh -c 'mkdir -p files/models && cat /data/local/tmp/gemma.litertlm > files/models/gemma-4-E2B-it.litertlm'"
+adb shell "run-as gt.kan.kan_app.citizenpreview sh -c 'printf ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42 > files/models/gemma-4-E2B-it.litertlm.sha256'"
+adb shell rm /data/local/tmp/gemma.litertlm
+```
+
+El modelo sobrevivio al `adb install -r` de la APK debug reconstruida hoy.
+
+### Prueba fisica ejecutada hoy
+
+Comandos ejecutados:
+
+```bash
+cd kan-app
+flutter build apk --debug \
+  --dart-define=KAN_HOME=citizen \
+  --dart-define=KAN_REASONER=litert-gemma \
+  --dart-define=KAN_LITERT_MODEL_PATH=/data/data/gt.kan.kan_app.citizenpreview/files/models/gemma-4-E2B-it.litertlm \
+  --dart-define=KAN_LITERT_MODEL_SHA256=ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42 \
+  --dart-define=KAN_LITERT_TIMEOUT_SECONDS=240
+adb install -r build/app/outputs/flutter-apk/app-debug.apk
+adb shell am start -n gt.kan.kan_app.citizenpreview/gt.kan.kan_app.MainActivity
+```
+
+UIAutomator confirmo pantalla ciudadana:
+
+- `ZPK · Modo Ciudadano`
+- `Que te paso?`
+- `Modo avion: nada sale del telefono`
+- `Modo Ventanilla (institucion)`
+- `Modo avanzado`
+- `Tomar foto (OCR local)`
+- `Ayudame ahora`
+- `Hablar (STT on-device)`
+
+Se lanzo un caso por ADB. Nota: `adb shell input text` dejo `%20` literal en
+vez de espacios, asi que el texto visible fue `Me%20amenazan...`; esto es un
+artefacto de automatizacion, no de entrada manual.
+
+Resultado observado:
+
+- A los pocos segundos: panel `Agente razonando`, badge `Gemma 4 E2B local`,
+  texto `Voy a entender el caso y proteger tus datos personales`, privacy card
+  `No se detectaron datos sensibles`.
+- Luego de ~60 s: artifact final `Denuncia formal para MINISTERIO PUBLICO`,
+  hash `sha256:da0e9743680f1fcc15994af87d0f78b4376503ba4685d883750353162f4739f2`,
+  botones `Copiar`, `Escuchar`, `QR firmado`, `Compartir`.
+
+Evidencia guardada:
+
+```text
+docs/evidence/honor-citizen-gemma-thinking-2026-05-07.png
+docs/evidence/honor-citizen-gemma-thinking-2026-05-07.uiautomator.xml
+docs/evidence/honor-citizen-gemma-artifact-2026-05-07.png
+docs/evidence/honor-citizen-gemma-artifact-2026-05-07.uiautomator.xml
+```
+
+Importante para claims: esto prueba flujo ciudadano fisico con badge Gemma local
+y artifact final. No afirmar todavia "100% de todos los tool calls fueron hechos
+por Gemma sin fallback", porque la UI final reemplaza el timeline y logcat del
+Honor sale cifrado/oculto (`HKS...HKE`). La arquitectura tiene fallback
+deterministico para cerrar cuando Gemma falla o cierra temprano.
+
+### Release ciudadana fisica verificada
+
+Tambien se instalo por USB la APK release exacta de submission:
+
+```text
+package: gt.kan.kan_app
+apk: submission/live-demo/zpk-citizen-gemma4-release.apk
+versionName: 1.0.0
+versionCode: 2001
+citizen apk sha256: 7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb
+installed base.apk sha256: 7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb
+```
+
+Modelo usado por la release:
+
+```text
+/sdcard/Android/data/gt.kan.kan_app/files/models/gemma-4-E2B-it.litertlm
 size: 2583085056 bytes
 sha256: ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42
 ```
 
-Como funciono la instalacion:
+El bridge Android copia el modelo externo a `filesDir/models/` antes de abrir
+LiteRT-LM, porque la release crasheaba nativamente al usar directamente la ruta
+externa. La release tambien tiene `isMinifyEnabled=false` y
+`isShrinkResources=false`; con minify activo el flujo Gemma release era inestable.
 
-- El APK se instalo por USB/ADB.
-- El modelo quedo en almacenamiento privado de la app.
-- Al reinstalar con `adb install -r`, Android conserva los datos privados de la app, por eso el modelo siguio ahi.
-- Si se desinstala la app, se limpia storage o se cambia de telefono, hay que instalar el modelo otra vez.
+Prueba final fisica sobre la release:
 
-El flujo soportado por codigo es descargar desde `KAN_LITERT_MODEL_URL` hacia `KAN_LITERT_MODEL_PATH`, validar `KAN_LITERT_MODEL_SHA256` y luego hacer warmup. Los links `trycloudflare` son temporales; si expiran aparece algo como `Unable to resolve host ...`. Para un telefono nuevo se necesita URL nuevo o hosting local/HTTPS estable antes de pulsar `Instalar Gemma offline`.
+- Entrada: amenaza por WhatsApp, pago forzado y solicitud de foto de tarjeta.
+- Gemma 4 E2B local ejecuto `redact_pii`, `classify_case`,
+  `lookup_codigo_penal`, `draft_denuncia` y `sign_packet`.
+- El modelo repitio algunas llamadas; el loop aplico cierre seguro, firmo el
+  ultimo artifact valido con Android Keystore y mantuvo el documento mas
+  completo.
+- Artifact visible: `Denuncia formal para MINISTERIO PUBLICO`.
+- Hechos no queda vacio: menciona amenaza por WhatsApp y solicitud de foto de
+  tarjeta.
+- Firma observada: `zpk-android-keystore-issuer-key-2026-05`.
 
-Guard de seguridad agregado:
+Evidencia release guardada:
 
-- `warmup` y `generate` reciben `KAN_LITERT_MODEL_SHA256`.
-- Android calcula/verifica SHA-256 antes de abrir LiteRT-LM.
-- Si falta sidecar `.sha256` pero el archivo coincide, lo repara.
-- Si el hash no coincide, falla cerrado.
-- `installRuntimeAssets()` hace warmup aunque el modelo ya exista, para no reportar listo sin probar runtime.
-- Si el probe nativo de Gemma falla por completo, `FallbackReasoner.runtimeStatus()` conserva `offline=true` cuando el agente local deterministico esta listo. Esto evita diagnosticos falsos tipo `offline=false` en dispositivos donde el canal nativo falla pero la app aun puede ejecutar flujos locales.
+```text
+docs/evidence/honor-release-citizen-gemma-final-2026-05-07.xml
+```
 
-Define correcto:
+Nota: `adb shell screencap` fallo en este Honor para la release final; usar el
+XML de UIAutomator y/o captura manual del usuario para video.
+
+## Validacion local
+
+Ejecutado hoy en `kan-app/`:
 
 ```bash
---dart-define=KAN_REASONER=litert-gemma
+flutter analyze
+# No issues found.
+
+flutter test
+# 142 tests passed.
 ```
 
-No usar `KAN_REASONER_MODE`.
-
-## Motorola G15 fisico
-
-Dispositivo probado:
-
-```text
-serial: ZY32LL9926
-model: moto g15
-abi: arm64-v8a
-ram reportada por app: 3869007872 bytes
-```
-
-Nota: la prueba fisica mas reciente con `run_physical_litert_proof.sh` reporto
-`3868741632` bytes. Esa diferencia pequena es normal entre lecturas de memoria;
-en ambos casos esta por debajo del minimo de 6 GB exigido por el guard.
-
-Estado real visto en la app:
-
-```text
-LiteRT-LM Gemma 4 local
-DEVICE_LOW_MEMORY
-litert_gemma.model_size_bytes -> 2583085056
-litert_gemma.device_ram_bytes -> 3869007872
-litert_gemma.required_ram_bytes -> 6000000000
-litert_gemma.model_path(app_private) -> configured
-Respaldo offline disponible
-runtime.local_deterministic -> ready
-runtime.network_required -> false
-```
-
-Conclusion tecnica: Gemma 4 E2B esta instalado en el Motorola G15, pero el telefono no tiene suficiente RAM para una generacion estable. La app lo detecta y cae a agente deterministico offline sin fingir que Gemma genero texto. Para reclamar generacion Android real de Gemma 4 hace falta un telefono ARM64 con 6 GB+ RAM.
-
-Comando de prueba fisica que paso:
+Tambien se reconstruyo la APK debug actual:
 
 ```bash
-./scripts/verify_motorola_physical_flow.sh --no-install
+flutter build apk --debug ... # PASS, 49.6 s
 ```
 
-Resultado:
-
-```text
-PASS: Motorola physical flow verified.
-```
-
-Ese script valida por UIAutomator:
-
-- App instalada y abierta en dispositivo fisico ARM64.
-- Vista `Persona`.
-- Seleccion de `IGSS`.
-- Flujo `Continuar sin CUI`.
-- Cambio a `Institucion`.
-- Textos estables: `Mesa institucional IGSS`, `Atender como intake presencial sin credencial`, `Pseudonimo:` y `Hash paquete:`.
-- Vista `Motor` con `DEVICE_LOW_MEMORY`, `Respaldo offline disponible`, `runtime.local_deterministic -> ready` y `runtime.network_required -> false`.
-
-Prueba que debe fallar en G15 por baja RAM:
+Despues se reemplazo el dialogo falso de `Compartir` por un share-sheet real
+Android via `gt.kan.kan_app/platform_share`. Se verifico con:
 
 ```bash
-./scripts/run_physical_litert_proof.sh --no-install --watch-seconds 1
+flutter test test/artifact_card_test.dart
+flutter build apk --debug --dart-define=KAN_HOME=citizen ...
 ```
 
-Resultado esperado en G15:
+Tambien se elimino el fallback muerto de `QR firmado` que mencionaba una
+"Fase 5"; en produccion el boton aparece solo cuando la pantalla inyecta el
+handler real de QR firmado.
+
+La herramienta agentica `sign_packet` ahora usa Android Keystore por default en
+builds release Android (`KAN_DEVICE_KEYSTORE_SIGNING`, default `kReleaseMode`).
+Tests/debug siguen usando HMAC local deterministico para no depender de plugins
+nativos en CI.
+
+Dependencias directas actualizadas y resueltas:
 
 ```text
-exit 4
-Device RAM: 3869007872 bytes; required for Gemma proof: 6000000000 bytes
+camera ^0.12.0+1
+google_mlkit_text_recognition ^0.15.1
+mobile_scanner ^7.2.0
 ```
 
-Solo cuenta como prueba Android real de Gemma 4 un dispositivo donde el log muestre `litert_gemma.generate(...) -> ok`.
+`flutter pub outdated` quedo sin direct dependencies outdated. Quedan
+transitivas viejas solo donde el solver las restringe.
 
-## APK vigente para Motorola
+## Estructura de codigo actual
 
-APK a copiar por cable o instalar por ADB:
+Entrada principal:
 
 ```text
-motorola/zpk-litert-persona-institucion-release.apk
-sha256: d3ab26a09c79a454b68be344df43bd6c58ba95f8aec73a8bd34f547588167e09
+kan-app/lib/main.dart
 ```
 
-Despues de regenerar artefactos, este APK se reinstalo en el Motorola por USB:
+`HomeMode` se elige por dart-define:
 
-```bash
-adb install -r motorola/zpk-litert-persona-institucion-release.apk
-```
+- `KAN_HOME=classic`: UI vieja `HomeScreen`, default para no romper verificadores.
+- `KAN_HOME=citizen`: UI nueva ciudadana.
 
-Resultado:
+Features principales:
 
 ```text
-Performing Streamed Install
-Success
+kan-app/lib/features/citizen/
+  citizen_home.dart
+  widgets/agent_stream_panel.dart
+  widgets/artifact_card.dart
+  widgets/privacy_diff_card.dart
+
+kan-app/lib/features/institution/
+  ventanilla_home.dart
+  widgets/received_packet_card.dart
+  widgets/field_diff_view.dart
+
+kan-app/lib/features/zpk/
+  share_packet_sheet.dart
+  scan_acuse_sheet.dart
+
+kan-app/lib/features/identity_wallet/
+  home_screen.dart  # UI vieja / modo avanzado
 ```
 
-Verificacion:
-
-```bash
-./motorola/verificar-apk.sh
-```
-
-Resultado actual:
+Servicios agenticos:
 
 ```text
-zpk-litert-persona-institucion-release.apk: OK
+kan-app/lib/services/agent/
+  agent_loop.dart
+  agent_reasoner.dart
+  agent_step.dart
+  tool_registry.dart
+  default_tool_registry.dart
+  tool_input_repair.dart
+  litert_gemma_agent_reasoner.dart
+  local_deterministic_agent_reasoner.dart
+  tools/
 ```
 
-El APK de `motorola/` esta sincronizado con:
+Herramientas locales compartidas por Gemma y fallback:
 
 ```text
-submission/live-demo/zpk-litert-release.apk
-sha256: d3ab26a09c79a454b68be344df43bd6c58ba95f8aec73a8bd34f547588167e09
+redact_pii
+classify_case
+lookup_codigo_penal
+lookup_codigo_trabajo
+lookup_institucion
+draft_denuncia
+draft_solicitud
+draft_sms_familia
+sign_packet
 ```
 
-Los APKs de `motorola/` estan ignorados por Git para no ensuciar el repo publico. Estan disponibles localmente y dentro del ZIP final.
-
-## Artefactos actuales de submission
-
-Paquete final:
+Multimodal/local:
 
 ```text
-submission/dist/kan-demo-package-final.zip
-sha256: fc1a1575d2feae386b9106de3306b496bb8a57e1059067cde3fd305224a90bc3
+kan-app/lib/services/multimodal/
+  ocr_service.dart  # ML Kit OCR local
+  stt_service.dart  # speech_to_text
+  tts_service.dart  # flutter_tts
+  qr_service.dart
 ```
 
-Copia preparada para Kaggle Dataset:
+ZPK/paquetes:
 
 ```text
-submission/kaggle-dataset-upload/kan-demo-package-final.zip
-sha256: fc1a1575d2feae386b9106de3306b496bb8a57e1059067cde3fd305224a90bc3
+kan-app/lib/services/zpk/
+  packet_codec.dart
+  packet_envelope.dart
+  signature_verifier.dart
+  institution_trust_list.dart
 ```
 
-APKs incluidos en `submission/live-demo/`:
+Bridge Android nativo:
 
 ```text
-zpk-local-release.apk
-sha256: fbfb9cf8b077ce3b284dbbddfcd76efb493a79f80c20e1f12c3531a8a642839f
-
-zpk-litert-release.apk
-sha256: d3ab26a09c79a454b68be344df43bd6c58ba95f8aec73a8bd34f547588167e09
+kan-app/android/app/src/main/kotlin/gt/kan/kan_app/MainActivity.kt
 ```
 
-Otros hashes del verificador:
+Canales relevantes:
+
+- `gt.kan.kan_app/litert_gemma`: status, warmup, generate, downloadModel.
+- El engine LiteRT-LM usa `Backend.CPU(numOfThreads = 4)` y
+  `maxNumTokens = 2048`.
+- Hay guard contra emulador Android y contra dispositivos con poca RAM.
+
+## Tests importantes
+
+Nuevos o relevantes:
 
 ```text
-Video SHA-256: e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6
-Cover SHA-256: bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947
-Video seconds: 100
-Cover dimensions: 1600x900
-Writeup words: 1465
+kan-app/test/agent_loop_test.dart
+kan-app/test/agent_tools_test.dart
+kan-app/test/citizen_home_widget_test.dart
+kan-app/test/local_deterministic_agent_reasoner_test.dart
+kan-app/test/tool_input_repair_test.dart
+kan-app/test/zpk_packet_codec_test.dart
+kan-app/test/zpk_roundtrip_test.dart
+kan-app/test/zpk_signature_verifier_test.dart
 ```
 
-La portada publica `submission/media-gallery-cover.svg/png` ya no usa wording de demo en la credencial; se cambio a `DID + VC local`. `scripts/verify_submission.sh` ahora falla si la portada vuelve a contener wording de demo/prototipo.
+Cobertura de comportamiento:
 
-El ZIP contiene solo APKs release:
+- loop ReAct con fallback
+- repair de inputs de tools
+- cierre seguro: firma el ultimo artifact valido si Gemma repite tools
+- casos Guatemala: extorsion, IGSS sin DPI, SAT bloqueado, remesas, laboral
+- UI ciudadana inicial
+- codec QR/ZPK
+- firma/verificacion HMAC
+- guards LiteRT: emulador, low-memory, install failures
+
+## APKs y empaquetado
+
+Estado actual:
+
+- APK debug actual probada en Honor:
+  `kan-app/build/app/outputs/flutter-apk/app-debug.apk`
+- APK release ciudadana Gemma 4 generada para submission:
+  `submission/live-demo/zpk-citizen-gemma4-release.apk`
+- Hash release ciudadana:
+  `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb`
+- ZIP final de demo:
+  `submission/dist/kan-demo-package-final.zip`
+- Hash ZIP final:
+  `2c3edb395507bd38194a41ee3ef96558ff83f0350d1e228fc5948ae38c2d3237`
+
+Tambien se regeneraron las releases existentes:
 
 ```text
 submission/live-demo/zpk-local-release.apk
-submission/live-demo/zpk-local-release.apk.sha256
 submission/live-demo/zpk-litert-release.apk
-submission/live-demo/zpk-litert-release.apk.sha256
+submission/live-demo/zpk-citizen-gemma4-release.apk
 ```
 
-No contiene `kan-debug.apk`.
-
-## Comandos ejecutados al cierre
-
-Preparar copia Kaggle Dataset:
-
-```bash
-KAGGLE_USERNAME=anarpego ./scripts/prepare_kaggle_dataset.sh
-```
-
-Resultado:
+El APK ciudadano se buildio con:
 
 ```text
-PASS: submission artifacts verified
-Prepared Kaggle Dataset upload folder:
-/Users/anibalperez/Code/AI/kaggle/submission/kaggle-dataset-upload
+KAN_HOME=citizen
+KAN_REASONER=litert-gemma
+KAN_LITERT_MODEL_PATH=/sdcard/Android/data/gt.kan.kan_app/files/models/gemma-4-E2B-it.litertlm
+KAN_LITERT_MODEL_SHA256=ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42
+KAN_LITERT_TIMEOUT_SECONDS=240
 ```
 
-Verificaciones finales:
+Nota de firma: el ultimo paquete de hoy se firmo con un keystore temporal local
+en `/private/tmp/zpk-citizen-release-no-minify-20260507-2.jks`. No se commiteo
+el keystore ni la password. Para una publicacion estable se debe conservar una
+llave de release formal fuera del repo.
+
+Verificacion ejecutada y aprobada:
 
 ```bash
+./scripts/package_demo.sh
 ./scripts/verify_submission.sh
-shasum -a 256 -c kan-demo-package-final.zip.sha256
-./motorola/verificar-apk.sh
-rg -n kan-debug\.apk docs submission README.md SUBMIT_NOW.md SUBMISSION_CHECKLIST.md
+# PASS: submission artifacts verified
+# Writeup words: 1465
+# Video seconds: 100
+# Citizen Gemma APK SHA-256:
+# 7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb
 ```
 
-Resultados actuales:
+No usar el QR installer por ahora; el usuario prefirio instalar por cable/USB.
+
+## Dataset y fine tuning
+
+Hay dataset ReAct listo pero no hay entrenamiento real aun:
 
 ```text
-verify_submission.sh -> PASS
-submission/dist checksum -> OK
-submission/kaggle-dataset-upload checksum -> OK
-motorola/verificar-apk.sh -> OK
-rg kan-debug.apk -> no output
+unsloth/data/react/
+  zpk_react_lote1_train.jsonl
+  zpk_react_lote1_validation.jsonl
+  zpk_react_lote1_test.jsonl
 ```
 
-Tambien se verifico que `zipinfo` no encuentra `*kan-debug*` dentro del ZIP final.
+Reporte:
 
-## Build release usado por el empaquetador
+```text
+unsloth/outputs/react_dataset_quality_report.md
+```
 
-El empaquetador exige firma release y falla si faltan variables:
+Metricas reportadas en `dom3may.md`:
+
+- json_validity_rate: 1.0
+- react_format_rate: 1.0
+- tool_chain_completeness: 1.0
+- pii_leak_rate: 0.0
+
+Scripts:
 
 ```bash
-ZPK_RELEASE_KEYSTORE=/Users/anibalperez/Code/AI/kaggle/.secrets/zpk-sideload-release.p12 ZPK_RELEASE_STORE_PASSWORD=<local-secret> ZPK_RELEASE_KEY_ALIAS=zpk-sideload ZPK_RELEASE_KEY_PASSWORD=<local-secret> ./scripts/package_demo.sh
-```
-
-`scripts/package_demo.sh` genera APKs release ARM64, sincroniza `motorola/zpk-litert-persona-institucion-release.apk`, incluye fuente auditable de `kan-app/` en el ZIP y bloquea artefactos locales/generados como `.dart_tool`, `build`, `android/local.properties`, Pods y registrants generados.
-
-`scripts/verify_submission.sh` ahora revisa:
-
-- APKs firmados release, no debug.
-- Manifest con package `gt.kan.kan_app` y label `ZPK Digital ID`.
-- `allowBackup=false`.
-- `usesCleartextTraffic=false`.
-- `fullBackupContent` y `dataExtractionRules` presentes.
-- No `features/demo`.
-- No `kan-debug.apk`.
-- Checksums portables.
-- Fuente reconstruible minima de Flutter/Android/iOS dentro del ZIP.
-
-## Tests y calidad
-
-Ultimo estado conocido de app, revalidado el 2026-05-03:
-
-```text
-cd kan-app
-flutter analyze -> No issues found
-flutter test -> 74 tests passed
-```
-
-Tambien se revalido:
-
-```text
-./scripts/verify_submission.sh -> PASS
-./motorola/verificar-apk.sh -> OK
-./scripts/verify_motorola_physical_flow.sh --no-install -> PASS
-./scripts/run_physical_litert_proof.sh --no-install --watch-seconds 1 -> exit 4 por baja RAM esperada en Motorola G15
-flutter pub outdated -> direct dependencies and dev_dependencies all up-to-date
-```
-
-`./scripts/verify_motorola_physical_flow.sh --no-install` se ejecuto despues de
-instalar el APK release vigente por USB. `adb shell run-as gt.kan.kan_app ...`
-fallo con `package not debuggable`, lo cual es consistente con APK release.
-
-Nota de dependencias: `flutter pub outdated` mostro paquetes transitivos con
-versiones mas nuevas disponibles, pero las dependencias directas del proyecto y
-`dev_dependencies` estan al dia. El comando tambien imprimio errores de decode
-de advisories de `pub.dev` (`advisoriesUpdated must be a String`), por lo que
-esa salida no debe contarse como auditoria completa de seguridad.
-
-Dataset/fine-tuning:
-
-```text
 cd unsloth
-uv run python evaluate_dataset.py -> PASS
-uv run python -m py_compile generate_guatemala_latam_sft.py evaluate_dataset.py train_lora.py train_grpo.py distill_with_gemma4_teacher.py zpk_rewards.py -> ok
+uv run python generate_react_lote1.py
+uv run python evaluate_react_dataset.py
 ```
 
-Regla permanente: Python siempre con entorno virtual y `uv`; nunca system Python.
+Regla del repo: Python siempre con virtual env/uv; nunca system Python.
 
-Dataset generado:
+Pendiente: LoRA/GRPO/distillation real en GPU. El laptop Ubuntu/NVIDIA habia
+fallado por SSH timeout en sesiones anteriores; no se hizo training hoy.
+
+## Que dice dom3may.md y como usarlo
+
+`dom3may.md` es el contexto narrativo largo del 3 de mayo. Sigue siendo util
+para explicar:
+
+- Modo Ciudadano y Modo Ventanilla.
+- Por que Gemma 4 E2B + LiteRT-LM es el camino on-device.
+- Por que el fallback deterministico es honesto y necesario.
+- Como vender el demo al jurado.
+- Limitaciones: no zk-SNARK real, no integracion real con IGSS/SAT/RENAP, no
+  LoRA entrenado todavia.
+
+Pero para claims publicos usar lo verificado hoy y los archivos de evidencia.
+
+## Articulo Flutter Agent Skills
+
+Se reviso el material oficial actual en:
 
 ```text
-unsloth/data/
-train: 9840
-validation: 1080
-test: 1080
-scenarios: economic_fraud, extortion_evidence, identity_recovery, igss_registration, preventive_wallet, sat_tax_access, school_enrollment
-No 13-digit identifiers appear.
-Assistant content is strict JSON.
+https://docs.flutter.dev/ai/agent-skills
 ```
 
-## Que no se debe afirmar
+Utilidad para este repo:
 
-No afirmar:
-
-- Que el Motorola G15 genero texto con Gemma 4. No lo hizo; detecto baja RAM.
-- Que hay integracion real con IGSS, SAT, RENAP, gobierno o colegios.
-- Que hay PII real o datos de brechas reales dentro del repo.
-- Que hay un modelo fine-tuned publicado y evaluado como final.
-- Que el link Cloudflare viejo sigue funcionando.
-- Que el APK debug es parte de la entrega.
-
-Si se habla de Gemma 4 en Android hoy, decir: modelo Gemma 4 instalado y verificado por hash en dispositivo, runtime protegido por guard de RAM, fallback offline funcional, y prueba de generacion pendiente en telefono high-RAM.
-
-## Siguiente sesion recomendada
-
-Prioridad tecnica para ganar mas puntos:
-
-1. Probar `run_physical_litert_proof.sh` en un Android ARM64 con 6 GB+ RAM.
-2. Si pasa, capturar log `litert_gemma.generate(...) -> ok` y actualizar docs/evidence.
-3. Si no hay telefono high-RAM, usar iOS Simulator o Mac solo como evidencia auxiliar, dejando claro que Android real sigue pendiente.
-4. Mejorar mas la UI tipo ciudadano/institucion, pero sin agregar placeholders ni claims falsos.
-5. Si se fine-tunea, publicar pesos/adapter y benchmarks; si no, mantenerlo como dataset/eval preparado, no como modelo entrenado final.
-
-Intento GPU mas reciente: `ssh -i /Users/anibalperez/.ssh/id_ed25519 -o
-ConnectTimeout=8 -o BatchMode=yes anarpego@192.168.0.17 ...` volvio a terminar
-en `Operation timed out`, asi que no hay adapter entrenado desde ese laptop en
-esta sesion.
-
-Para reinstalar en Motorola actual:
+- Si se quiere mejorar futuras sesiones de desarrollo, conviene instalar skills
+  oficiales de Flutter/Dart en `.agents/skills`.
+- Comandos sugeridos por la doc oficial:
 
 ```bash
-adb install -r motorola/zpk-litert-persona-institucion-release.apk
-adb shell monkey -p gt.kan.kan_app 1
-./scripts/verify_motorola_physical_flow.sh --no-install
+npx skills add flutter/skills --skill '*' --agent universal
+npx skills add dart-lang/skills --skill '*' --agent universal
 ```
 
-Para revisar modelo en app-private storage, si `run-as` funciona:
+No es una feature de la app ni un claim del hackathon. Es higiene de desarrollo
+para que agentes futuros respeten mejores patrones Flutter/Dart. No hacerlo no
+bloquea la submission.
+
+## Riesgos y gaps honestos
+
+- La app debug y la release ciudadana exacta de submission funcionaron en Honor
+  fisico. La release genero artifact firmado con Android Keystore despues del
+  cierre seguro del loop.
+- Logcat en Honor salio cifrado/oculto; usar UIAutomator/screenshot como
+  evidencia fisica.
+- El flujo demuestra Gemma 4 local y tool calls visibles en UI, pero el cierre
+  seguro puede intervenir si Gemma repite herramientas o no llama `final`.
+- `sign_packet` usa Android Keystore en release Android, pero el QR de
+  ciudadano/acuse todavia usa trust list HMAC del piloto offline; no es aun
+  firma asimetrica institucional completa ni zk-SNARK.
+- No hay integracion real con instituciones; Modo Ventanilla simula la mesa
+  institucional localmente.
+- La entrada por `adb input text` puede distorsionar espacios o acentos; para
+  video/manual usar teclado, voz o pegar texto normal.
+- Las capturas pueden tener UI parcialmente recortada por scroll; para video,
+  usar captura manual/OBS y evitar notificaciones flotantes.
+
+## Siguientes pasos recomendados
+
+1. Para reinstalar la release final por cable, usar:
+   `adb install -r submission/live-demo/zpk-citizen-gemma4-release.apk`.
+2. Si se desinstala la app, volver a copiar el modelo a:
+   `/sdcard/Android/data/gt.kan.kan_app/files/models/gemma-4-E2B-it.litertlm`.
+3. Exponer en la UI final un resumen persistente del timeline agentico despues
+   del artifact, para poder demostrar tool calls Gemma/fallback sin depender de
+   logcat.
+4. Crear boton "Ver trazabilidad del agente" en artifact final: mostrar
+   `redact_pii -> classify_case -> lookup -> draft -> sign_packet`, indicando
+   que motor decidio cada paso y si hubo fallback.
+5. Entrenar LoRA con el dataset ReAct si el laptop GPU vuelve a estar accesible.
+6. Preparar video de 3 minutos: ciudadano habla/foto/texto, Gemma local razona,
+   artifact, QR firmado, Modo Ventanilla verifica, acuse de vuelta.
+7. Actualizar Kaggle writeup con claims honestos: offline/on-device real en
+   Honor, fallback para hardware bajo, cero PII real, demo institucional local.
+
+## Comandos de bolsillo
+
+Build/debug Honor:
 
 ```bash
-adb shell run-as gt.kan.kan_app ls -lh files/models
-adb shell run-as gt.kan.kan_app sha256sum files/models/gemma-4-E2B-it.litertlm
+cd /Users/anibalperez/Code/AI/kaggle/kan-app
+flutter build apk --debug \
+  --dart-define=KAN_HOME=citizen \
+  --dart-define=KAN_REASONER=litert-gemma \
+  --dart-define=KAN_LITERT_MODEL_PATH=/data/data/gt.kan.kan_app.citizenpreview/files/models/gemma-4-E2B-it.litertlm \
+  --dart-define=KAN_LITERT_MODEL_SHA256=ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42 \
+  --dart-define=KAN_LITERT_TIMEOUT_SECONDS=240
+adb install -r build/app/outputs/flutter-apk/app-debug.apk
+adb shell am start -n gt.kan.kan_app.citizenpreview/gt.kan.kan_app.MainActivity
 ```
 
-Si no funciona `run-as`, usar la vista `Motor` como evidencia.
+Verificar modelo:
 
-## Estado de procesos locales
+```bash
+adb shell run-as gt.kan.kan_app.citizenpreview ls -lh files/models
+adb shell run-as gt.kan.kan_app.citizenpreview cat files/models/gemma-4-E2B-it.litertlm.sha256
+adb shell run-as gt.kan.kan_app.citizenpreview wc -c files/models/gemma-4-E2B-it.litertlm
+```
 
-Al cierre se intento revisar procesos. `pgrep` fallo por entorno local, pero `ps -axo pid,command` no mostro Xcode, iOS Simulator, Android Emulator ni `qemu-system`. Si aparece consumo raro luego, revisar manualmente. El daemon `adb` si quedo activo porque el Motorola estaba conectado.
+Dump UI/screenshot:
+
+```bash
+adb shell uiautomator dump /sdcard/zpk.xml
+adb pull /sdcard/zpk.xml /private/tmp/zpk.xml
+adb shell screencap -p /sdcard/zpk.png
+adb pull /sdcard/zpk.png /private/tmp/zpk.png
+```
+
+Calidad local:
+
+```bash
+cd /Users/anibalperez/Code/AI/kaggle/kan-app
+flutter analyze
+flutter test
+dart format lib test
+```
+
+Estado Git:
+
+```bash
+cd /Users/anibalperez/Code/AI/kaggle
+git status --short
+```
+
+No revertir cambios no propios. No hacer `git reset --hard`.

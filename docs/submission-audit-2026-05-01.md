@@ -2,6 +2,10 @@
 
 Date: 2026-05-01
 
+Status: superseded by `docs/evidence/goal-completion-audit-2026-05-07.md`.
+This file records the earlier hosted/Mac/Motorola package state and is kept as
+historical evidence only.
+
 Objective: make ZPK Digital ID competitive for the Gemma 4 Good Hackathon, prioritize winning over the original `kan.md` implementation details, do not deploy from this workspace, and verify that the mobile demo, evidence, and submission assets are ready for public upload.
 
 ## Prompt-To-Artifact Checklist
@@ -20,7 +24,7 @@ Objective: make ZPK Digital ID competitive for the Gemma 4 Good Hackathon, prior
 | Training-Free GRPO-style prior | `ReasonerPromptBuilder`, `docs/routing-calibration.md`, writeup adaptation section | Verified as prompt/experience prior |
 | Public writeup under 1,500 words | `submission/final-kaggle-writeup.md`, `wc -w` = 689 | Ready locally |
 | Public video under 3 minutes | `submission/kan-final-demo-video.mp4`, `docs/evidence/final-video-2026-05-01.md` | Ready locally, not uploaded |
-| Public code repository | Git repo with clean status, `.gitignore`, `README.md`, `AGENTS.md`, `LICENSE` | Blocked: no remote and `gh` is not logged in |
+| Public code repository | Superseded by the May 7 final handoff; publish remains a manual user step | Superseded |
 | Public demo files | `submission/dist/kan-demo-package-final.zip`, static live-demo page, APK, checksums | Ready locally, not uploaded |
 | Media gallery assets | `submission/media-gallery-cover.svg`, final video, screenshots | Ready locally, not uploaded |
 | No secret leakage | `.env` ignored; verifier checks ZIP has `.env.example` and not `.env` | Verified locally |

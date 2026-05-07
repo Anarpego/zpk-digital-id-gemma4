@@ -159,7 +159,7 @@ Current verified gates:
 
 - `dart format --set-exit-if-changed lib test`
 - `flutter analyze`
-- `flutter test` passes 74 tests
+- `flutter test` passes 142 tests
 - `flutter build apk --release --split-per-abi`
 - `./scripts/verify_release_build.sh` confirms release builds do not use the Android debug certificate
 - GitHub Actions workflow `.github/workflows/android-ci.yml`
@@ -180,6 +180,7 @@ Current verified package:
 - `submission/dist/kan-demo-package-final.zip`
 - `submission/live-demo/zpk-local-release.apk`
 - `submission/live-demo/zpk-litert-release.apk`
+- `submission/live-demo/zpk-citizen-gemma4-release.apk`
 - Verify with `./scripts/verify_submission.sh`
 
 ## Submission Handoff
@@ -212,11 +213,11 @@ KAGGLE_USERNAME=<your-kaggle-username> ./scripts/prepare_kaggle_dataset.sh
 - The app does not use real breach data.
 - It is not a deployed national identity system and does not integrate with the Guatemalan registry.
 - It is not legal advice and does not guarantee legal correctness.
-- Cactus tool-calling is not working yet; local Cactus inference works only with tools disabled.
-- Gemma 4 evidence includes hosted Gemini API and offline LiteRT-LM local inference on the Mac, not Cactus.
+- Cactus is supplemental local inference/routing evidence, not the main prize claim.
+- Primary Gemma 4 evidence is the Honor Android physical-device release run with local Gemma 4 E2B through LiteRT-LM.
 - ML Kit/AICore mode is integrated and builds, but the Mac emulator reports the on-device GenAI feature as unavailable; do not claim verified ML Kit/AICore Gemma 4 generation yet.
-- LiteRT-LM Gemma 4 E2B local inference is verified offline on the Mac after model download.
-- LiteRT-LM Android is integrated in the Flutter APK. The Motorola G15 physical run installed the full Gemma 4 E2B model into app-private storage and now reports `DEVICE_LOW_MEMORY` plus `Respaldo offline disponible` instead of crashing because the phone has 3.86 GB RAM and the runtime requires 6 GB+ for safe generation; do not claim successful Android in-app Gemma 4 generation until a higher-RAM device produces `litert_gemma.generate(...) -> ok`.
+- The final citizen APK and installed Honor `base.apk` both hash to `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb`.
+- Older Mac/iOS LiteRT/FlutterGemma runs and the Motorola G15 `DEVICE_LOW_MEMORY` flow are supporting engineering context only. The Motorola installed the model but did not have enough RAM for stable generation.
 - Gemma 4 adaptation artifacts include 12,000 validated synthetic Guatemala/LatAm SFT examples, 1,200 RLKD-style teacher traces, SFT LoRA/QLoRA and optional GRPO scripts, plus a failed one-step Gemma 4 E2B attempt on a 6 GB RTX 4050; no trained adapter exists yet.
 - Runtime app signing uses Android Keystore through `DigitalIdentityFabric.device()`; deterministic Dart HMAC signing is used only for tests.
 - Each recovery run emits a signed and locally verified SHA-256 hash-chain agent ledger so tool calls, credential issuance, consent, and reasoner routing are auditable without storing raw CUI.

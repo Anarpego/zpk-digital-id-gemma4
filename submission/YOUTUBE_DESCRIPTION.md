@@ -15,9 +15,11 @@ The submitted app uses synthetic data only. It creates a pseudonymous ZPK identi
 Technical evidence in the repository includes:
 
 - Flutter Android app and signed ARM64 release APKs.
-- Hosted Gemma 4 mode verified with `gemma-4-31b-it`.
-- Visible routing/tool traces for local registration, authentication proof, selective disclosure, consent proof, and document generation.
-- Cactus local-inference metrics on Android.
+- Honor Android physical-device proof with local Gemma 4 E2B through LiteRT-LM.
+- Visible ReAct tool traces for PII redaction, case classification, local Guatemala lookup, document generation, safe close, and local signing.
+- Citizen mode plus local institutional ventanilla mode for signed redacted packet handoff.
+- Android Keystore signing, selective disclosure, consent proof, revocation receipt, and encrypted local audit archive.
+- Cactus local-inference metrics on Android as supporting context.
 - Gemma 4 E2B adaptation pipeline with 12,000 validated synthetic SFT examples, 1,200 RLKD-style teacher traces, SFT/QLoRA code, GRPO rewards, and a documented 6 GB GPU OOM training attempt.
 
 Repository: paste public GitHub URL after upload

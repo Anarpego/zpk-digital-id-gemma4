@@ -48,10 +48,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Suffix permite instalar APK debug junto al release sin chocar
+            // de firma. Resultado: gt.kan.kan_app.citizenpreview side-by-side.
+            applicationIdSuffix = ".citizenpreview"
+            versionNameSuffix = "-citizenpreview"
+        }
         release {
             signingConfigs.findByName("release")?.let {
                 signingConfig = it
             }
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -67,5 +75,9 @@ flutter {
 dependencies {
     implementation("com.google.ai.edge.litertlm:litertlm-android:0.10.2")
     implementation("com.google.mlkit:genai-prompt:1.0.0-beta1")
+    implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
+    implementation("com.google.mlkit:text-recognition-devanagari:16.0.1")
+    implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
+    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
 }

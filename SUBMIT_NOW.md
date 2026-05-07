@@ -24,8 +24,12 @@ Release assets uploaded by the script:
 
 - `submission/dist/kan-demo-package-final.zip`
 - `submission/dist/kan-demo-package-final.zip.sha256`
+- `submission/live-demo/zpk-citizen-gemma4-release.apk`
+- `submission/live-demo/zpk-citizen-gemma4-release.apk.sha256`
 - `submission/kan-final-demo-video.mp4`
 - `submission/media-gallery-cover.png`
+
+The script uses the local tag `v2026.05.07-kaggle`.
 
 Alternative live demo upload:
 
@@ -49,29 +53,31 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 ## 4. Hashes To Confirm Uploads
 
 - ZIP: see `submission/dist/kan-demo-package-final.zip.sha256`
-- APK: see `submission/live-demo/zpk-local-release.apk.sha256`
+- Primary citizen APK: see `submission/live-demo/zpk-citizen-gemma4-release.apk.sha256`
+- Local fallback APK: see `submission/live-demo/zpk-local-release.apk.sha256`
 - Video: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
-- Cover PNG: `15ba1a8f5037973ce6b0c76defdfd05bee438d2f8ddf15393cc75070e4a6f2b6`
+- Cover PNG: `bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947`
 
 ## 5. Prize Claims
 
 Claim strongly:
 
-- Main Track: working Android social-impact app.
+- Main Track: working Android social-impact app with citizen and ventanilla views.
 - Impact Track: Digital Equity & Inclusivity.
-- Local-first ZPK identity registration, selective disclosure, and recovery workflow.
-- Visible privacy/tool traces for DID-style credential, signed authentication proof, consent proof, redacted institutional packet, encrypted local audit archive, and signed local revocation.
-- Hosted Gemma 4 evidence with `gemma-4-31b-it`.
+- Primary Gemma 4 claim: Honor Android physical-device release proof with local Gemma 4 E2B through LiteRT-LM.
+- Agentic ReAct flow: `redact_pii`, case classification, local lookup, document drafting, safe close, and `sign_packet`.
+- Local-first ZPK identity registration, selective disclosure, signed recovery workflow, redacted institutional packet, encrypted local audit archive, and signed local revocation.
+- APK integrity: submitted citizen APK and installed Honor `base.apk` both hash to `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb`.
 
 Claim cautiously:
 
 - Cactus: partial local-inference/routing evidence only.
 - ML Kit/AICore: integration and fallback evidence only on the available emulator.
-- Offline Gemma 4: claim Mac LiteRT-LM and iOS/Apple Silicon FlutterGemma evidence; claim Android LiteRT bridge/model-install/low-memory guard, not G15 generation.
+- Mac/iOS LiteRT/FlutterGemma and Motorola G15 low-memory evidence: supporting engineering context only.
+- Unsloth/adaptation: synthetic dataset, ReAct teacher traces, SFT/GRPO scripts, and reward code only.
 
 Do not claim:
 
-- Successful Android in-app Gemma 4 generation on the Motorola G15.
 - Completed Unsloth adapter or RL fine-tune.
 - Real government integration, hardware-backed key custody on every possible citizen device, or standards certification.
 - Production legal advice.

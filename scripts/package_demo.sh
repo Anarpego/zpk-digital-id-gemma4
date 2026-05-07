@@ -10,8 +10,10 @@ ZIP="$DIST/kan-demo-package-final.zip"
 ZIP_SHA="$ZIP.sha256"
 LOCAL_APK="$LIVE/zpk-local-release.apk"
 LITERT_APK="$LIVE/zpk-litert-release.apk"
+CITIZEN_APK="$LIVE/zpk-citizen-gemma4-release.apk"
 MOTOROLA_APK="$MOTOROLA/zpk-litert-persona-institucion-release.apk"
 LITERT_MODEL_PATH="/data/user/0/gt.kan.kan_app/files/models/gemma-4-E2B-it.litertlm"
+CITIZEN_MODEL_PATH="${CITIZEN_MODEL_PATH:-/sdcard/Android/data/gt.kan.kan_app/files/models/gemma-4-E2B-it.litertlm}"
 LITERT_MODEL_SHA="${LITERT_MODEL_SHA:-ab7838cdfc8f77e54d8ca45eadceb20452d9f01e4bfade03e5dce27911b27e42}"
 LITERT_PUBLIC_URL="${LITERT_PUBLIC_URL:-}"
 LITERT_MODEL_URL=""
@@ -61,6 +63,17 @@ rm -f \
   "$LIVE/zpk-litert-debug.apk.sha256"
 cp "$APP/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" "$LITERT_APK"
 
+flutter build apk --release \
+  --split-per-abi \
+  --dart-define=KAN_HOME=citizen \
+  --dart-define=KAN_REASONER=litert-gemma \
+  --dart-define=KAN_LITERT_MODEL_PATH="$CITIZEN_MODEL_PATH" \
+  --dart-define=KAN_LITERT_MODEL_URL="$LITERT_MODEL_URL" \
+  --dart-define=KAN_LITERT_MODEL_SHA256="$LITERT_MODEL_SHA" \
+  --dart-define=KAN_LITERT_TIMEOUT_SECONDS=240
+
+cp "$APP/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk" "$CITIZEN_APK"
+
 for file in \
   "$APP/kan-embedded-catalog-trace.png" \
   "$APP/kan-gemma-hosted-trace.png" \
@@ -75,6 +88,7 @@ cd "$ROOT"
   cd "$LIVE"
   shasum -a 256 "$(basename "$LOCAL_APK")" > "$(basename "$LOCAL_APK").sha256"
   shasum -a 256 "$(basename "$LITERT_APK")" > "$(basename "$LITERT_APK").sha256"
+  shasum -a 256 "$(basename "$CITIZEN_APK")" > "$(basename "$CITIZEN_APK").sha256"
 )
 cp "$LITERT_APK" "$MOTOROLA_APK"
 (

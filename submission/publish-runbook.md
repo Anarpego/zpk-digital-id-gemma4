@@ -12,6 +12,7 @@ git log --oneline --decorate -3
 Expected:
 
 - Clean working tree.
+- Latest commit is tagged `v2026.05.07-kaggle`.
 - Latest commits include the submission verifier, upload copy, final audit, and guarded publish helper.
 
 ## Secret Audit
@@ -39,8 +40,9 @@ gh auth login
 Alternative manual push:
 
 ```bash
-git remote add origin git@github.com:<user>/kan-gemma4-good.git
+git remote add origin git@github.com:<user>/zpk-digital-id-gemma4.git
 git push -u origin main
+git push origin v2026.05.07-kaggle
 ```
 
 ## Demo ZIP Upload
@@ -50,6 +52,8 @@ Upload the latest local package:
 ```text
 submission/dist/kan-demo-package-final.zip
 submission/dist/kan-demo-package-final.zip.sha256
+submission/live-demo/zpk-citizen-gemma4-release.apk
+submission/live-demo/zpk-citizen-gemma4-release.apk.sha256
 ```
 
 Use a no-login public location. Kaggle writeup can link to either:

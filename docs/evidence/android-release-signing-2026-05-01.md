@@ -42,7 +42,7 @@ equivalent attestation policy, release management, and key rotation procedures.
 Latest refresh on 2026-05-03:
 
 - `flutter analyze` from `kan-app`: passed with no issues.
-- `flutter test` from `kan-app`: 74 tests passed.
+- `flutter test` from `kan-app`: passed at the time of this evidence capture. Current test count is tracked in `goal-completion-audit-2026-05-07.md`.
 - `./scripts/package_demo.sh` with `ZPK_RELEASE_*` and `LITERT_PUBLIC_URL`:
   rebuilt `submission/live-demo/zpk-local-release.apk`,
   `submission/live-demo/zpk-litert-release.apk`, and

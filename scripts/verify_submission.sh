@@ -6,6 +6,7 @@ ZIP="$ROOT/submission/dist/kan-demo-package-final.zip"
 ZIP_SHA="$ZIP.sha256"
 APK="$ROOT/submission/live-demo/zpk-local-release.apk"
 LITERT_APK="$ROOT/submission/live-demo/zpk-litert-release.apk"
+CITIZEN_APK="$ROOT/submission/live-demo/zpk-citizen-gemma4-release.apk"
 MOTOROLA_APK="$ROOT/motorola/zpk-litert-persona-institucion-release.apk"
 MOTOROLA_APK_SHA="$MOTOROLA_APK.sha256"
 VIDEO="$ROOT/submission/kan-final-demo-video.mp4"
@@ -71,6 +72,8 @@ need_file "$APK"
 need_file "$APK.sha256"
 need_file "$LITERT_APK"
 need_file "$LITERT_APK.sha256"
+need_file "$CITIZEN_APK"
+need_file "$CITIZEN_APK.sha256"
 need_file "$MOTOROLA_APK"
 need_file "$MOTOROLA_APK_SHA"
 need_file "$VIDEO"
@@ -93,6 +96,10 @@ need_file "$AAPT2"
   cd "$(dirname "$LITERT_APK")"
   shasum -a 256 -c "$(basename "$LITERT_APK").sha256" >/dev/null
 ) || fail "LiteRT APK checksum mismatch"
+(
+  cd "$(dirname "$CITIZEN_APK")"
+  shasum -a 256 -c "$(basename "$CITIZEN_APK").sha256" >/dev/null
+) || fail "Citizen Gemma APK checksum mismatch"
 (
   cd "$ROOT/motorola"
   shasum -a 256 -c "$(basename "$MOTOROLA_APK_SHA")" >/dev/null
@@ -119,8 +126,15 @@ grep -Fq 'Verifies' <<<"$litert_signed_output" \
 if grep -Fq 'CN=Android Debug' <<<"$litert_signed_output"; then
   fail "LiteRT APK is signed with Android debug certificate"
 fi
+citizen_signed_output="$("$APKSIGNER" verify --verbose --print-certs "$CITIZEN_APK" 2>&1 || true)"
+grep -Fq 'Verifies' <<<"$citizen_signed_output" \
+  || fail "Citizen Gemma APK does not verify as signed"
+if grep -Fq 'CN=Android Debug' <<<"$citizen_signed_output"; then
+  fail "Citizen Gemma APK is signed with Android debug certificate"
+fi
 verify_apk_manifest "$APK" "Local"
 verify_apk_manifest "$LITERT_APK" "LiteRT"
+verify_apk_manifest "$CITIZEN_APK" "Citizen Gemma"
 litert_apk_listing="$(unzip -l "$LITERT_APK")"
 grep -Fq 'lib/arm64-v8a/liblitertlm_jni.so' <<<"$litert_apk_listing" \
   || fail "LiteRT APK missing ARM64 LiteRT-LM native library"
@@ -128,6 +142,13 @@ grep -Fq 'lib/arm64-v8a/libLiteRtLm.so' <<<"$litert_apk_listing" \
   || fail "LiteRT APK missing FlutterGemma LiteRT-LM FFI library"
 grep -Fq 'lib/arm64-v8a/libGemmaModelConstraintProvider.so' <<<"$litert_apk_listing" \
   || fail "LiteRT APK missing FlutterGemma Gemma constraint provider"
+citizen_apk_listing="$(unzip -l "$CITIZEN_APK")"
+grep -Fq 'lib/arm64-v8a/liblitertlm_jni.so' <<<"$citizen_apk_listing" \
+  || fail "Citizen Gemma APK missing ARM64 LiteRT-LM native library"
+grep -Fq 'lib/arm64-v8a/libLiteRtLm.so' <<<"$citizen_apk_listing" \
+  || fail "Citizen Gemma APK missing FlutterGemma LiteRT-LM FFI library"
+grep -Fq 'lib/arm64-v8a/libGemmaModelConstraintProvider.so' <<<"$citizen_apk_listing" \
+  || fail "Citizen Gemma APK missing FlutterGemma Gemma constraint provider"
 
 writeup_words="$(wc -w < "$WRITEUP" | tr -d ' ')"
 [[ "$writeup_words" -le 1500 ]] || fail "writeup is over 1500 words: $writeup_words"
@@ -209,25 +230,37 @@ fi
 if grep -R --include='*.md' -Fq '46 tests' \
   "$ROOT/docs" \
   "$ROOT/README.md" \
+  "$ROOT/SUBMISSION_CHECKLIST.md" \
   "$ROOT/submission" \
   "$ROOT/motorola"; then
-  fail "public docs contain stale Flutter test count; current suite has 74 tests"
+  fail "public docs contain stale Flutter test count; current suite has 142 tests"
 fi
 
 if grep -R --include='*.md' -Fq '58 tests' \
   "$ROOT/docs" \
   "$ROOT/README.md" \
+  "$ROOT/SUBMISSION_CHECKLIST.md" \
   "$ROOT/submission" \
   "$ROOT/motorola"; then
-  fail "public docs contain stale Flutter test count; current suite has 74 tests"
+  fail "public docs contain stale Flutter test count; current suite has 142 tests"
 fi
 
 if grep -R --include='*.md' -Fq '73 tests' \
   "$ROOT/docs" \
   "$ROOT/README.md" \
+  "$ROOT/SUBMISSION_CHECKLIST.md" \
   "$ROOT/submission" \
   "$ROOT/motorola"; then
-  fail "public docs contain stale Flutter test count; current suite has 74 tests"
+  fail "public docs contain stale Flutter test count; current suite has 142 tests"
+fi
+
+if grep -R --include='*.md' -Fq '74 tests' \
+  "$ROOT/docs" \
+  "$ROOT/README.md" \
+  "$ROOT/SUBMISSION_CHECKLIST.md" \
+  "$ROOT/submission" \
+  "$ROOT/motorola"; then
+  fail "public docs contain stale Flutter test count; current suite has 142 tests"
 fi
 
 for source_guard in \
@@ -258,16 +291,19 @@ for source_guard in \
 done
 
 for claim in \
-  'Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof' \
-  'citizen-clearable app-internal audit archive sealed with AES-GCM and Android Keystore' \
-  'ML Kit/AICore status probing plus model download/warmup before generation' \
-  'validated JSON agent-response contracts' \
-  'hosted Gemma 4 mode verified with `gemma-4-31b-it`' \
-  'fails closed on the Mac emulator'; do
+  'final release APK runs a local ReAct-style Gemma 4 E2B agent through a native Android LiteRT-LM bridge' \
+  'verified physical-device flow on an Honor Android phone' \
+  '7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb' \
+  '2,583,085,056-byte `gemma-4-E2B-it.litertlm` artifact' \
+  'privacy guard that blocks raw CUI and 13-digit identifiers before model calls' \
+  'no trained adapter is claimed'; do
   grep -Fq "$claim" "$KAGGLE_FORM" || fail "Kaggle form missing claim: $claim"
 done
 
 for trace in \
+  'Gemma 4 E2B local' \
+  'zpk-android-keystore-issuer-key-2026-05' \
+  'El ciudadano ha sido víctima de amenazas por WhatsApp' \
   'auth.verify(local) -> ok' \
   'auth.relying_party(local_allowlist) -> approved' \
   'auth.device_presence(' \
@@ -282,7 +318,7 @@ for trace in \
   'litert_gemma.generate(gemma-4-E2B-it, HF_HUB_OFFLINE=1) -> ok' \
   'recovery_packet.verify(local) -> ok' \
   'reasoner_mode(mlkit-gemma:aicore) -> fallback'; do
-  grep -Fq "$trace" "$WRITEUP" "$ROOT/docs/evidence"/*.md || fail "missing evidence trace: $trace"
+  grep -Fq "$trace" "$WRITEUP" "$ROOT/docs/evidence"/*.md "$ROOT/docs/evidence"/*.xml || fail "missing evidence trace: $trace"
 done
 
 for flutter_gemma_trace in \
@@ -373,6 +409,9 @@ fi
 if strings "$LITERT_APK" | grep -Eiq 'AIza[0-9A-Za-z_-]{20,}|KAN_GEMINI_API_KEY|GEMINI_API_KEY|x-goog-api-key'; then
   fail "LiteRT APK appears to contain an embedded Gemini API key or key marker"
 fi
+if strings "$CITIZEN_APK" | grep -Eiq 'AIza[0-9A-Za-z_-]{20,}|KAN_GEMINI_API_KEY|GEMINI_API_KEY|x-goog-api-key'; then
+  fail "Citizen Gemma APK appears to contain an embedded Gemini API key or key marker"
+fi
 if unzip -p "$ZIP" | strings | grep -Eq 'AIza[0-9A-Za-z_-]{20,}'; then
   fail "ZIP appears to contain a Gemini API key"
 fi
@@ -421,6 +460,7 @@ for required in \
   'submission/media-gallery-cover.svg' \
   'submission/live-demo/zpk-local-release.apk' \
   'submission/live-demo/zpk-litert-release.apk' \
+  'submission/live-demo/zpk-citizen-gemma4-release.apk' \
   'submission/final-kaggle-writeup.md' \
   'docs/evidence/local-authentication-proof-2026-05-01.md' \
   'docs/evidence/local-audit-archive-sealed-runtime-2026-05-01.json' \
@@ -429,6 +469,7 @@ for required in \
   'docs/evidence/litert-gemma4-app-agent-harness-2026-05-01.md' \
   'docs/evidence/litert-gemma4-phone-self-test-2026-05-02.md' \
   'docs/evidence/litert-gemma4-physical-device-runbook-2026-05-01.md' \
+  'docs/evidence/honor-release-citizen-gemma-final-2026-05-07.xml' \
   'docs/evidence/ios-flutter-gemma4-smoke-2026-05-02.md' \
   'docs/evidence/ios-flutter-gemma4-smoke-2026-05-02.png' \
   'docs/evidence/litert-lm-dependency-version-2026-05-02.md' \
@@ -475,12 +516,12 @@ if [[ -d "$DATASET_UPLOAD" ]]; then
     [[ -f "$DATASET_UPLOAD/$resource_path" ]] || fail "Kaggle Dataset upload missing resource: $resource_path"
   done < <(jq -r '.resources[].path' "$DATASET_UPLOAD/dataset-metadata.json")
 
-  grep -Fq 'Android device-presence-gated verifier-enforced allowlisted expiring local authentication proof' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
-    || fail "Kaggle Dataset upload form missing authentication proof claim"
-  grep -Fq 'auth.verify(local) -> ok' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
-    || fail "Kaggle Dataset upload writeup missing authentication trace"
-  grep -Fq 'auth.blocked(revocation) -> credential_revoked' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
-    || fail "Kaggle Dataset upload writeup missing revocation block trace"
+  grep -Fq 'verified physical-device flow on an Honor Android phone' "$DATASET_UPLOAD/KAGGLE_FORM.md" \
+    || fail "Kaggle Dataset upload form missing Honor physical-device claim"
+  grep -Fq 'Gemma 4 E2B local' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
+    || fail "Kaggle Dataset upload writeup missing local Gemma 4 claim"
+  grep -Fq '7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb' "$DATASET_UPLOAD/final-kaggle-writeup.md" \
+    || fail "Kaggle Dataset upload writeup missing final APK hash"
 fi
 
 echo "PASS: submission artifacts verified"
@@ -488,6 +529,7 @@ echo "ZIP: $ZIP"
 echo "ZIP SHA-256: $(sha_only "$ZIP")"
 echo "APK SHA-256: $(sha_only "$APK")"
 echo "LiteRT APK SHA-256: $(sha_only "$LITERT_APK")"
+echo "Citizen Gemma APK SHA-256: $(sha_only "$CITIZEN_APK")"
 echo "Video SHA-256: $EXPECTED_VIDEO_SHA"
 echo "Cover SHA-256: $EXPECTED_COVER_SHA"
 echo "Video seconds: $video_seconds"

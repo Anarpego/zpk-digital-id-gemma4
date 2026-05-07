@@ -1,6 +1,6 @@
 # Kan — Full Implementation Context
 
-> This document is a complete context brief intended to be provided to a coding LLM (Claude, GPT, Gemini, or any other) so it can help implement the Kan application. It is dense, technical, and opinionated. It assumes the implementing engineer is competent and the LLM is capable. Treat every section as binding unless explicitly marked as a tradeoff or open question.
+> This document is a complete technical context brief for implementing the Kan application. It is dense, technical, and opinionated. Treat every section as binding unless explicitly marked as a tradeoff or open question.
 
 ---
 
@@ -1188,7 +1188,7 @@ The implementing LLM and engineer should be aware of these uncertainties and bri
 
 1. **Audio mode of Gemma 4 E4B on Android 8-10:** untested on this exact hardware in this exact use case. Plan B with Whisper.cpp must remain ready until validated.
 2. **Vision mode OCR accuracy on real DPIs:** synthetic test images may not match real-world conditions (glare, smudges, old laminate). Plan B with MLKit or Tesseract as fallback.
-3. **Legal template authority:** templates need to be reviewed and signed by an actual Guatemalan lawyer or legal aid organization. For hackathon demo, prototype templates are acceptable with a disclaimer; for any production use, real legal review is mandatory.
+3. **Legal template authority:** templates need to be reviewed and signed by an actual Guatemalan lawyer or legal aid organization. For the hackathon app proof, templates must remain clearly labeled as preliminary guidance; for production deployment, real legal review is mandatory.
 4. **Breach data sources:** publicly disclosed breaches are easy. Underground market listings are harder and ethically complex (do we ingest them?). Decision: stick to publicly disclosed for hackathon. Reconsider for production with legal counsel.
 5. **Google AI Studio quota at scale:** for hackathon and early production, Google AI Studio's free tier is sufficient. If token volume grows to thousands of reasoning requests per day, the free tier limits may be hit. Migration paths (in order of friction): (a) upgrade to paid Google AI Studio tier, (b) move to Vertex AI for production-grade Gemma serving, (c) self-host Gemma 4 on a dedicated GPU droplet. The architecture supports any of these with a configuration change in `Kan.Reasoner`.
 6. **Adoption strategy:** the app being technically excellent does not mean the target user installs and uses it. Distribution requires partnerships with PDH, MP, NGOs working with vulnerable communities. This is post-hackathon work but should be planned for.
