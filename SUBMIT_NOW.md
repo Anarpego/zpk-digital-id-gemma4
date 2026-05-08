@@ -13,11 +13,22 @@ Expected: artifact verification passes. `publish_submission.sh --check` stops on
 
 ## 2. Public Repository And Release
 
-After account login:
+Public repository:
 
-```bash
-gh auth login
-./scripts/publish_submission.sh
+```text
+https://github.com/Anarpego/zpk-digital-id-gemma4
+```
+
+Public release / live demo:
+
+```text
+https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle
+```
+
+Primary ZIP asset:
+
+```text
+https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-kaggle/kan-demo-package-final.zip
 ```
 
 Release assets uploaded by the script:
@@ -45,10 +56,10 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 - Title: `ZPK Digital ID: Local-First Identity Protection for Guatemala`
 - Impact Track: `Digital Equity & Inclusivity`
 - Writeup: paste `submission/final-kaggle-writeup.md`
-- Video: upload or link `submission/kan-final-demo-video.mp4`
+- Video: upload `submission/kan-final-demo-video.mp4` to YouTube manually, then paste the public/unlisted YouTube URL.
 - Media cover: upload `submission/media-gallery-cover.png`
-- Live demo URL: public URL for `kan-demo-package-final.zip` or the Kaggle Dataset
-- Repository URL: public GitHub repository URL
+- Live demo URL: `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle`
+- Repository URL: `https://github.com/Anarpego/zpk-digital-id-gemma4`
 
 ## 4. Hashes To Confirm Uploads
 

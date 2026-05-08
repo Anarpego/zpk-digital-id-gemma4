@@ -1,6 +1,18 @@
 # Publish Runbook
 
-This project is ready for a public repository push, but the current machine is not authenticated with GitHub CLI.
+This project has been pushed to a public GitHub repository and published as a GitHub Release. Keep this runbook for repeatable verification or re-uploading changed assets.
+
+Public repository:
+
+```text
+https://github.com/Anarpego/zpk-digital-id-gemma4
+```
+
+Public release:
+
+```text
+https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle
+```
 
 ## Current Git State
 
@@ -27,7 +39,7 @@ Expected:
 - `.env`, APKs, ZIPs, build outputs, and `.venv` are ignored.
 - No real `.env` or APK binary is staged.
 
-## Create Public GitHub Repo
+## Create Or Refresh Public GitHub Release
 
 After logging in:
 
@@ -37,7 +49,7 @@ gh auth login
 ./scripts/publish_submission.sh
 ```
 
-Alternative manual push:
+Alternative manual push if the remote is missing:
 
 ```bash
 git remote add origin git@github.com:<user>/zpk-digital-id-gemma4.git

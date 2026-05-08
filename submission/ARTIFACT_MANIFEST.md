@@ -17,9 +17,10 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 
 ## Kaggle Form Inputs
 
-- Repository URL: fill in after public GitHub push.
-- Live artifact URL: fill in after uploading `submission/dist/kan-demo-package-final.zip`.
-- Video URL: fill in after uploading `submission/kan-final-demo-video.mp4`.
+- Repository URL: `https://github.com/Anarpego/zpk-digital-id-gemma4`.
+- Live artifact URL: `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle`.
+- Primary ZIP asset: `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-kaggle/kan-demo-package-final.zip`.
+- Video URL: fill in after manually uploading `submission/kan-final-demo-video.mp4` to YouTube.
 - Kaggle form copy: `submission/KAGGLE_FORM.md`.
 - YouTube upload copy: `submission/YOUTUBE_DESCRIPTION.md`.
 - GitHub release notes: `submission/GITHUB_RELEASE_NOTES.md`.

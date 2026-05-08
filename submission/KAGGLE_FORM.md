@@ -1,6 +1,6 @@
 # Kaggle Submission Fields
 
-Use these fields for the final Kaggle submission. Fill the URL fields only after the public repository, submission ZIP, and video have been uploaded.
+Use these fields for the final Kaggle submission. The repository and live demo URLs are already public. Fill only the YouTube URL after the manual video upload.
 
 ## Title
 
@@ -16,17 +16,19 @@ Digital Equity & Inclusivity
 
 ## Repository URL
 
-Paste the public GitHub repository URL after upload.
+https://github.com/Anarpego/zpk-digital-id-gemma4
 
 ## Live Demo URL
 
-Paste the public submission ZIP, release asset, or Kaggle Dataset URL after upload.
+https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle
 
-Recommended artifact: `submission/dist/kan-demo-package-final.zip`.
+Primary ZIP asset:
+
+https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-kaggle/kan-demo-package-final.zip
 
 ## Video URL
 
-Paste the public video URL after upload.
+Paste the public or unlisted YouTube URL after manual upload.
 
 Recommended artifact: `submission/kan-final-demo-video.mp4`.
 
@@ -48,8 +50,8 @@ ZPK Digital ID is a Flutter Android app with a citizen mode and an institutional
 
 ## Public Upload Checklist
 
-- [ ] Public GitHub repository URL is reachable without login.
-- [ ] Demo ZIP URL is reachable without login.
+- [x] Public GitHub repository URL is reachable without login.
+- [x] Demo ZIP URL is reachable without login.
 - [ ] Video URL is reachable without login and plays under 3 minutes.
 - [ ] Kaggle writeup is pasted from `submission/final-kaggle-writeup.md`.
 - [ ] Media gallery includes `submission/media-gallery-cover.png`.
