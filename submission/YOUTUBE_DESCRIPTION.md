@@ -22,8 +22,15 @@ Technical evidence in the repository includes:
 - Cactus local-inference metrics on Android as supporting context.
 - Gemma 4 E2B adaptation pipeline with 12,000 validated synthetic SFT examples, 1,200 RLKD-style teacher traces, SFT/QLoRA code, GRPO rewards, and a documented 6 GB GPU OOM training attempt.
 
-Repository: paste public GitHub URL after upload
-Demo package: paste public demo ZIP, release asset, or Kaggle Dataset URL after upload
+Repository: https://github.com/Anarpego/zpk-digital-id-gemma4
+Live demo / release: https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle
+Demo package ZIP: https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-kaggle/kan-demo-package-final.zip
+Primary APK: https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-kaggle/zpk-citizen-gemma4-release.apk
+
+Checksums:
+- APK SHA-256: 7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb
+- Video SHA-256: e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6
+- Cover SHA-256: bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947
 
 Submitted for the Gemma 4 Good Hackathon.
 
