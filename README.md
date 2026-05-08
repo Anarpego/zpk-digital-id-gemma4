@@ -4,6 +4,22 @@ ZPK Digital ID is a local-first Android app for the Gemma 4 Good Hackathon. It r
 
 This repository is optimized for a public hackathon submission and reproducible evidence. It intentionally avoids real personal data, real breach records, and government registry connectivity.
 
+## Public Submission Links
+
+- Repository: `https://github.com/Anarpego/zpk-digital-id-gemma4`
+- Live demo / release: `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle`
+- Demo package ZIP: `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-kaggle/kan-demo-package-final.zip`
+- Primary Android APK: `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-kaggle/zpk-citizen-gemma4-release.apk`
+- Public submission audit: `docs/evidence/public-submission-audit-2026-05-08.md`
+
+Current public artifact hashes:
+
+- Demo ZIP SHA-256: `8fc6a6f8f2a11e5285644a178dc35f99d256babedd8321b3bd2ae27346d85eca`
+- Citizen Gemma APK SHA-256: `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb`
+- Final video SHA-256: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
+
+The YouTube upload and Kaggle submit step are intentionally manual.
+
 ## Current App
 
 - Flutter app: `kan-app/`
