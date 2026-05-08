@@ -16,7 +16,7 @@ submission materials.
 |---|---|---|
 | Public code repository | `https://github.com/Anarpego/zpk-digital-id-gemma4` returns HTTP 200 without login | Done |
 | Public release / live demo | `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle` returns HTTP 200 | Done |
-| Main and release tag aligned | `main` and `v2026.05.07-kaggle` both point to `2113e0f6d2e4a8384c28e7deae6119f9738ec6a9` | Done |
+| Main and release tag aligned | `git ls-remote origin refs/heads/main refs/tags/v2026.05.07-kaggle` returns the same commit for both refs | Done |
 | Demo package available | `kan-demo-package-final.zip` release asset is uploaded and direct URL returns HTTP 200 | Done |
 | Demo package integrity | Release asset digest and local verifier use SHA-256 `8fc6a6f8f2a11e5285644a178dc35f99d256babedd8321b3bd2ae27346d85eca` | Done |
 | Primary APK available | `zpk-citizen-gemma4-release.apk` release asset is uploaded | Done |
