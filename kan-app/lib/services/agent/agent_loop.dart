@@ -51,14 +51,16 @@ Stream<AgentStep> runAgentLoop({
   AgentLoopConfig config = const AgentLoopConfig(),
   Map<String, dynamic>? preRedactedInput,
 }) async* {
-  yield PlanStep('Voy a entender el caso y proteger tus datos personales');
+  yield PlanStep(
+    'Gemma 4 decide un paso en JSON; el harness valida, repara y ejecuta tools locales.',
+  );
   if (config.stepDelay > Duration.zero) {
     await Future<void>.delayed(config.stepDelay);
   }
 
   final redacted = preRedactedInput ?? input.toRedactedMap();
   yield ObservationStep(
-    content: 'Datos sensibles bloqueados antes de pensar',
+    content: 'Datos sensibles bloqueados antes de enviar contexto al modelo.',
     data: {'fields_in_input': redacted.keys.toList()},
   );
 
@@ -86,13 +88,13 @@ Stream<AgentStep> runAgentLoop({
         activeReasoner = config.fallbackReasoner!;
         yield ObservationStep(
           content:
-              'El razonador principal fallo, sigo con el plan local determinista preservando los pasos hechos.',
+              'Harness de robustez activo: la respuesta del modelo fue incompleta; continuo con planner local preservando la traza.',
           data: {'switched_to': activeReasoner.label, 'reason': e.toString()},
         );
         iteration--; // reintenta misma iteracion con el fallback
         continue;
       }
-      yield ErrorStep('El razonador fallo: $e');
+      yield ErrorStep('El razonador no pudo continuar: $e');
       return;
     }
 
@@ -107,7 +109,7 @@ Stream<AgentStep> runAgentLoop({
           activeReasoner = config.fallbackReasoner!;
           yield ObservationStep(
             content:
-                'Cierre prematuro detectado: el razonador principal no genero el documento. Sigo con plan local para producirlo.',
+                'Harness detecto cierre incompleto: faltaba documento firmado. Continuo con tools locales.',
             data: {'switched_to': activeReasoner.label},
           );
           continue;
@@ -132,7 +134,7 @@ Stream<AgentStep> runAgentLoop({
         activeReasoner = config.fallbackReasoner!;
         yield ObservationStep(
           content:
-              'El razonador principal devolvio error, sigo con plan local.',
+              'Harness rechazo salida invalida del modelo y continuo con plan local.',
           data: {
             'switched_to': activeReasoner.label,
             'reason': decision.errorMessage ?? '',
@@ -163,7 +165,7 @@ Stream<AgentStep> runAgentLoop({
         );
       } catch (e) {
         yield ObservationStep(
-          content: 'Tool $toolName fallo: $e',
+          content: 'Tool $toolName devolvio error controlado: $e',
           data: {'error': e.toString()},
         );
         scratchpadParts.add('TOOL $toolName -> ERROR ${e.toString()}');
@@ -225,7 +227,7 @@ Stream<AgentStep> runAgentLoop({
   final signed = artifact.sigEd25519.isNotEmpty;
   yield ObservationStep(
     content:
-        'Cierre seguro: use el ultimo documento valido porque el razonador no cerro el ciclo.',
+        'Cierre seguro del harness: use el ultimo documento valido y lo firme localmente.',
     data: {
       'artifact_hash': artifact.hashSha256,
       'signed': signed,

@@ -66,7 +66,7 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 - ZIP: see `submission/dist/kan-demo-package-final.zip.sha256`
 - Primary citizen APK: see `submission/live-demo/zpk-citizen-gemma4-release.apk.sha256`
 - Local fallback APK: see `submission/live-demo/zpk-local-release.apk.sha256`
-- Video: `c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63`
+- Video: `e06f903f2bafdd50ed635ef280d8b6923dd4841157087189c7d8e72ebfa662cf`
 - Cover PNG: `bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947`
 
 ## 5. Prize Claims

@@ -205,7 +205,10 @@ void main() {
     ).toList();
 
     final obs = steps.whereType<ObservationStep>().toList();
-    expect(obs.any((o) => o.content.contains('Tool boom fallo')), isTrue);
+    expect(
+      obs.any((o) => o.content.contains('Tool boom devolvio error controlado')),
+      isTrue,
+    );
     expect(steps.last, isA<FinalStep>());
   });
 

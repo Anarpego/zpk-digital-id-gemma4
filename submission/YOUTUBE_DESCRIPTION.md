@@ -29,7 +29,7 @@ Primary APK: https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download
 
 Checksums:
 - APK SHA-256: 7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb
-- Video SHA-256: c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63
+- Video SHA-256: e06f903f2bafdd50ed635ef280d8b6923dd4841157087189c7d8e72ebfa662cf
 - Cover SHA-256: bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947
 
 Submitted for the Gemma 4 Good Hackathon.

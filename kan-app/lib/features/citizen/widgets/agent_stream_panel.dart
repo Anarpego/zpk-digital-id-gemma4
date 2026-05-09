@@ -35,7 +35,7 @@ class AgentStreamPanel extends StatelessWidget {
                 const Icon(Icons.auto_awesome, size: 18),
                 const SizedBox(width: 8),
                 Text(
-                  'Agente razonando',
+                  'Gemma 4 + harness ReAct',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const Spacer(),
@@ -48,6 +48,8 @@ class AgentStreamPanel extends StatelessWidget {
                   ),
               ],
             ),
+            const SizedBox(height: 12),
+            const _HarnessStrip(),
             const SizedBox(height: 12),
             ...steps.map(_buildStep),
           ],
@@ -79,6 +81,56 @@ class AgentStreamPanel extends StatelessWidget {
         error: true,
       ),
     };
+  }
+}
+
+class _HarnessStrip extends StatelessWidget {
+  const _HarnessStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: const [
+        _HarnessChip(icon: Icons.smart_toy_outlined, label: 'Gemma 4'),
+        _HarnessChip(icon: Icons.data_object, label: 'JSON tool call'),
+        _HarnessChip(icon: Icons.fact_check_outlined, label: 'schema repair'),
+        _HarnessChip(icon: Icons.storage_outlined, label: 'local tools'),
+        _HarnessChip(
+          icon: Icons.verified_user_outlined,
+          label: 'signed packet',
+        ),
+      ],
+    );
+  }
+}
+
+class _HarnessChip extends StatelessWidget {
+  const _HarnessChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: colors.outlineVariant),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: colors.primary),
+          const SizedBox(width: 5),
+          Text(label, style: Theme.of(context).textTheme.labelSmall),
+        ],
+      ),
+    );
   }
 }
 

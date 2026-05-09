@@ -16,7 +16,7 @@ Current public artifact hashes:
 
 - Demo ZIP SHA-256: see `submission/dist/kan-demo-package-final.zip.sha256`
 - Citizen Gemma APK SHA-256: `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb`
-- Final video SHA-256: `c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63`
+- Final video SHA-256: `e06f903f2bafdd50ed635ef280d8b6923dd4841157087189c7d8e72ebfa662cf`
 
 The YouTube upload and Kaggle submit step are intentionally manual.
 

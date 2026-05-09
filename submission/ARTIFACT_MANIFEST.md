@@ -11,7 +11,7 @@ Use this file to verify the local artifacts before uploading them to Kaggle, Git
 | Local APK | `submission/live-demo/zpk-local-release.apk` | Signed ARM64 local-mode Android APK | See `submission/live-demo/zpk-local-release.apk.sha256` |
 | LiteRT APK | `submission/live-demo/zpk-litert-release.apk` | Signed ARM64 LiteRT-mode APK for physical-device Gemma testing | See `submission/live-demo/zpk-litert-release.apk.sha256` |
 | Citizen Gemma APK | `submission/live-demo/zpk-citizen-gemma4-release.apk` | Signed ARM64 citizen-mode APK with Gemma 4 ReAct home screen and Modo Ventanilla | See `submission/live-demo/zpk-citizen-gemma4-release.apk.sha256` |
-| Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63` |
+| Final video | `submission/kan-final-demo-video.mp4` | Public media-gallery video, under 3 minutes | `e06f903f2bafdd50ed635ef280d8b6923dd4841157087189c7d8e72ebfa662cf` |
 | Media cover | `submission/media-gallery-cover.png` | 1600x900 Kaggle media-gallery image | `bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947` |
 | Submission package | `submission/dist/kan-demo-package-final.zip` | Downloadable bundle with APK, app source, video, docs, evidence, and adaptation pipeline | See `submission/dist/kan-demo-package-final.zip.sha256` |
 

@@ -22,7 +22,7 @@ submission materials.
 | Primary APK available | `zpk-citizen-gemma4-release.apk` release asset is uploaded | Done |
 | Primary APK integrity | SHA-256 `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb` | Done |
 | Media cover available | `media-gallery-cover.png` release asset is uploaded, SHA-256 `bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947` | Done |
-| Video file available for manual YouTube upload | `submission/kan-final-demo-video.mp4`, 88 seconds, SHA-256 `c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63` | Done locally and in release |
+| Video file available for manual YouTube upload | `submission/kan-final-demo-video.mp4`, 118 seconds, SHA-256 `e06f903f2bafdd50ed635ef280d8b6923dd4841157087189c7d8e72ebfa662cf` | Done locally and in release |
 | YouTube upload | User explicitly kept this manual | Manual remaining |
 | Kaggle writeup | `submission/final-kaggle-writeup.md`, 977 words, under 1,500-word limit | Done |
 | Kaggle form copy | `submission/KAGGLE_FORM.md` includes public repo and live demo links; only YouTube URL remains manual | Done |

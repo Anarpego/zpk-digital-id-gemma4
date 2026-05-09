@@ -36,7 +36,7 @@ Latest verified outputs:
 ```text
 ZIP SHA-256: see `submission/dist/kan-demo-package-final.zip.sha256`
 Citizen Gemma APK SHA-256: 7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb
-Video seconds: 88
+Video seconds: 118
 Cover dimensions: 1600x900
 Writeup words: 977
 Flutter tests: 142 passed
