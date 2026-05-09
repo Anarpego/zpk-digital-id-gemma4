@@ -56,7 +56,7 @@ Copy fields from `submission/KAGGLE_FORM.md`.
 - Title: `ZPK Digital ID: Local-First Identity Protection for Guatemala`
 - Impact Track: `Digital Equity & Inclusivity`
 - Writeup: paste `submission/final-kaggle-writeup.md`
-- Video: upload `submission/kan-final-demo-video.mp4` to YouTube manually, then paste the public/unlisted YouTube URL.
+- Video: paste `https://www.youtube.com/watch?v=kU5XLA8YO20`.
 - Media cover: upload `submission/media-gallery-cover.png`
 - Live demo URL: `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle`
 - Repository URL: `https://github.com/Anarpego/zpk-digital-id-gemma4`

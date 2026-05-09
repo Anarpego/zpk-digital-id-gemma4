@@ -28,7 +28,9 @@ https://github.com/Anarpego/zpk-digital-id-gemma4/releases/download/v2026.05.07-
 
 ## Video URL
 
-Paste the public or unlisted YouTube URL after manual upload.
+https://www.youtube.com/watch?v=kU5XLA8YO20
+
+Shorts URL: https://www.youtube.com/shorts/kU5XLA8YO20
 
 Recommended artifact: `submission/kan-final-demo-video.mp4`.
 
@@ -52,7 +54,7 @@ ZPK Digital ID is a Flutter Android app with a citizen mode and an institutional
 
 - [x] Public GitHub repository URL is reachable without login.
 - [x] Demo ZIP URL is reachable without login.
-- [ ] Video URL is reachable without login and plays under 3 minutes.
+- [x] Video URL is reachable without login and plays under 3 minutes.
 - [ ] Kaggle writeup is pasted from `submission/final-kaggle-writeup.md`.
 - [ ] Media gallery includes `submission/media-gallery-cover.png`.
 - [ ] No `.env` or API key is uploaded.
