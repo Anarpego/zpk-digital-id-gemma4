@@ -26,6 +26,8 @@ submission/dist/
 submission/live-demo/*.apk
 submission/live-demo/*.sha256
 submission/kaggle-dataset-upload/
+submission/phone-capture-*/
+submission/local-captures/
 motorola/*.apk
 motorola/*.apk.sha256
 installer/dist/
