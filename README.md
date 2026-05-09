@@ -14,9 +14,9 @@ This repository is optimized for a public hackathon submission and reproducible 
 
 Current public artifact hashes:
 
-- Demo ZIP SHA-256: `8fc6a6f8f2a11e5285644a178dc35f99d256babedd8321b3bd2ae27346d85eca`
+- Demo ZIP SHA-256: see `submission/dist/kan-demo-package-final.zip.sha256`
 - Citizen Gemma APK SHA-256: `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb`
-- Final video SHA-256: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
+- Final video SHA-256: `c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63`
 
 The YouTube upload and Kaggle submit step are intentionally manual.
 

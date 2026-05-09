@@ -78,4 +78,4 @@ flutter test
 ./scripts/verify_submission.sh
 ```
 
-The final verifier reports a 100-second video, 1600x900 cover image, valid APK hashes, and a writeup under the 1,500-word limit.
+The final verifier reports an 88-second video, 1600x900 cover image, valid APK hashes, and a writeup under the 1,500-word limit.

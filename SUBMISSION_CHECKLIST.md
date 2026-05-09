@@ -51,7 +51,7 @@ Expected current results:
 - `verify_submission.sh`: pass.
 - `flutter analyze`: no issues.
 - `flutter test`: 142 tests passed.
-- Video: 100 seconds.
+- Video: 88 seconds.
 - Cover: 1600x900.
 - Writeup: 977 words, under the 1,500-word limit.
 

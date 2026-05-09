@@ -19,7 +19,7 @@ DATASET_UPLOAD="$ROOT/submission/kaggle-dataset-upload"
 APKSIGNER="${APKSIGNER:-$HOME/Library/Android/sdk/build-tools/36.1.0/apksigner}"
 AAPT2="${AAPT2:-$HOME/Library/Android/sdk/build-tools/36.1.0/aapt2}"
 
-EXPECTED_VIDEO_SHA="e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6"
+EXPECTED_VIDEO_SHA="c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63"
 EXPECTED_COVER_SHA="bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947"
 
 fail() {

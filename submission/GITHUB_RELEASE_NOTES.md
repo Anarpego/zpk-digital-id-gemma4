@@ -24,7 +24,7 @@ shasum -a 256 submission/kan-final-demo-video.mp4 submission/media-gallery-cover
 Expected checksums:
 
 - Submission ZIP: generate from the uploaded asset with `shasum -a 256`.
-- Final video: `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6`
+- Final video: `c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63`
 - Media cover: `bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947`
 - Local APK: see `submission/live-demo/zpk-local-release.apk.sha256`
 - LiteRT APK: see `submission/live-demo/zpk-litert-release.apk.sha256`

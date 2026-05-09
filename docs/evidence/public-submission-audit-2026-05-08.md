@@ -18,11 +18,11 @@ submission materials.
 | Public release / live demo | `https://github.com/Anarpego/zpk-digital-id-gemma4/releases/tag/v2026.05.07-kaggle` returns HTTP 200 | Done |
 | Main and release tag aligned | `git ls-remote origin refs/heads/main refs/tags/v2026.05.07-kaggle` returns the same commit for both refs | Done |
 | Demo package available | `kan-demo-package-final.zip` release asset is uploaded and direct URL returns HTTP 200 | Done |
-| Demo package integrity | Release asset digest and local verifier use SHA-256 `8fc6a6f8f2a11e5285644a178dc35f99d256babedd8321b3bd2ae27346d85eca` | Done |
+| Demo package integrity | Release asset digest is recorded in `submission/dist/kan-demo-package-final.zip.sha256` | Done |
 | Primary APK available | `zpk-citizen-gemma4-release.apk` release asset is uploaded | Done |
 | Primary APK integrity | SHA-256 `7eeacdcf57f659e52d0cefa571e0205793ebfa46dcc76c608a4617ef92e63acb` | Done |
 | Media cover available | `media-gallery-cover.png` release asset is uploaded, SHA-256 `bf8cefade54d486c626b9b4b5b95cffff9e6e589870f09735a0f5ff38569d947` | Done |
-| Video file available for manual YouTube upload | `submission/kan-final-demo-video.mp4`, 100 seconds, SHA-256 `e33a3a93d1d86da8a091a3435509e09f4ffd8d944a8ff811d49735ebd03fe3e6` | Done locally and in release |
+| Video file available for manual YouTube upload | `submission/kan-final-demo-video.mp4`, 88 seconds, SHA-256 `c6ef528c650cafefa339c228372966bbda7f812b905891cf8dace605761f4f63` | Done locally and in release |
 | YouTube upload | User explicitly kept this manual | Manual remaining |
 | Kaggle writeup | `submission/final-kaggle-writeup.md`, 977 words, under 1,500-word limit | Done |
 | Kaggle form copy | `submission/KAGGLE_FORM.md` includes public repo and live demo links; only YouTube URL remains manual | Done |
